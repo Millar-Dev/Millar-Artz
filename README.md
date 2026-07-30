@@ -1,14 +1,11 @@
-# Welcome to your Lovable project
+# Welcome to my Art Website Project
 
-This project was built with [Lovable](https://lovable.dev).
+This project was built with a goal of providing easy access to art services for my clients and art collectors
 
-## Build with Lovable
+## Build with Me
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Reach out to me through my socails or through gmail (millarkitumi04@gmail.com)
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
