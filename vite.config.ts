@@ -12,4 +12,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Deploying to Vercel (not the Lovable-default Cloudflare target) — Vercel's Nitro
+  // integration compiles this into Vercel Functions. See vercel.com/docs/frameworks/full-stack/tanstack-start
+  nitro: {
+    preset: "vercel",
+  },
 });
