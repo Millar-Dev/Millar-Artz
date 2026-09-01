@@ -23,10 +23,22 @@ export const Route = createFileRoute("/about")({
 });
 
 const values = [
-  { title: "Craft", body: "Every piece is finished only when the work itself is ready to be seen." },
-  { title: "Originality", body: "No template, no shortcut — each artwork answers only to its subject." },
-  { title: "Range", body: "One studio, many disciplines — from graphite portraits to wall-sized murals." },
-  { title: "Respect", body: "For our subjects, for our patrons, and for the communities we paint for." },
+  {
+    title: "Craft",
+    body: "Every piece is finished only when the work itself is ready to be seen.",
+  },
+  {
+    title: "Originality",
+    body: "No template, no shortcut — each artwork answers only to its subject.",
+  },
+  {
+    title: "Range",
+    body: "One studio, many disciplines — from graphite portraits to wall-sized murals.",
+  },
+  {
+    title: "Respect",
+    body: "For our subjects, for our patrons, and for the communities we paint for.",
+  },
 ];
 
 const disciplinesWorked = [
@@ -44,9 +56,12 @@ const disciplinesWorked = [
 function About() {
   return (
     <Layout>
-      <section className="pt-16 pb-8">
-        <div className="mx-auto max-w-7xl px-6">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">About</span>
+      <section className="grain relative pt-16 pb-8">
+        <div className="glow-coral pointer-events-none absolute -left-40 top-0 h-[420px] w-[420px] rounded-full opacity-[0.12] blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-6">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+            About
+          </span>
           <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.05] text-ink md:text-7xl">
             About <span className="italic">Miller Artz</span>
           </h1>
@@ -57,28 +72,34 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
-              Miller Artz is a Tanzania-based studio built around one artist's hand: hyperrealistic
-              graphite and charcoal work developed over hundreds of hours of observation, acrylic and
-              oil wildlife painting rooted in East Africa, and commissioned portraits and cultural
-              scenes for clients and community organisations.
+              Miller Artz is a Tanzania-based studio built around one artist's
+              hand: hyperrealistic graphite and charcoal work developed over
+              hundreds of hours of observation, acrylic and oil wildlife
+              painting rooted in East Africa, and commissioned portraits and
+              cultural scenes for clients and community organisations.
             </p>
             <p>
-              The studio's range has grown deliberately — from tightly-observed pencil portraits and
-              wildlife studies, into traditional and cultural commissions, bold abstract and illusional
-              work, large-scale mural painting, and playful cartoon and character illustration. Every
-              new discipline is added the same way: by doing the work, not claiming the label first.
+              The studio's range has grown deliberately — from tightly-observed
+              pencil portraits and wildlife studies, into traditional and
+              cultural commissions, bold abstract and illusional work,
+              large-scale mural painting, and playful cartoon and character
+              illustration. Every new discipline is added the same way: by doing
+              the work, not claiming the label first.
             </p>
             <p>
-              We believe art has the power to communicate beyond words. Whether it's a family portrait,
-              a wildlife piece for a collector, a mural for a public wall, or a community commission like
-              the piece created for the Embuan Children &amp; Youth Foundation, the goal is the same:
-              work that means something to the person who asked for it.
+              We believe art has the power to communicate beyond words. Whether
+              it's a family portrait, a wildlife piece for a collector, a mural
+              for a public wall, or a community commission like the piece
+              created for the Embuan Children &amp; Youth Foundation, the goal
+              is the same: work that means something to the person who asked for
+              it.
             </p>
             <p>
-              Drawing and painting remain the foundation, but Miller Artz is designed with a wider
-              horizon in mind — the studio is already opening conversations around music, dance and
-              performance, digital art, and sculpture, for collectors and collaborators who want to build
-              something new together.
+              Drawing and painting remain the foundation, but Miller Artz is
+              designed with a wider horizon in mind — the studio is already
+              opening conversations around music, dance and performance, digital
+              art, and sculpture, for collectors and collaborators who want to
+              build something new together.
             </p>
             <p className="font-display text-2xl italic text-ink">
               At Miller Artz, every masterpiece begins with imagination.
@@ -95,7 +116,12 @@ function About() {
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/50">
                 Miller S.K. — Founder, Miller Artz
               </p>
-              <img src={brushMark} alt="" aria-hidden="true" className="h-8 w-auto opacity-70" />
+              <img
+                src={brushMark}
+                alt=""
+                aria-hidden="true"
+                className="h-8 w-auto rounded bg-[#f8f4ec] p-1 opacity-90"
+              />
             </div>
           </div>
         </div>
@@ -124,24 +150,29 @@ function About() {
       <section className="bg-paper py-24">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-2">
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Mission</span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+              Mission
+            </span>
             <h2 className="mt-6 font-display text-3xl italic text-ink md:text-4xl">
               To translate feeling into form.
             </h2>
             <p className="mt-6 text-ink/70">
-              To create original, deeply-observed work across every discipline the studio takes on —
-              preserving moments, honouring subjects, and giving collectors something worth living with
-              for generations.
+              To create original, deeply-observed work across every discipline
+              the studio takes on — preserving moments, honouring subjects, and
+              giving collectors something worth living with for generations.
             </p>
           </div>
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Vision</span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+              Vision
+            </span>
             <h2 className="mt-6 font-display text-3xl italic text-ink md:text-4xl">
               An African art house with a global voice.
             </h2>
             <p className="mt-6 text-ink/70">
-              To grow Miller Artz into a multidisciplinary studio — expanding into new mediums,
-              exhibitions, and communities while never letting go of the discipline of the hand.
+              To grow Miller Artz into a multidisciplinary studio — expanding
+              into new mediums, exhibitions, and communities while never letting
+              go of the discipline of the hand.
             </p>
           </div>
         </div>
@@ -150,7 +181,9 @@ function About() {
       {/* Values */}
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Core Values</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+            Core Values
+          </span>
           <h2 className="mt-6 font-display text-4xl italic text-ink md:text-5xl">
             What guides the work.
           </h2>
@@ -160,8 +193,12 @@ function About() {
                 <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold">
                   0{i + 1}
                 </p>
-                <h3 className="mt-4 font-display text-2xl italic text-ink">{v.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink/60">{v.body}</p>
+                <h3 className="mt-4 font-display text-2xl italic text-ink">
+                  {v.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink/60">
+                  {v.body}
+                </p>
               </div>
             ))}
           </div>
@@ -169,8 +206,8 @@ function About() {
       </section>
 
       {/* Future / Awards */}
-      <section className="bg-ink py-24 text-canvas">
-        <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-2">
+      <section className="grain relative bg-band py-24 text-band-foreground">
+        <div className="relative mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-2">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
               Future Projects
@@ -178,23 +215,30 @@ function About() {
             <h2 className="mt-6 font-display text-4xl italic md:text-5xl">
               The years ahead.
             </h2>
-            <ul className="mt-10 space-y-6 text-canvas/80">
+            <ul className="mt-10 space-y-6 text-band-foreground/80">
               <li>
-                <p className="font-display text-xl italic">Wildlife Series II</p>
+                <p className="font-display text-xl italic">
+                  Wildlife Series II
+                </p>
                 <p className="mt-1 text-sm font-light">
-                  A follow-up painted series on the birds and great cats of East Africa.
+                  A follow-up painted series on the birds and great cats of East
+                  Africa.
                 </p>
               </li>
               <li>
-                <p className="font-display text-xl italic">The Portrait Archive</p>
+                <p className="font-display text-xl italic">
+                  The Portrait Archive
+                </p>
                 <p className="mt-1 text-sm font-light">
-                  An open commission window for community portraiture across Tanzania.
+                  An open commission window for community portraiture across
+                  Tanzania.
                 </p>
               </li>
               <li>
                 <p className="font-display text-xl italic">Beyond the Canvas</p>
                 <p className="mt-1 text-sm font-light">
-                  First collaborations in music, dance and sculpture — early conversations welcome.
+                  First collaborations in music, dance and sculpture — early
+                  conversations welcome.
                 </p>
               </li>
             </ul>
@@ -206,13 +250,16 @@ function About() {
             <h2 className="mt-6 font-display text-4xl italic md:text-5xl">
               A quiet record, growing.
             </h2>
-            <p className="mt-8 text-canvas/70">
-              Recent work includes a commissioned piece for the Embuan Children &amp; Youth Foundation
-              and a commissioned exterior mural. As exhibitions, features and honours accumulate,
-              they'll be added here.
+            <p className="mt-8 text-band-foreground/70">
+              Recent work includes a commissioned piece for the Embuan Children
+              &amp; Youth Foundation and a commissioned exterior mural. As
+              exhibitions, features and honours accumulate, they'll be added
+              here.
             </p>
-            <div className="mt-10 border-t border-canvas/10 pt-6 text-sm text-canvas/60">
-              <p className="italic">Featured spaces &amp; press listings — coming soon.</p>
+            <div className="mt-10 border-t border-band-foreground/10 pt-6 text-sm text-band-foreground/60">
+              <p className="italic">
+                Featured spaces &amp; press listings — coming soon.
+              </p>
             </div>
           </div>
         </div>
@@ -226,14 +273,14 @@ function About() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               to="/gallery"
-              className="rounded-sm bg-ink px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-canvas hover:bg-gold"
+              className="rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
             >
               Browse gallery
             </Link>
             <Link
               to="/contact"
               search={{ type: "commission" }}
-              className="rounded-sm border border-ink/20 px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:bg-ink/5"
+              className="rounded-sm border border-ink/20 px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:border-gold hover:text-gold"
             >
               Start a commission
             </Link>

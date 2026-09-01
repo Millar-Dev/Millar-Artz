@@ -51,11 +51,16 @@ export const categories: {
   label: string;
   blurb: string;
 }[] = [
-  { value: "all", label: "All Works", blurb: "The full collection, every discipline." },
+  {
+    value: "all",
+    label: "All Works",
+    blurb: "The full collection, every discipline.",
+  },
   {
     value: "hyperrealism",
     label: "Hyperrealism",
-    blurb: "Graphite and charcoal studies rendered to the edge of photographic detail.",
+    blurb:
+      "Graphite and charcoal studies rendered to the edge of photographic detail.",
   },
   {
     value: "portraits",
@@ -216,7 +221,8 @@ export const artworks: Artwork[] = [
     medium: "Acrylic on Canvas Board",
     status: "available",
     image: wildlifeBaldEagle,
-    description: "A bald eagle at rest, feather by feather, set against soft foliage green.",
+    description:
+      "A bald eagle at rest, feather by feather, set against soft foliage green.",
     year: 2024,
   },
   {
@@ -365,19 +371,22 @@ export const disciplines: Discipline[] = [
   {
     id: "music",
     label: "Music",
-    blurb: "Composition and sound work — a new discipline Miller Artz is opening up for collaboration.",
+    blurb:
+      "Composition and sound work — a new discipline Miller Artz is opening up for collaboration.",
     icon: "music",
   },
   {
     id: "dance-performance",
     label: "Dance & Performance",
-    blurb: "Choreographed and live performance pieces, staged for events and commissions.",
+    blurb:
+      "Choreographed and live performance pieces, staged for events and commissions.",
     icon: "dance",
   },
   {
     id: "digital-art",
     label: "Digital Art",
-    blurb: "Illustration and concept work built natively for screens, prints and digital collectors.",
+    blurb:
+      "Illustration and concept work built natively for screens, prints and digital collectors.",
     icon: "digital",
   },
   {

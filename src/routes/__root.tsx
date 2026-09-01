@@ -15,16 +15,21 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       <div className="max-w-md text-center">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Miller Artz</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+          Miller Artz
+        </p>
         <h1 className="mt-6 font-display text-7xl text-ink">404</h1>
-        <h2 className="mt-4 font-display text-2xl italic text-ink">Page not found</h2>
+        <h2 className="mt-4 font-display text-2xl italic text-ink">
+          Page not found
+        </h2>
         <p className="mt-3 text-sm text-ink/60">
-          This canvas is blank. The page you're looking for isn't part of the collection.
+          This canvas is blank. The page you're looking for isn't part of the
+          collection.
         </p>
         <div className="mt-8">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-sm bg-ink px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-canvas transition-colors hover:bg-gold"
+            className="inline-flex items-center justify-center rounded-sm bg-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
           >
             Return home
           </Link>
@@ -41,7 +46,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-2xl text-ink">This page didn't load</h1>
+        <h1 className="font-display text-2xl text-ink">
+          This page didn't load
+        </h1>
         <p className="mt-2 text-sm text-ink/60">
           Something went wrong. You can try again or return to the studio.
         </p>
@@ -51,7 +58,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-sm bg-ink px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-canvas transition-colors hover:bg-gold"
+            className="inline-flex items-center justify-center rounded-sm bg-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
           >
             Try again
           </button>
@@ -67,39 +74,59 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "author", content: "Miller Artz" },
-      { name: "theme-color", content: "#f8f7f4" },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Miller Artz" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon-32.png", type: "image/png", sizes: "32x32" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap",
-      },
-    ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "author", content: "Miller Artz" },
+        { name: "theme-color", content: "#0d0906" },
+        { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "Miller Artz" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        {
+          rel: "icon",
+          href: "/favicon-32.png",
+          type: "image/png",
+          sizes: "32x32",
+        },
+        {
+          rel: "apple-touch-icon",
+          href: "/apple-touch-icon.png",
+          sizes: "180x180",
+        },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        {
+          rel: "preconnect",
+          href: "https://fonts.gstatic.com",
+          crossOrigin: "anonymous",
+        },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap",
+        },
+      ],
+    }),
+    shellComponent: RootShell,
+    component: RootComponent,
+    notFoundComponent: NotFoundComponent,
+    errorComponent: ErrorComponent,
+  },
+);
+
+// Dark is the default theme; this inline script runs before first paint so a
+// saved "light" preference never causes a flash of the dark theme.
+const themeBootScript = `try{if(localStorage.getItem("theme")==="light")document.documentElement.classList.remove("dark")}catch(e){}`;
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <HeadContent />
       </head>
       <body>

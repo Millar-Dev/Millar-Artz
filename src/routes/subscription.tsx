@@ -76,8 +76,9 @@ function Subscription() {
             Be the first to <span className="italic">see</span> what's next.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg font-light text-ink/70">
-            Subscribe to receive newsletters, artwork drops, and previews from Miller Artz. Two ways to
-            follow the work — pick the one that suits you.
+            Subscribe to receive newsletters, artwork drops, and previews from
+            Miller Artz. Two ways to follow the work — pick the one that suits
+            you.
           </p>
         </div>
       </section>
@@ -90,21 +91,19 @@ function Subscription() {
               key={p.name}
               className={`flex flex-col p-10 transition-colors ${
                 p.highlight
-                  ? "bg-ink text-canvas"
+                  ? "bg-band text-band-foreground"
                   : "border border-ink/10 bg-paper text-ink"
               }`}
             >
-              <span
-                className={`text-[10px] font-bold uppercase tracking-[0.3em] ${
-                  p.highlight ? "text-gold" : "text-gold"
-                }`}
-              >
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
                 {p.tag}
               </span>
-              <h2 className="mt-6 font-display text-3xl italic md:text-4xl">{p.name}</h2>
+              <h2 className="mt-6 font-display text-3xl italic md:text-4xl">
+                {p.name}
+              </h2>
               <p
                 className={`mt-4 font-display text-2xl italic ${
-                  p.highlight ? "text-canvas/80" : "text-ink/60"
+                  p.highlight ? "text-band-foreground/80" : "text-ink/60"
                 }`}
               >
                 {p.price}
@@ -112,7 +111,7 @@ function Subscription() {
               <ul className="mt-8 space-y-3 text-sm font-light">
                 {p.features.map((f) => (
                   <li key={f} className="flex items-start gap-3">
-                    <Check size={16} className={`mt-0.5 shrink-0 ${p.highlight ? "text-gold" : "text-gold"}`} />
+                    <Check size={16} className="mt-0.5 shrink-0 text-gold" />
                     <span>{f}</span>
                   </li>
                 ))}
@@ -120,13 +119,11 @@ function Subscription() {
               <button
                 onClick={() => {
                   setTier(p.highlight ? "premium" : "free");
-                  document.getElementById("subscribe-form")?.scrollIntoView({ behavior: "smooth" });
+                  document
+                    .getElementById("subscribe-form")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className={`mt-10 rounded-sm px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] ${
-                  p.highlight
-                    ? "bg-gold text-ink hover:bg-canvas"
-                    : "bg-ink text-canvas hover:bg-gold"
-                }`}
+                className="mt-10 rounded-sm bg-gold px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
               >
                 {p.cta}
               </button>
@@ -136,12 +133,18 @@ function Subscription() {
       </section>
 
       {/* Form */}
-      <section id="subscribe-form" className="border-t border-ink/5 bg-paper py-24">
+      <section
+        id="subscribe-form"
+        className="border-t border-ink/5 bg-paper py-24"
+      >
         <div className="mx-auto max-w-2xl px-6">
           <div className="text-center">
-            <h2 className="font-display text-4xl italic text-ink md:text-5xl">Join the list</h2>
+            <h2 className="font-display text-4xl italic text-ink md:text-5xl">
+              Join the list
+            </h2>
             <p className="mt-4 text-ink/60">
-              We only send email when there's something worth showing. Unsubscribe any time.
+              We only send email when there's something worth showing.
+              Unsubscribe any time.
             </p>
           </div>
 
@@ -153,7 +156,9 @@ function Subscription() {
                   key={v}
                   onClick={() => setTier(v)}
                   className={`flex-1 rounded-sm px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors ${
-                    tier === v ? "bg-ink text-canvas" : "text-ink/60 hover:text-ink"
+                    tier === v
+                      ? "bg-gold text-band"
+                      : "text-ink/60 hover:text-ink"
                   }`}
                 >
                   {v === "free" ? "Free" : "Premium"}
@@ -162,7 +167,9 @@ function Subscription() {
             </div>
 
             <label className="block">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/60">Email</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/60">
+                Email
+              </span>
               <input
                 type="email"
                 required
@@ -176,7 +183,7 @@ function Subscription() {
 
             <button
               type="submit"
-              className="w-full rounded-sm bg-ink px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-canvas hover:bg-gold"
+              className="w-full rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
             >
               {tier === "free" ? "Subscribe for free" : "Request an invitation"}
             </button>

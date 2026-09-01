@@ -1,7 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { Phone, Mail, MapPin, MessageCircle, Instagram, Facebook } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Instagram,
+  Facebook,
+} from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { categories, disciplines } from "@/lib/gallery-data";
 
@@ -20,7 +27,10 @@ export const Route = createFileRoute("/contact")({
           "Request a commission or get in touch with Miller Artz. Phone, WhatsApp and email — a quotation follows within days.",
       },
       { property: "og:title", content: "Contact Miller Artz" },
-      { property: "og:description", content: "Reach the Miller Artz studio for commissions and inquiries." },
+      {
+        property: "og:description",
+        content: "Reach the Miller Artz studio for commissions and inquiries.",
+      },
     ],
   }),
   component: Contact,
@@ -34,8 +44,19 @@ const styleOptions = [
   "Not sure yet",
 ];
 
-const budgetOptions = ["Under $150", "$150 – $400", "$400 – $1,000", "$1,000+", "Let's discuss"];
-const timelineOptions = ["Flexible", "Within a month", "Within 2 weeks", "Specific deadline"];
+const budgetOptions = [
+  "Under $150",
+  "$150 – $400",
+  "$400 – $1,000",
+  "$1,000+",
+  "Let's discuss",
+];
+const timelineOptions = [
+  "Flexible",
+  "Within a month",
+  "Within 2 weeks",
+  "Specific deadline",
+];
 
 function Contact() {
   const search = Route.useSearch();
@@ -95,20 +116,28 @@ function Contact() {
         form.subject || "an artwork"
       }.\n${details ? `\n${details}\n` : ""}\n${form.message}`,
     );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, "_blank", "noopener");
+    window.open(
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`,
+      "_blank",
+      "noopener",
+    );
   }
 
   return (
     <Layout>
-      <section className="pt-16 pb-10">
-        <div className="mx-auto max-w-7xl px-6">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Contact</span>
+      <section className="grain relative pt-16 pb-10">
+        <div className="glow-teal pointer-events-none absolute -right-40 top-0 h-[420px] w-[420px] rounded-full opacity-[0.12] blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-6">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+            Contact
+          </span>
           <h1 className="mt-6 max-w-3xl font-display text-5xl leading-[1.05] text-ink md:text-7xl">
             Let's <span className="italic">talk</span>.
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-light text-ink/70">
-            Whether it's a commission, a question about a piece, or an idea for a discipline that
-            isn't in the gallery yet — share the details below and a quotation follows within days.
+            Whether it's a commission, a question about a piece, or an idea for
+            a discipline that isn't in the gallery yet — share the details below
+            and a quotation follows within days.
           </p>
         </div>
       </section>
@@ -122,16 +151,33 @@ function Contact() {
               <div className="flex items-start gap-3">
                 <Phone size={16} className="mt-0.5 shrink-0 text-gold" />
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-ink">Phone</p>
-                  <a href="tel:+255616110100" className="mt-1 block hover:text-gold">+255 616 110 100</a>
-                  <a href="tel:+255754300543" className="mt-1 block hover:text-gold">+255 754 300 543</a>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-ink">
+                    Phone
+                  </p>
+                  <a
+                    href="tel:+255616110100"
+                    className="mt-1 block hover:text-gold"
+                  >
+                    +255 616 110 100
+                  </a>
+                  <a
+                    href="tel:+255754300543"
+                    className="mt-1 block hover:text-gold"
+                  >
+                    +255 754 300 543
+                  </a>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Mail size={16} className="mt-0.5 shrink-0 text-gold" />
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-ink">Email</p>
-                  <a href="mailto:studio@millerartz.com" className="mt-1 block hover:text-gold">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-ink">
+                    Email
+                  </p>
+                  <a
+                    href="mailto:studio@millerartz.com"
+                    className="mt-1 block hover:text-gold"
+                  >
                     studio@millerartz.com
                   </a>
                 </div>
@@ -139,7 +185,9 @@ function Contact() {
               <div className="flex items-start gap-3">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-gold" />
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-ink">Location</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-ink">
+                    Location
+                  </p>
                   <p className="mt-1">Tanzania — visits by appointment.</p>
                 </div>
               </div>
@@ -150,20 +198,30 @@ function Contact() {
                 href={`https://wa.me/${WHATSAPP_NUMBER}`}
                 target="_blank"
                 rel="noopener"
-                className="inline-flex items-center gap-2 rounded-sm bg-ink px-4 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-canvas hover:bg-gold"
+                className="inline-flex items-center gap-2 rounded-sm bg-gold px-4 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
               >
                 <MessageCircle size={14} /> WhatsApp
               </a>
-              <a href="https://instagram.com" aria-label="Instagram" className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold">
+              <a
+                href="https://instagram.com"
+                aria-label="Instagram"
+                className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold"
+              >
                 <Instagram size={16} />
               </a>
-              <a href="https://facebook.com" aria-label="Facebook" className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold">
+              <a
+                href="https://facebook.com"
+                aria-label="Facebook"
+                className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold"
+              >
                 <Facebook size={16} />
               </a>
             </div>
 
             <div className="mt-10 border border-dashed border-ink/15 bg-paper p-5 text-xs text-ink/50">
-              <p className="font-display text-sm italic text-ink">Map preview</p>
+              <p className="font-display text-sm italic text-ink">
+                Map preview
+              </p>
               <p className="mt-2">
                 Studio location map integration reserved for a future update.
               </p>
@@ -172,7 +230,10 @@ function Contact() {
 
           {/* Form column */}
           <div className="md:col-span-8">
-            <form onSubmit={onSubmit} className="space-y-6 border border-ink/10 bg-paper p-8 md:p-12">
+            <form
+              onSubmit={onSubmit}
+              className="space-y-6 border border-ink/10 bg-paper p-8 md:p-12"
+            >
               <div className="grid gap-6 md:grid-cols-2">
                 <Field label="Full Name" required>
                   <input
@@ -268,14 +329,14 @@ function Contact() {
               <div className="flex flex-wrap items-center gap-4 pt-4">
                 <button
                   type="submit"
-                  className="rounded-sm bg-ink px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-canvas hover:bg-gold"
+                  className="rounded-sm bg-gold px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
                 >
                   Send message
                 </button>
                 <button
                   type="button"
                   onClick={openWhatsApp}
-                  className="rounded-sm border border-ink/20 px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:bg-ink/5"
+                  className="rounded-sm border border-ink/20 px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:border-gold hover:text-gold"
                 >
                   Send via WhatsApp
                 </button>

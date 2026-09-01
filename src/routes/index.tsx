@@ -1,20 +1,30 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 import { Layout } from "@/components/site/Layout";
-import { artworks, commissionSteps, disciplines } from "@/lib/gallery-data";
+import {
+  artworks,
+  categories,
+  commissionSteps,
+  disciplines,
+} from "@/lib/gallery-data";
 import { Music, PersonStanding, Sparkles, Box } from "lucide-react";
 import type { ArtworkCategory, Discipline } from "@/lib/gallery-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Miller Artz — Hyperrealism, Wildlife & Custom Art Commissions" },
+      {
+        title: "Miller Artz — Hyperrealism, Wildlife & Custom Art Commissions",
+      },
       {
         name: "description",
         content:
           "Miller Artz is a Tanzania-based studio working across hyperrealism, wildlife, portraits, traditional, abstract, mural and cartoon art. Where imagination meets creativity.",
       },
-      { property: "og:title", content: "Miller Artz — Where Imagination Meets Creativity" },
+      {
+        property: "og:title",
+        content: "Miller Artz — Where Imagination Meets Creativity",
+      },
       {
         property: "og:description",
         content:
@@ -25,10 +35,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const heroIds = ["woman-of-the-savanna", "kindred-bee-eaters", "the-storyteller", "uprising"];
-const heroSlides = heroIds
-  .map((id) => artworks.find((a) => a.id === id))
-  .filter((a): a is NonNullable<typeof a> => Boolean(a));
+const byId = (id: string) => artworks.find((a) => a.id === id)!;
 
 const disciplineIcons: Record<Discipline["icon"], typeof Music> = {
   music: Music,
@@ -42,93 +49,142 @@ const rows: { title: string; categories: ArtworkCategory[] }[] = [
   { title: "Hyperrealism", categories: ["hyperrealism"] },
   { title: "Portraits", categories: ["portraits"] },
   { title: "Traditional & Cultural", categories: ["traditional"] },
-  { title: "Beyond the Expected", categories: ["abstract", "illusional", "mural", "modern", "cartoons"] },
+  {
+    title: "Beyond the Expected",
+    categories: ["abstract", "illusional", "mural", "modern", "cartoons"],
+  },
 ];
 
+const heroWords = ["Where", "stories", "take", "shape."];
+const quickCategories = categories.filter((c) =>
+  ["wildlife", "hyperrealism", "traditional", "abstract"].includes(c.value),
+);
+
 function Home() {
-  const [slide, setSlide] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 5500);
-    return () => clearInterval(id);
-  }, []);
-
-  const active = heroSlides[slide];
-
   return (
     <Layout>
-      {/* Hero — crossfading featured works behind a translucent info panel */}
-      <section className="relative flex h-[92vh] min-h-[640px] items-end overflow-hidden bg-ink">
-        {heroSlides.map((a, i) => (
-          <img
-            key={a.id}
-            src={a.image}
-            alt={a.title}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1400ms] ease-out ${
-              i === slide ? "opacity-100" : "opacity-0"
-            } ${i === slide ? "animate-slow-zoom" : ""}`}
-          />
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/10" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-transparent to-transparent" />
+      {/* Hero — a scattered gallery wall, not a slideshow. Every piece invites a hover. */}
+      <section className="grain relative overflow-hidden bg-canvas pb-20 pt-14 md:pb-28 md:pt-20">
+        <div className="glow-gold pointer-events-none absolute -left-40 -top-20 h-[520px] w-[520px] rounded-full opacity-[0.22] blur-3xl" />
+        <div className="glow-teal pointer-events-none absolute -right-32 top-32 h-[420px] w-[420px] rounded-full opacity-[0.18] blur-3xl" />
+        <div className="glow-coral pointer-events-none absolute bottom-0 left-1/3 h-[360px] w-[360px] rounded-full opacity-[0.14] blur-3xl" />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-20">
-          <div className="glass max-w-xl rounded-lg p-8 md:p-10">
-            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">
-              The Art of Imagination
-            </span>
-            <h1 className="mt-4 font-display text-4xl leading-[1.05] text-canvas md:text-6xl">
-              Where <span className="italic">Stories</span> Take Shape.
-            </h1>
-            <p className="mt-5 text-base font-light leading-relaxed text-canvas/75">
-              Hyperrealistic portraits, wildlife paintings, murals and custom commissions from a
-              Tanzania-based studio — nine disciplines, one hand.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                to="/gallery"
-                className="rounded-sm bg-canvas px-8 py-4 text-sm font-medium text-ink transition-transform hover:-translate-y-0.5"
-              >
-                View Gallery
-              </Link>
-              <Link
-                to="/contact"
-                search={{ type: "commission" }}
-                className="rounded-sm border border-canvas/30 px-8 py-4 text-sm font-medium text-canvas transition-colors hover:bg-canvas/10"
-              >
-                Custom Orders
-              </Link>
+        <div className="relative mx-auto max-w-7xl px-6">
+          <div className="grid items-center gap-16 lg:grid-cols-12">
+            <div className="lg:col-span-6">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">
+                The Art of Imagination
+              </span>
+              <h1 className="mt-6 font-display text-5xl leading-[1.05] text-ink md:text-7xl">
+                {heroWords.map((word, i) => (
+                  <span
+                    key={word}
+                    className="animate-reveal inline-block"
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                  >
+                    {word === "stories" ? (
+                      <span className="italic">{word}</span>
+                    ) : (
+                      word
+                    )}
+                    {i < heroWords.length - 1 ? " " : ""}
+                  </span>
+                ))}
+              </h1>
+              <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-ink/70">
+                A Tanzania-based studio working by hand across nine disciplines
+                — hyperrealistic portraits, wildlife in oil and acrylic, murals,
+                and whatever you bring us next.
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-2">
+                {quickCategories.map((c) => (
+                  <Link
+                    key={c.value}
+                    to="/gallery"
+                    search={{ category: c.value }}
+                    className="rounded-full border border-ink/15 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-ink/70 transition-colors hover:border-gold hover:text-gold"
+                  >
+                    {c.label}
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link
+                  to="/gallery"
+                  className="rounded-sm bg-gold px-8 py-4 text-sm font-medium text-band transition-transform hover:-translate-y-0.5"
+                >
+                  View Gallery
+                </Link>
+                <Link
+                  to="/contact"
+                  search={{ type: "commission" }}
+                  className="rounded-sm border border-ink/20 px-8 py-4 text-sm font-medium text-ink transition-colors hover:border-gold hover:text-gold"
+                >
+                  Custom Orders
+                </Link>
+              </div>
+            </div>
+
+            {/* Fanned collage — hover any piece to bring it forward */}
+            <div className="lg:col-span-6">
+              <div className="relative mx-auto aspect-[4/5] max-w-md md:aspect-square lg:max-w-none">
+                <HeroCard
+                  artwork={byId("woman-of-the-savanna")}
+                  className="left-[8%] top-0 w-[52%] rotate-[-4deg]"
+                  z={10}
+                />
+                <HeroCard
+                  artwork={byId("kindred-bee-eaters")}
+                  className="right-0 top-[6%] w-[42%] rotate-[7deg]"
+                  z={20}
+                />
+                <HeroCard
+                  artwork={byId("uprising")}
+                  className="bottom-[18%] left-0 w-[40%] rotate-[9deg]"
+                  z={20}
+                />
+                <HeroCard
+                  artwork={byId("the-storyteller")}
+                  className="bottom-[4%] right-[6%] w-[44%] rotate-[-6deg]"
+                  z={30}
+                />
+                <HeroCard
+                  artwork={byId("prism-dancer")}
+                  className="left-[28%] top-[38%] w-[34%] rotate-[3deg]"
+                  z={40}
+                />
+              </div>
             </div>
           </div>
-
-          <div className="mt-8 flex items-center gap-2">
-            {heroSlides.map((a, i) => (
-              <button
-                key={a.id}
-                onClick={() => setSlide(i)}
-                aria-label={`Show ${a.title}`}
-                className={`h-1 rounded-full transition-all ${
-                  i === slide ? "w-10 bg-gold" : "w-4 bg-canvas/30 hover:bg-canvas/50"
-                }`}
-              />
-            ))}
-          </div>
         </div>
+        <div
+          className="frayed-bottom"
+          style={{ "--frayed-color": "var(--color-paper)" } as CSSProperties}
+        />
       </section>
 
       {/* Category rows — Netflix-style horizontal scroll */}
       <section className="bg-paper py-20">
         <div className="mx-auto max-w-7xl space-y-16 px-6">
           {rows.map((row) => {
-            const items = artworks.filter((a) => row.categories.includes(a.category));
+            const items = artworks.filter((a) =>
+              row.categories.includes(a.category),
+            );
             if (items.length === 0) return null;
             return (
               <div key={row.title}>
                 <div className="mb-6 flex items-end justify-between gap-4">
-                  <h2 className="font-display text-2xl italic text-ink md:text-3xl">{row.title}</h2>
+                  <h2 className="font-display text-2xl italic text-ink md:text-3xl">
+                    {row.title}
+                  </h2>
                   <Link
                     to="/gallery"
-                    search={{ category: row.categories.length === 1 ? row.categories[0] : "all" }}
+                    search={{
+                      category:
+                        row.categories.length === 1 ? row.categories[0] : "all",
+                    }}
                     className="shrink-0 border-b border-ink/20 pb-1 text-xs uppercase tracking-[0.15em] text-ink/60 transition-colors hover:border-ink hover:text-ink"
                   >
                     See all →
@@ -149,8 +205,10 @@ function Home() {
                         className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div className="glass absolute inset-x-0 bottom-0 translate-y-full p-4 transition-transform duration-300 group-hover:translate-y-0">
-                        <h3 className="truncate font-display text-lg italic text-canvas">{a.title}</h3>
-                        <p className="mt-1 text-[10px] uppercase tracking-widest text-canvas/60">
+                        <h3 className="truncate font-display text-lg italic text-band-foreground">
+                          {a.title}
+                        </h3>
+                        <p className="mt-1 text-[10px] uppercase tracking-widest text-band-foreground/60">
                           {a.medium}
                         </p>
                       </div>
@@ -164,7 +222,7 @@ function Home() {
       </section>
 
       {/* Custom Commission */}
-      <section className="bg-ink py-24 text-canvas">
+      <section className="bg-band py-24 text-band-foreground">
         <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2 md:gap-20">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
@@ -173,10 +231,10 @@ function Home() {
             <h2 className="mt-6 font-display text-5xl leading-tight">
               Your Vision, <span className="italic">Our Brush</span>.
             </h2>
-            <p className="mt-8 text-lg font-light leading-relaxed text-canvas/70">
-              Whether it's a cherished family portrait, a wildlife piece, a mural for a wall that needs
-              one, or something outside the usual — we specialise in commissions built around what you
-              actually want.
+            <p className="mt-8 text-lg font-light leading-relaxed text-band-foreground/70">
+              Whether it's a cherished family portrait, a wildlife piece, a
+              mural for a wall that needs one, or something outside the usual —
+              we specialise in commissions built around what you actually want.
             </p>
             <ul className="mt-10 space-y-4">
               {[
@@ -184,7 +242,10 @@ function Home() {
                 "Custom sizes ranging from A4 to full exterior murals",
                 "Nine disciplines to choose from, plus room for new ideas",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-4 text-sm font-light">
+                <li
+                  key={item}
+                  className="flex items-center gap-4 text-sm font-light"
+                >
                   <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
                   {item}
                 </li>
@@ -193,7 +254,7 @@ function Home() {
             <Link
               to="/contact"
               search={{ type: "commission" }}
-              className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-ink transition-colors hover:bg-canvas"
+              className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
             >
               Request a Quotation
             </Link>
@@ -201,11 +262,20 @@ function Home() {
 
           <div className="space-y-6">
             {commissionSteps.map((s) => (
-              <div key={s.step} className="glass flex gap-5 rounded-lg p-6">
-                <span className="font-display text-3xl italic text-gold">{s.step}</span>
+              <div
+                key={s.step}
+                className="flex gap-5 rounded-lg border border-white/10 bg-white/[0.03] p-6"
+              >
+                <span className="font-display text-3xl italic text-gold">
+                  {s.step}
+                </span>
                 <div>
-                  <h3 className="font-display text-xl italic text-canvas">{s.title}</h3>
-                  <p className="mt-2 text-sm font-light leading-relaxed text-canvas/70">{s.body}</p>
+                  <h3 className="font-display text-xl italic text-band-foreground">
+                    {s.title}
+                  </h3>
+                  <p className="mt-2 text-sm font-light leading-relaxed text-band-foreground/70">
+                    {s.body}
+                  </p>
                 </div>
               </div>
             ))}
@@ -244,8 +314,12 @@ function Home() {
                 >
                   <Icon size={22} className="text-gold" strokeWidth={1.75} />
                   <div className="mt-8">
-                    <h3 className="font-display text-xl italic text-ink">{d.label}</h3>
-                    <p className="mt-2 text-xs leading-relaxed text-ink/60">{d.blurb}</p>
+                    <h3 className="font-display text-xl italic text-ink">
+                      {d.label}
+                    </h3>
+                    <p className="mt-2 text-xs leading-relaxed text-ink/60">
+                      {d.blurb}
+                    </p>
                   </div>
                 </Link>
               );
@@ -257,22 +331,55 @@ function Home() {
       {/* Newsletter CTA */}
       <section className="border-t border-ink/5 bg-paper py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Newsletter</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+            Newsletter
+          </span>
           <h2 className="mt-6 font-display text-4xl italic text-ink md:text-5xl">
             Join the Collector's Circle
           </h2>
           <p className="mt-6 text-ink/60">
-            Early access to new collections, studio notes, and exclusive artwork previews — delivered when
-            there's something worth sharing.
+            Early access to new collections, studio notes, and exclusive artwork
+            previews — delivered when there's something worth sharing.
           </p>
           <Link
             to="/subscription"
-            className="mt-10 inline-block rounded-sm bg-ink px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-canvas transition-colors hover:bg-gold"
+            className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
           >
             Subscribe now
           </Link>
         </div>
       </section>
     </Layout>
+  );
+}
+
+function HeroCard({
+  artwork,
+  className,
+  z,
+}: {
+  artwork: (typeof artworks)[number];
+  className: string;
+  z: number;
+}) {
+  return (
+    <Link
+      to="/gallery"
+      search={{ category: artwork.category }}
+      className={`group absolute overflow-hidden rounded-lg shadow-2xl ring-1 ring-white/10 transition-all duration-500 ease-out hover:z-50 hover:rotate-0 hover:scale-110 ${className}`}
+      style={{ zIndex: z }}
+    >
+      <img
+        src={artwork.image}
+        alt={artwork.title}
+        loading="eager"
+        className="aspect-[3/4] w-full object-cover"
+      />
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <p className="truncate font-display text-sm italic text-white">
+          {artwork.title}
+        </p>
+      </div>
+    </Link>
   );
 }

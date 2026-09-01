@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { categories } from "@/lib/gallery-data";
+import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
   { to: "/", label: "Home" },
@@ -35,7 +36,9 @@ export function Nav() {
   return (
     <nav
       className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
-        scrolled ? "bg-canvas/95 border-ink/5 shadow-sm" : "border-transparent bg-canvas/70"
+        scrolled
+          ? "bg-canvas/95 border-ink/5 shadow-sm"
+          : "border-transparent bg-canvas/70"
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
@@ -62,17 +65,20 @@ export function Nav() {
                   activeProps={{ className: "text-gold" }}
                 >
                   {l.label}
-                  <ChevronDown size={12} className={`transition-transform ${galleryMenuOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    size={12}
+                    className={`transition-transform ${galleryMenuOpen ? "rotate-180" : ""}`}
+                  />
                 </Link>
                 {galleryMenuOpen && (
-                  <div className="animate-fade absolute left-1/2 top-full mt-3 w-72 -translate-x-1/2 rounded-lg border border-canvas/10 bg-ink p-4 shadow-2xl">
+                  <div className="animate-fade absolute left-1/2 top-full mt-3 w-72 -translate-x-1/2 rounded-lg border border-white/10 bg-band p-4 shadow-2xl">
                     <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                       {galleryCategories.map((c) => (
                         <Link
                           key={c.value}
                           to="/gallery"
                           search={{ category: c.value }}
-                          className="text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-canvas/80 transition-colors hover:text-gold"
+                          className="text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-band-foreground/80 transition-colors hover:text-gold"
                         >
                           {c.label}
                         </Link>
@@ -80,7 +86,7 @@ export function Nav() {
                     </div>
                     <Link
                       to="/gallery"
-                      className="mt-4 block border-t border-canvas/10 pt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gold"
+                      className="mt-4 block border-t border-band-foreground/10 pt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gold"
                     >
                       View full gallery →
                     </Link>
@@ -102,19 +108,23 @@ export function Nav() {
           <Link
             to="/contact"
             search={{ type: "commission" }}
-            className="rounded-full bg-ink px-4 py-2 text-canvas transition-colors hover:bg-gold"
+            className="rounded-full bg-gold px-4 py-2 text-band transition-colors hover:bg-gold-soft"
           >
             Commission
           </Link>
+          <ThemeToggle />
         </div>
 
-        <button
-          className="text-ink md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="flex items-center gap-3 md:hidden">
+          <ThemeToggle />
+          <button
+            className="text-ink"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -136,7 +146,7 @@ export function Nav() {
               to="/contact"
               search={{ type: "commission" }}
               onClick={() => setOpen(false)}
-              className="mt-6 inline-flex items-center justify-center rounded-full bg-ink px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-canvas"
+              className="mt-6 inline-flex items-center justify-center rounded-full bg-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-band"
             >
               Start a Commission
             </Link>

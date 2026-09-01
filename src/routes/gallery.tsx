@@ -1,7 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { z } from "zod";
-import { Search, X, ZoomIn, Music, PersonStanding, Sparkles, Box } from "lucide-react";
+import {
+  Search,
+  X,
+  ZoomIn,
+  Music,
+  PersonStanding,
+  Sparkles,
+  Box,
+} from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import {
   artworks,
@@ -42,7 +50,8 @@ export const Route = createFileRoute("/gallery")({
       { property: "og:title", content: "Gallery — Miller Artz" },
       {
         property: "og:description",
-        content: "The Miller Artz collection across nine disciplines, plus custom commissions.",
+        content:
+          "The Miller Artz collection across nine disciplines, plus custom commissions.",
       },
     ],
   }),
@@ -58,7 +67,9 @@ const disciplineIcons: Record<Discipline["icon"], typeof Music> = {
 
 function Gallery() {
   const search = Route.useSearch();
-  const [category, setCategory] = useState<ArtworkCategory | "all">(search.category ?? "all");
+  const [category, setCategory] = useState<ArtworkCategory | "all">(
+    search.category ?? "all",
+  );
   const [query, setQuery] = useState("");
   const [viewing, setViewing] = useState<Artwork | null>(null);
 
@@ -79,8 +90,9 @@ function Gallery() {
 
   return (
     <Layout>
-      <section className="pt-16 pb-10">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="grain relative pt-16 pb-10">
+        <div className="glow-violet pointer-events-none absolute -right-40 top-0 h-[420px] w-[420px] rounded-full opacity-[0.12] blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             The Collection
           </span>
@@ -104,7 +116,9 @@ function Gallery() {
                 key={c.value}
                 onClick={() => setCategory(c.value)}
                 className={`shrink-0 pb-1 transition-colors ${
-                  category === c.value ? "border-b border-ink text-ink" : "text-ink/40 hover:text-ink"
+                  category === c.value
+                    ? "border-b border-ink text-ink"
+                    : "text-ink/40 hover:text-ink"
                 }`}
               >
                 {c.label}
@@ -112,7 +126,10 @@ function Gallery() {
             ))}
           </div>
           <div className="relative w-full max-w-xs">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
+            <Search
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40"
+            />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -129,10 +146,13 @@ function Gallery() {
           {filtered.length === 0 ? (
             <div className="py-24 text-center text-ink/50">
               <p className="font-display text-2xl italic">
-                {query ? "No works match your search." : "New pieces in this category are coming soon."}
+                {query
+                  ? "No works match your search."
+                  : "New pieces in this category are coming soon."}
               </p>
               <p className="mt-3 text-sm">
-                Looking for something in this style? A commission can be arranged.
+                Looking for something in this style? A commission can be
+                arranged.
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-4">
                 <button
@@ -146,7 +166,12 @@ function Gallery() {
                 </button>
                 <Link
                   to="/contact"
-                  search={{ type: activeCategory?.value !== "all" ? activeCategory?.value : undefined }}
+                  search={{
+                    type:
+                      activeCategory?.value !== "all"
+                        ? activeCategory?.value
+                        : undefined,
+                  }}
                   className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink underline underline-offset-4"
                 >
                   Request this style
@@ -156,8 +181,12 @@ function Gallery() {
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((a) => (
-                <figure key={a.id} className="group cursor-zoom-in" onClick={() => setViewing(a)}>
-                  <div className="relative mb-4 overflow-hidden bg-stone-100">
+                <figure
+                  key={a.id}
+                  className="group cursor-zoom-in"
+                  onClick={() => setViewing(a)}
+                >
+                  <div className="relative mb-4 overflow-hidden bg-paper">
                     <img
                       src={a.image}
                       alt={a.title}
@@ -172,7 +201,9 @@ function Gallery() {
                   </div>
                   <figcaption className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h3 className="truncate font-display text-xl italic text-ink">{a.title}</h3>
+                      <h3 className="truncate font-display text-xl italic text-ink">
+                        {a.title}
+                      </h3>
                       <p className="mt-1 text-xs uppercase tracking-tighter text-ink/50">
                         {a.medium}
                       </p>
@@ -187,17 +218,18 @@ function Gallery() {
       </section>
 
       {/* Beyond the Canvas */}
-      <section className="border-t border-ink/5 bg-ink py-24 text-canvas">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="grain relative border-t border-white/5 bg-band py-24 text-band-foreground">
+        <div className="relative mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Beyond the Canvas
           </span>
           <h2 className="mt-6 max-w-2xl font-display text-4xl italic md:text-5xl">
             Other disciplines, open for commission.
           </h2>
-          <p className="mt-6 max-w-2xl text-canvas/70">
-            Miller Artz is building toward a multidisciplinary studio. These practices don't have a
-            gallery yet — but the conversation can start now.
+          <p className="mt-6 max-w-2xl text-band-foreground/70">
+            Miller Artz is building toward a multidisciplinary studio. These
+            practices don't have a gallery yet — but the conversation can start
+            now.
           </p>
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {disciplines.map((d) => {
@@ -207,12 +239,14 @@ function Gallery() {
                   key={d.id}
                   to="/contact"
                   search={{ type: d.label }}
-                  className="glass group flex flex-col justify-between rounded-lg p-6 transition-transform hover:-translate-y-1"
+                  className="group flex flex-col justify-between rounded-lg border border-white/10 bg-white/[0.03] p-6 transition-all hover:-translate-y-1 hover:border-gold/40"
                 >
                   <Icon size={22} className="text-gold" strokeWidth={1.75} />
                   <div className="mt-8">
                     <h3 className="font-display text-xl italic">{d.label}</h3>
-                    <p className="mt-2 text-xs leading-relaxed text-canvas/60">{d.blurb}</p>
+                    <p className="mt-2 text-xs leading-relaxed text-band-foreground/60">
+                      {d.blurb}
+                    </p>
                   </div>
                   <span className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gold opacity-0 transition-opacity group-hover:opacity-100">
                     Discuss this idea →
@@ -225,7 +259,10 @@ function Gallery() {
       </section>
 
       {/* Custom Orders */}
-      <section id="custom-orders" className="border-t border-ink/5 bg-paper py-24">
+      <section
+        id="custom-orders"
+        className="border-t border-ink/5 bg-paper py-24"
+      >
         <div className="mx-auto max-w-3xl px-6 text-center">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Custom Orders
@@ -234,13 +271,14 @@ function Gallery() {
             Commission a piece.
           </h2>
           <p className="mt-6 text-ink/70">
-            Share your reference photos, describe the artwork you're imagining, and choose your preferred
-            size and medium. We'll return with a quotation and timeline.
+            Share your reference photos, describe the artwork you're imagining,
+            and choose your preferred size and medium. We'll return with a
+            quotation and timeline.
           </p>
           <Link
             to="/contact"
             search={{ type: "commission" }}
-            className="mt-10 inline-block rounded-sm bg-ink px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-canvas hover:bg-gold"
+            className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
           >
             Start a commission
           </Link>
@@ -248,21 +286,29 @@ function Gallery() {
       </section>
 
       {/* Lightbox */}
-      {viewing && <Lightbox artwork={viewing} onClose={() => setViewing(null)} />}
+      {viewing && (
+        <Lightbox artwork={viewing} onClose={() => setViewing(null)} />
+      )}
     </Layout>
   );
 }
 
-function Lightbox({ artwork, onClose }: { artwork: Artwork; onClose: () => void }) {
+function Lightbox({
+  artwork,
+  onClose,
+}: {
+  artwork: Artwork;
+  onClose: () => void;
+}) {
   return (
     <div
-      className="animate-fade fixed inset-0 z-[100] flex items-center justify-center bg-ink/95 p-4 backdrop-blur-sm"
+      className="animate-fade fixed inset-0 z-[100] flex items-center justify-center bg-band/95 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <button
         onClick={onClose}
         aria-label="Close"
-        className="absolute right-6 top-6 rounded-full bg-canvas/10 p-2 text-canvas hover:bg-canvas/20"
+        className="absolute right-6 top-6 rounded-full bg-band-foreground/10 p-2 text-band-foreground hover:bg-band-foreground/20"
       >
         <X size={20} />
       </button>
@@ -275,36 +321,46 @@ function Lightbox({ artwork, onClose }: { artwork: Artwork; onClose: () => void 
           alt={artwork.title}
           className="max-h-[92vh] w-full rounded-sm object-contain"
         />
-        <div className="text-canvas">
+        <div className="text-band-foreground">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold">
             {artwork.categoryLabel}
           </p>
           <h3 className="mt-4 font-display text-4xl italic">{artwork.title}</h3>
-          <p className="mt-6 text-sm font-light leading-relaxed text-canvas/80">{artwork.description}</p>
-          <dl className="mt-8 space-y-3 text-sm text-canvas/70">
-            <div className="flex justify-between border-t border-canvas/10 pt-3">
-              <dt className="text-[10px] uppercase tracking-widest text-canvas/50">Medium</dt>
+          <p className="mt-6 text-sm font-light leading-relaxed text-band-foreground/80">
+            {artwork.description}
+          </p>
+          <dl className="mt-8 space-y-3 text-sm text-band-foreground/70">
+            <div className="flex justify-between border-t border-band-foreground/10 pt-3">
+              <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
+                Medium
+              </dt>
               <dd className="text-right">{artwork.medium}</dd>
             </div>
             {artwork.dimensions && (
-              <div className="flex justify-between border-t border-canvas/10 pt-3">
-                <dt className="text-[10px] uppercase tracking-widest text-canvas/50">Dimensions</dt>
+              <div className="flex justify-between border-t border-band-foreground/10 pt-3">
+                <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
+                  Dimensions
+                </dt>
                 <dd>{artwork.dimensions}</dd>
               </div>
             )}
-            <div className="flex justify-between border-t border-canvas/10 pt-3">
-              <dt className="text-[10px] uppercase tracking-widest text-canvas/50">Year</dt>
+            <div className="flex justify-between border-t border-band-foreground/10 pt-3">
+              <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
+                Year
+              </dt>
               <dd>{artwork.year}</dd>
             </div>
-            <div className="flex justify-between border-t border-canvas/10 pt-3">
-              <dt className="text-[10px] uppercase tracking-widest text-canvas/50">Status</dt>
+            <div className="flex justify-between border-t border-band-foreground/10 pt-3">
+              <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
+                Status
+              </dt>
               <dd className="uppercase tracking-wider">{artwork.status}</dd>
             </div>
           </dl>
           <Link
             to="/contact"
             search={{ type: artwork.categoryLabel }}
-            className="mt-8 inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:bg-canvas"
+            className="mt-8 inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
           >
             Inquire about this piece
           </Link>
@@ -316,9 +372,9 @@ function Lightbox({ artwork, onClose }: { artwork: Artwork; onClose: () => void 
 
 function StatusPill({ status }: { status: string }) {
   const map: Record<string, string> = {
-    available: "bg-green-50 text-green-700",
-    sold: "bg-stone-100 text-stone-500",
-    featured: "bg-ink text-canvas",
+    available: "bg-green-500/15 text-green-600 dark:text-green-400",
+    sold: "bg-ink/10 text-ink/50",
+    featured: "bg-band text-band-foreground",
     commission: "border border-ink/10 text-ink/60",
   };
   const label: Record<string, string> = {
