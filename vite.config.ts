@@ -1,20 +1,44 @@
-// @lovable.dev/vite-tanstack-config already includes the following — do NOT add them manually
-// or the app will break with duplicate plugins:
-//   - TanStack devtools (dev-only, first), tanstackStart, viteReact, tailwindcss, tsConfigPaths,
-//     nitro (build-only using cloudflare as a default target), VITE_* env injection, @ path alias,
-//     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
-// You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { defineConfig } from "vite";
+import viteReact from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
-export default defineConfig({
-  tanstackStart: {
-    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-    // nitro/vite builds from this
-    server: { entry: "server" },
-  },
-  // Deploying to Vercel (not the Lovable-default Cloudflare target) — Vercel's Nitro
-  // integration compiles this into Vercel Functions. See vercel.com/docs/frameworks/full-stack/tanstack-start
-  nitro: {
-    preset: "vercel",
-  },
+// Plain Vite + TanStack Start config — no third-party framework wrapper.
+export default defineConfig(async ({ command }) => {
+  const plugins = [
+    tsconfigPaths(),
+    tailwindcss(),
+    tanstackStart({
+      server: { entry: "server" },
+      importProtection: {
+        behavior: "error",
+        client: { files: ["**/server/**"], specifiers: ["server-only"] },
+      },
+    }),
+    viteReact(),
+  ];
+
+  // The Nitro plugin only needs to run for production builds — `vite dev`
+  // serves the app directly.
+  if (command === "build") {
+    const { nitro } = await import("nitro/vite");
+    plugins.push(...nitro({ preset: "vercel" }));
+  }
+
+  return {
+    plugins,
+    css: { transformer: "lightningcss" },
+    resolve: {
+      dedupe: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "@tanstack/react-query",
+        "@tanstack/query-core",
+      ],
+    },
+    server: { port: 8080 },
+  };
 });

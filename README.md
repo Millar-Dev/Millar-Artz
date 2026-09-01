@@ -24,3 +24,10 @@ npm run dev
 - TypeScript
 - React
 - Tailwind CSS
+
+## Scripts
+
+- `npm run dev` — start the dev server (http://localhost:8080)
+- `npm run build` — production build
+- `npm run preview` — preview the production build locally
+- `npm run lint` — run ESLint
