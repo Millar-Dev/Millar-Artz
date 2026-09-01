@@ -105,12 +105,46 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+@keyframes crossfade {
+  0%, 28% { opacity: 1; }
+  33%, 100% { opacity: 0; }
+}
+@keyframes slow-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
 
 @utility animate-reveal {
   animation: reveal-up 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 @utility animate-fade {
   animation: fade-in 0.7s ease-out both;
+}
+@utility animate-slow-zoom {
+  animation: slow-zoom 8s ease-out both;
+}
+
+/* Translucent, Netflix-style glass surface — used sparingly over imagery, never on reading-heavy text blocks. */
+@utility glass {
+  background-color: color-mix(in oklab, var(--ink) 55%, transparent);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--canvas) 12%, transparent);
+}
+@utility glass-light {
+  background-color: color-mix(in oklab, var(--canvas) 80%, transparent);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--ink) 8%, transparent);
+}
+
+/* Hide scrollbar on horizontal Netflix-style rows while keeping them scrollable. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @layer base {

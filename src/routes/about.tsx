@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/site/Layout";
-import artistPortrait from "@/assets/artist-portrait.jpg";
+import artistPortrait from "@/assets/me-portrait.jpg";
+import brushMark from "@/assets/brand/miller-artz-logo-sign.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "Miller Artz is a creative art company dedicated to hyper-realism, wildlife, and portrait commissions. Learn our story, mission and values.",
+          "Miller Artz is a Tanzania-based artist working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, murals, and more.",
       },
       { property: "og:title", content: "About Miller Artz" },
       {
@@ -24,8 +25,20 @@ export const Route = createFileRoute("/about")({
 const values = [
   { title: "Craft", body: "Every piece is finished only when the work itself is ready to be seen." },
   { title: "Originality", body: "No template, no shortcut — each artwork answers only to its subject." },
-  { title: "Presence", body: "We draw and paint slowly, so the viewer feels the time inside the work." },
-  { title: "Respect", body: "For our subjects, for our patrons, and for the tradition we inherit." },
+  { title: "Range", body: "One studio, many disciplines — from graphite portraits to wall-sized murals." },
+  { title: "Respect", body: "For our subjects, for our patrons, and for the communities we paint for." },
+];
+
+const disciplinesWorked = [
+  "Hyperrealism",
+  "Portraiture",
+  "Wildlife",
+  "Traditional & Cultural",
+  "Abstract",
+  "Illusional",
+  "Mural",
+  "Modern",
+  "Cartoons & Character Illustration",
 ];
 
 function About() {
@@ -44,25 +57,28 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
-              Miller Artz is a creative art company dedicated to transforming ideas, emotions, and memories
-              into timeless works of art. Founded by a passionate artist whose love for drawing and painting
-              continues to inspire every masterpiece, Miller Artz celebrates creativity through artistic
-              excellence.
+              Miller Artz is a Tanzania-based studio built around one artist's hand: hyperrealistic
+              graphite and charcoal work developed over hundreds of hours of observation, acrylic and
+              oil wildlife painting rooted in East Africa, and commissioned portraits and cultural
+              scenes for clients and community organisations.
             </p>
             <p>
-              Our specialty lies in producing highly detailed drawings and paintings — including hyper-realism,
-              wildlife artworks, portraits, and custom commissions designed specifically for our clients.
-              Every artwork is carefully crafted to reflect originality, beauty, and professional quality.
+              The studio's range has grown deliberately — from tightly-observed pencil portraits and
+              wildlife studies, into traditional and cultural commissions, bold abstract and illusional
+              work, large-scale mural painting, and playful cartoon and character illustration. Every
+              new discipline is added the same way: by doing the work, not claiming the label first.
             </p>
             <p>
-              We believe that art has the power to communicate beyond words. Through our creative journey,
-              we seek to inspire, preserve memories, and connect people through meaningful artistic
-              experiences.
+              We believe art has the power to communicate beyond words. Whether it's a family portrait,
+              a wildlife piece for a collector, a mural for a public wall, or a community commission like
+              the piece created for the Embuan Children &amp; Youth Foundation, the goal is the same:
+              work that means something to the person who asked for it.
             </p>
             <p>
-              Although our primary focus is currently drawing and painting, Miller Artz is designed with a
-              vision for the future. As we grow, we aim to expand into additional artistic disciplines while
-              maintaining our commitment to creativity, quality, and innovation.
+              Drawing and painting remain the foundation, but Miller Artz is designed with a wider
+              horizon in mind — the studio is already opening conversations around music, dance and
+              performance, digital art, and sculpture, for collectors and collaborators who want to build
+              something new together.
             </p>
             <p className="font-display text-2xl italic text-ink">
               At Miller Artz, every masterpiece begins with imagination.
@@ -71,19 +87,41 @@ function About() {
           <div className="md:col-span-5">
             <img
               src={artistPortrait}
-              alt="Portrait of the founding artist of Miller Artz"
+              alt="Miller S.K., founding artist of Miller Artz"
               loading="lazy"
               className="aspect-[4/5] w-full rounded-sm object-cover shadow-2xl"
             />
-            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/50">
-              The Founder — Miller Artz Studio
-            </p>
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/50">
+                Miller S.K. — Founder, Miller Artz
+              </p>
+              <img src={brushMark} alt="" aria-hidden="true" className="h-8 w-auto opacity-70" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Disciplines */}
+      <section className="border-y border-ink/5 bg-paper py-16">
+        <div className="mx-auto max-w-7xl px-6">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+            Disciplines
+          </span>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {disciplinesWorked.map((d) => (
+              <span
+                key={d}
+                className="rounded-full border border-ink/10 bg-canvas px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-ink/70"
+              >
+                {d}
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Mission / Vision */}
-      <section className="border-y border-ink/5 bg-paper py-24">
+      <section className="bg-paper py-24">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-2">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Mission</span>
@@ -91,8 +129,9 @@ function About() {
               To translate feeling into form.
             </h2>
             <p className="mt-6 text-ink/70">
-              To create original, deeply-observed drawings and paintings that preserve moments, honor
-              subjects, and give collectors something worth living with for generations.
+              To create original, deeply-observed work across every discipline the studio takes on —
+              preserving moments, honouring subjects, and giving collectors something worth living with
+              for generations.
             </p>
           </div>
           <div>
@@ -101,8 +140,8 @@ function About() {
               An African art house with a global voice.
             </h2>
             <p className="mt-6 text-ink/70">
-              To grow Miller Artz into a multidisciplinary studio — expanding into new mediums, exhibitions,
-              and communities while never letting go of the discipline of the hand.
+              To grow Miller Artz into a multidisciplinary studio — expanding into new mediums,
+              exhibitions, and communities while never letting go of the discipline of the hand.
             </p>
           </div>
         </div>
@@ -143,7 +182,7 @@ function About() {
               <li>
                 <p className="font-display text-xl italic">Wildlife Series II</p>
                 <p className="mt-1 text-sm font-light">
-                  A twelve-piece painted series on the great cats of East Africa.
+                  A follow-up painted series on the birds and great cats of East Africa.
                 </p>
               </li>
               <li>
@@ -153,26 +192,27 @@ function About() {
                 </p>
               </li>
               <li>
-                <p className="font-display text-xl italic">Digital Editions</p>
+                <p className="font-display text-xl italic">Beyond the Canvas</p>
                 <p className="mt-1 text-sm font-light">
-                  Limited archival prints — thoughtfully released, never mass produced.
+                  First collaborations in music, dance and sculpture — early conversations welcome.
                 </p>
               </li>
             </ul>
           </div>
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-              Awards & Recognition
+              Community &amp; Commissions
             </span>
             <h2 className="mt-6 font-display text-4xl italic md:text-5xl">
-              A quiet record.
+              A quiet record, growing.
             </h2>
             <p className="mt-8 text-canvas/70">
-              We're building a body of work first. As exhibitions, features and honors accumulate, they'll be
-              added here.
+              Recent work includes a commissioned piece for the Embuan Children &amp; Youth Foundation
+              and a commissioned exterior mural. As exhibitions, features and honours accumulate,
+              they'll be added here.
             </p>
             <div className="mt-10 border-t border-canvas/10 pt-6 text-sm text-canvas/60">
-              <p className="italic">Featured spaces & press listings — coming soon.</p>
+              <p className="italic">Featured spaces &amp; press listings — coming soon.</p>
             </div>
           </div>
         </div>
@@ -192,6 +232,7 @@ function About() {
             </Link>
             <Link
               to="/contact"
+              search={{ type: "commission" }}
               className="rounded-sm border border-ink/20 px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:bg-ink/5"
             >
               Start a commission

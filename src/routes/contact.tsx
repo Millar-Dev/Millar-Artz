@@ -1,16 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Layout } from "@/components/site/Layout";
+import { useEffect, useState } from "react";
+import { z } from "zod";
 import { Phone, Mail, MapPin, MessageCircle, Instagram, Facebook } from "lucide-react";
+import { Layout } from "@/components/site/Layout";
+import { categories, disciplines } from "@/lib/gallery-data";
+
+const contactSearchSchema = z.object({
+  type: z.string().optional(),
+});
 
 export const Route = createFileRoute("/contact")({
+  validateSearch: contactSearchSchema,
   head: () => ({
     meta: [
       { title: "Contact — Miller Artz" },
       {
         name: "description",
         content:
-          "Get in touch with Miller Artz for commissions, custom artworks, and inquiries. Phone, WhatsApp and email.",
+          "Request a commission or get in touch with Miller Artz. Phone, WhatsApp and email — a quotation follows within days.",
       },
       { property: "og:title", content: "Contact Miller Artz" },
       { property: "og:description", content: "Reach the Miller Artz studio for commissions and inquiries." },
@@ -21,32 +28,72 @@ export const Route = createFileRoute("/contact")({
 
 const WHATSAPP_NUMBER = "255616110100";
 
+const styleOptions = [
+  ...categories.filter((c) => c.value !== "all").map((c) => c.label),
+  ...disciplines.map((d) => d.label),
+  "Not sure yet",
+];
+
+const budgetOptions = ["Under $150", "$150 – $400", "$400 – $1,000", "$1,000+", "Let's discuss"];
+const timelineOptions = ["Flexible", "Within a month", "Within 2 weeks", "Specific deadline"];
+
 function Contact() {
+  const search = Route.useSearch();
   const [status, setStatus] = useState<"idle" | "sent">("idle");
   const [form, setForm] = useState({
     fullName: "",
     email: "",
     phone: "",
-    subject: "",
+    style: search.type ?? "",
+    subject: search.type ? `Commission inquiry — ${search.type}` : "",
+    budget: "",
+    timeline: "",
     message: "",
   });
+
+  useEffect(() => {
+    if (!search.type) return;
+    setForm((f) => ({
+      ...f,
+      style: search.type ?? f.style,
+      subject: f.subject || `Commission inquiry — ${search.type}`,
+    }));
+  }, [search.type]);
 
   function update<K extends keyof typeof form>(key: K, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
+  function composeDetails() {
+    return [
+      form.style && `Style: ${form.style}`,
+      form.budget && `Budget: ${form.budget}`,
+      form.timeline && `Timeline: ${form.timeline}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const details = composeDetails();
+    const body = `From: ${form.fullName} (${form.email}${form.phone ? `, ${form.phone}` : ""})\n${
+      details ? `\n${details}\n` : ""
+    }\n${form.message}`;
+    const mailto = `mailto:studio@millerartz.com?subject=${encodeURIComponent(
+      form.subject || "Commission inquiry",
+    )}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
     setStatus("sent");
-    setTimeout(() => setStatus("idle"), 6000);
-    setForm({ fullName: "", email: "", phone: "", subject: "", message: "" });
+    setTimeout(() => setStatus("idle"), 8000);
   }
 
   function openWhatsApp() {
+    const details = composeDetails();
     const text = encodeURIComponent(
       `Hello Miller Artz,\n\nMy name is ${form.fullName || "..."} and I'd like to inquire about: ${
         form.subject || "an artwork"
-      }.\n\n${form.message}`,
+      }.\n${details ? `\n${details}\n` : ""}\n${form.message}`,
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, "_blank", "noopener");
   }
@@ -60,8 +107,8 @@ function Contact() {
             Let's <span className="italic">talk</span>.
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-light text-ink/70">
-            Whether it's a commission, a question about a piece, or a press inquiry — we'd love to hear from
-            you.
+            Whether it's a commission, a question about a piece, or an idea for a discipline that
+            isn't in the gallery yet — share the details below and a quotation follows within days.
           </p>
         </div>
       </section>
@@ -154,6 +201,48 @@ function Contact() {
                     className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                   />
                 </Field>
+                <Field label="Style / Discipline">
+                  <select
+                    value={form.style}
+                    onChange={(e) => update("style", e.target.value)}
+                    className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
+                  >
+                    <option value="">Select one...</option>
+                    {styleOptions.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Budget range">
+                  <select
+                    value={form.budget}
+                    onChange={(e) => update("budget", e.target.value)}
+                    className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
+                  >
+                    <option value="">Select one...</option>
+                    {budgetOptions.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Timeline">
+                  <select
+                    value={form.timeline}
+                    onChange={(e) => update("timeline", e.target.value)}
+                    className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
+                  >
+                    <option value="">Select one...</option>
+                    {timelineOptions.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
                 <Field label="Subject" required>
                   <input
                     required
@@ -171,7 +260,8 @@ function Contact() {
                   value={form.message}
                   onChange={(e) => update("message", e.target.value)}
                   maxLength={2000}
-                  className="w-full resize-none border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
+                  placeholder="Describe the piece you're imagining, or attach reference photos when you follow up by email or WhatsApp."
+                  className="w-full resize-none border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
                 />
               </Field>
 
@@ -191,7 +281,7 @@ function Contact() {
                 </button>
                 {status === "sent" && (
                   <p className="text-sm italic text-gold">
-                    Thank you — your message has been received.
+                    Opening your email app with the message ready to send...
                   </p>
                 )}
               </div>

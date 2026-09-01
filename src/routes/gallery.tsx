@@ -1,30 +1,64 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, X, ZoomIn } from "lucide-react";
+import { z } from "zod";
+import { Search, X, ZoomIn, Music, PersonStanding, Sparkles, Box } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
-import { artworks, categories, type ArtworkCategory, type Artwork } from "@/lib/gallery-data";
+import {
+  artworks,
+  categories,
+  disciplines,
+  type ArtworkCategory,
+  type Artwork,
+  type Discipline,
+} from "@/lib/gallery-data";
+
+const gallerySearchSchema = z.object({
+  category: z
+    .enum([
+      "all",
+      "hyperrealism",
+      "portraits",
+      "wildlife",
+      "traditional",
+      "abstract",
+      "illusional",
+      "mural",
+      "modern",
+      "cartoons",
+    ])
+    .optional(),
+});
 
 export const Route = createFileRoute("/gallery")({
+  validateSearch: gallerySearchSchema,
   head: () => ({
     meta: [
       { title: "Gallery — Miller Artz" },
       {
         name: "description",
         content:
-          "Browse hyper-realistic portraits, wildlife paintings, pencil drawings and acrylic works by Miller Artz.",
+          "Browse hyperrealism, wildlife, portraits, traditional, abstract, mural, modern and cartoon works by Miller Artz.",
       },
       { property: "og:title", content: "Gallery — Miller Artz" },
       {
         property: "og:description",
-        content: "The Miller Artz collection: portraits, wildlife, hyper-realism, and custom commissions.",
+        content: "The Miller Artz collection across nine disciplines, plus custom commissions.",
       },
     ],
   }),
   component: Gallery,
 });
 
+const disciplineIcons: Record<Discipline["icon"], typeof Music> = {
+  music: Music,
+  dance: PersonStanding,
+  digital: Sparkles,
+  sculpture: Box,
+};
+
 function Gallery() {
-  const [category, setCategory] = useState<ArtworkCategory | "all">("all");
+  const search = Route.useSearch();
+  const [category, setCategory] = useState<ArtworkCategory | "all">(search.category ?? "all");
   const [query, setQuery] = useState("");
   const [viewing, setViewing] = useState<Artwork | null>(null);
 
@@ -41,6 +75,8 @@ function Gallery() {
     });
   }, [category, query]);
 
+  const activeCategory = categories.find((c) => c.value === category);
+
   return (
     <Layout>
       <section className="pt-16 pb-10">
@@ -52,21 +88,22 @@ function Gallery() {
             The <span className="italic">Gallery</span>.
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-light text-ink/70">
-            A living archive of drawings and paintings — filter by discipline or search a title, medium or
-            subject.
+            {activeCategory?.value === "all"
+              ? "A living archive across nine disciplines — filter by category or search a title, medium or subject."
+              : activeCategory?.blurb}
           </p>
         </div>
       </section>
 
       {/* Filter bar */}
-      <section className="sticky top-20 z-30 border-y border-ink/5 bg-canvas/90 py-4 backdrop-blur-md">
+      <section className="sticky top-20 z-30 border-y border-ink/5 bg-canvas py-4">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-bold uppercase tracking-[0.2em]">
+          <div className="no-scrollbar flex gap-x-6 gap-y-2 overflow-x-auto text-[11px] font-bold uppercase tracking-[0.2em]">
             {categories.map((c) => (
               <button
                 key={c.value}
                 onClick={() => setCategory(c.value)}
-                className={`pb-1 transition-colors ${
+                className={`shrink-0 pb-1 transition-colors ${
                   category === c.value ? "border-b border-ink text-ink" : "text-ink/40 hover:text-ink"
                 }`}
               >
@@ -91,25 +128,35 @@ function Gallery() {
         <div className="mx-auto max-w-7xl px-6">
           {filtered.length === 0 ? (
             <div className="py-24 text-center text-ink/50">
-              <p className="font-display text-2xl italic">No works match your filters.</p>
-              <button
-                onClick={() => {
-                  setCategory("all");
-                  setQuery("");
-                }}
-                className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gold"
-              >
-                Clear filters
-              </button>
+              <p className="font-display text-2xl italic">
+                {query ? "No works match your search." : "New pieces in this category are coming soon."}
+              </p>
+              <p className="mt-3 text-sm">
+                Looking for something in this style? A commission can be arranged.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-4">
+                <button
+                  onClick={() => {
+                    setCategory("all");
+                    setQuery("");
+                  }}
+                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold"
+                >
+                  Clear filters
+                </button>
+                <Link
+                  to="/contact"
+                  search={{ type: activeCategory?.value !== "all" ? activeCategory?.value : undefined }}
+                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink underline underline-offset-4"
+                >
+                  Request this style
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((a) => (
-                <figure
-                  key={a.id}
-                  className="group cursor-zoom-in"
-                  onClick={() => setViewing(a)}
-                >
+                <figure key={a.id} className="group cursor-zoom-in" onClick={() => setViewing(a)}>
                   <div className="relative mb-4 overflow-hidden bg-stone-100">
                     <img
                       src={a.image}
@@ -127,7 +174,7 @@ function Gallery() {
                     <div className="min-w-0">
                       <h3 className="truncate font-display text-xl italic text-ink">{a.title}</h3>
                       <p className="mt-1 text-xs uppercase tracking-tighter text-ink/50">
-                        {a.medium} • {a.dimensions}
+                        {a.medium}
                       </p>
                     </div>
                     <StatusPill status={a.status} />
@@ -136,6 +183,44 @@ function Gallery() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Beyond the Canvas */}
+      <section className="border-t border-ink/5 bg-ink py-24 text-canvas">
+        <div className="mx-auto max-w-7xl px-6">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+            Beyond the Canvas
+          </span>
+          <h2 className="mt-6 max-w-2xl font-display text-4xl italic md:text-5xl">
+            Other disciplines, open for commission.
+          </h2>
+          <p className="mt-6 max-w-2xl text-canvas/70">
+            Miller Artz is building toward a multidisciplinary studio. These practices don't have a
+            gallery yet — but the conversation can start now.
+          </p>
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {disciplines.map((d) => {
+              const Icon = disciplineIcons[d.icon];
+              return (
+                <Link
+                  key={d.id}
+                  to="/contact"
+                  search={{ type: d.label }}
+                  className="glass group flex flex-col justify-between rounded-lg p-6 transition-transform hover:-translate-y-1"
+                >
+                  <Icon size={22} className="text-gold" strokeWidth={1.75} />
+                  <div className="mt-8">
+                    <h3 className="font-display text-xl italic">{d.label}</h3>
+                    <p className="mt-2 text-xs leading-relaxed text-canvas/60">{d.blurb}</p>
+                  </div>
+                  <span className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gold opacity-0 transition-opacity group-hover:opacity-100">
+                    Discuss this idea →
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -152,12 +237,13 @@ function Gallery() {
             Share your reference photos, describe the artwork you're imagining, and choose your preferred
             size and medium. We'll return with a quotation and timeline.
           </p>
-          <a
-            href="/contact"
+          <Link
+            to="/contact"
+            search={{ type: "commission" }}
             className="mt-10 inline-block rounded-sm bg-ink px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-canvas hover:bg-gold"
           >
             Start a commission
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -198,12 +284,14 @@ function Lightbox({ artwork, onClose }: { artwork: Artwork; onClose: () => void 
           <dl className="mt-8 space-y-3 text-sm text-canvas/70">
             <div className="flex justify-between border-t border-canvas/10 pt-3">
               <dt className="text-[10px] uppercase tracking-widest text-canvas/50">Medium</dt>
-              <dd>{artwork.medium}</dd>
+              <dd className="text-right">{artwork.medium}</dd>
             </div>
-            <div className="flex justify-between border-t border-canvas/10 pt-3">
-              <dt className="text-[10px] uppercase tracking-widest text-canvas/50">Dimensions</dt>
-              <dd>{artwork.dimensions}</dd>
-            </div>
+            {artwork.dimensions && (
+              <div className="flex justify-between border-t border-canvas/10 pt-3">
+                <dt className="text-[10px] uppercase tracking-widest text-canvas/50">Dimensions</dt>
+                <dd>{artwork.dimensions}</dd>
+              </div>
+            )}
             <div className="flex justify-between border-t border-canvas/10 pt-3">
               <dt className="text-[10px] uppercase tracking-widest text-canvas/50">Year</dt>
               <dd>{artwork.year}</dd>
@@ -213,12 +301,13 @@ function Lightbox({ artwork, onClose }: { artwork: Artwork; onClose: () => void 
               <dd className="uppercase tracking-wider">{artwork.status}</dd>
             </div>
           </dl>
-          <a
-            href="/contact"
+          <Link
+            to="/contact"
+            search={{ type: artwork.categoryLabel }}
             className="mt-8 inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:bg-canvas"
           >
             Inquire about this piece
-          </a>
+          </Link>
         </div>
       </div>
     </div>
