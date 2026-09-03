@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getSession } from "@tanstack/react-start/server";
+import { getSession, useSession } from "@tanstack/react-start/server";
 import { adminSessionConfig, type AdminSessionData } from "./admin-session";
 
 export const adminLogin = createServerFn({ method: "POST" })
@@ -12,13 +12,15 @@ export const adminLogin = createServerFn({ method: "POST" })
     if (password !== expected) {
       return { ok: false as const };
     }
-    const session = await getSession<AdminSessionData>(adminSessionConfig());
+    // useSession() (not getSession()) is the one that returns a manager with
+    // .update()/.clear() — getSession() gives back a read-only snapshot.
+    const session = await useSession<AdminSessionData>(adminSessionConfig());
     await session.update({ isAdmin: true });
     return { ok: true as const };
   });
 
 export const adminLogout = createServerFn({ method: "POST" }).handler(async () => {
-  const session = await getSession<AdminSessionData>(adminSessionConfig());
+  const session = await useSession<AdminSessionData>(adminSessionConfig());
   await session.clear();
   return { ok: true as const };
 });
