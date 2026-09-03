@@ -39,6 +39,8 @@ insert into storage.buckets (id, name, public)
 values ('site-images', 'site-images', true)
 on conflict (id) do nothing;
 
-create policy if not exists "Public read access to site images"
+-- CREATE POLICY has no IF NOT EXISTS in Postgres, so drop-then-create instead.
+drop policy if exists "Public read access to site images" on storage.objects;
+create policy "Public read access to site images"
   on storage.objects for select
   using (bucket_id = 'site-images');
