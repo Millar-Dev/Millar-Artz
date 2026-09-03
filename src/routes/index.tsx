@@ -1,16 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type CSSProperties } from "react";
 import { Layout } from "@/components/site/Layout";
-import {
-  artworks,
-  categories,
-  commissionSteps,
-  disciplines,
-} from "@/lib/gallery-data";
+import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
+import { listArtworks } from "@/lib/data/artworks";
 import { Music, PersonStanding, Sparkles, Box } from "lucide-react";
-import type { ArtworkCategory, Discipline } from "@/lib/gallery-data";
+import type { Artwork, ArtworkCategory, Discipline } from "@/lib/gallery-data";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const rows = await listArtworks();
+    return { artworks: rows.map(fromArtworkRow) };
+  },
   head: () => ({
     meta: [
       {
@@ -34,8 +34,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Home,
 });
-
-const byId = (id: string) => artworks.find((a) => a.id === id)!;
 
 const disciplineIcons: Record<Discipline["icon"], typeof Music> = {
   music: Music,
@@ -78,6 +76,9 @@ const mobileSlideIds = [
 ];
 
 function Home() {
+  const { artworks } = Route.useLoaderData();
+  const byId = (id: string) => artworks.find((a) => a.id === id);
+
   return (
     <Layout>
       {/* Hero — a scattered gallery wall, not a slideshow. Every piece invites a hover. */}
@@ -178,21 +179,24 @@ function Home() {
                 </div>
                 <div className="glass absolute -top-5 left-1/2 z-50 w-[108%] -translate-x-1/2 overflow-hidden rounded-full py-3 shadow-2xl">
                   <div className="animate-marquee flex w-max gap-4 px-4">
-                    {[...marqueeIds, ...marqueeIds].map((id, i) => (
-                      <img
-                        key={`${id}-${i}`}
-                        src={byId(id).image}
-                        alt=""
-                        className="h-14 w-14 shrink-0 rounded-full object-cover opacity-95 ring-2 ring-white/25"
-                      />
-                    ))}
+                    {[...marqueeIds, ...marqueeIds]
+                      .map((id) => byId(id))
+                      .filter((a): a is Artwork => Boolean(a))
+                      .map((a, i) => (
+                        <img
+                          key={`${a.id}-${i}`}
+                          src={a.image}
+                          alt=""
+                          className="h-14 w-14 shrink-0 rounded-full object-cover opacity-95 ring-2 ring-white/25"
+                        />
+                      ))}
                   </div>
                 </div>
               </div>
 
               {/* Mobile / tablet — slides stacked in front of one another,
                   fading automatically to reveal the next. */}
-              <MobileHeroSlides className="lg:hidden" />
+              <MobileHeroSlides artworks={artworks} className="lg:hidden" />
             </div>
           </div>
 
@@ -408,14 +412,25 @@ function Home() {
   );
 }
 
-function MobileHeroSlides({ className = "" }: { className?: string }) {
-  const slides = mobileSlideIds.map(byId);
+function MobileHeroSlides({
+  artworks,
+  className = "",
+}: {
+  artworks: Artwork[];
+  className?: string;
+}) {
+  const slides = mobileSlideIds
+    .map((id) => artworks.find((a) => a.id === id))
+    .filter((a): a is Artwork => Boolean(a));
   const [active, setActive] = useState(0);
 
   useEffect(() => {
+    if (slides.length === 0) return;
     const id = setInterval(() => setActive((v) => (v + 1) % slides.length), 3200);
     return () => clearInterval(id);
   }, [slides.length]);
+
+  if (slides.length === 0) return null;
 
   return (
     <div className={`relative mx-auto aspect-[4/5] max-w-sm ${className}`}>
@@ -456,10 +471,11 @@ function HeroCard({
   className,
   z,
 }: {
-  artwork: (typeof artworks)[number];
+  artwork: Artwork | undefined;
   className: string;
   z: number;
 }) {
+  if (!artwork) return null;
   return (
     <Link
       to="/gallery"

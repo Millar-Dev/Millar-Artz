@@ -12,13 +12,14 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import {
-  artworks,
   categories,
   disciplines,
+  fromArtworkRow,
   type ArtworkCategory,
   type Artwork,
   type Discipline,
 } from "@/lib/gallery-data";
+import { listArtworks } from "@/lib/data/artworks";
 
 const gallerySearchSchema = z.object({
   category: z
@@ -39,6 +40,10 @@ const gallerySearchSchema = z.object({
 
 export const Route = createFileRoute("/gallery")({
   validateSearch: gallerySearchSchema,
+  loader: async () => {
+    const rows = await listArtworks();
+    return { artworks: rows.map(fromArtworkRow) };
+  },
   head: () => ({
     meta: [
       { title: "Gallery — Miller Artz" },
@@ -67,6 +72,7 @@ const disciplineIcons: Record<Discipline["icon"], typeof Music> = {
 
 function Gallery() {
   const search = Route.useSearch();
+  const { artworks } = Route.useLoaderData();
   const [category, setCategory] = useState<ArtworkCategory | "all">(
     search.category ?? "all",
   );
@@ -84,7 +90,7 @@ function Gallery() {
         a.medium.toLowerCase().includes(q);
       return matchesCat && matchesQuery;
     });
-  }, [category, query]);
+  }, [artworks, category, query]);
 
   const activeCategory = categories.find((c) => c.value === category);
 

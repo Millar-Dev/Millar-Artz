@@ -1,9 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/site/Layout";
-import artistPortrait from "@/assets/me-portrait.jpg";
+import fallbackPortrait from "@/assets/me-portrait.jpg";
 import brushMark from "@/assets/brand/miller-artz-logo-sign.jpg";
+import { getSiteImage } from "@/lib/data/site-images";
 
 export const Route = createFileRoute("/about")({
+  loader: async () => {
+    const portrait = await getSiteImage({ data: "about_portrait" });
+    return {
+      portrait: portrait ?? {
+        id: "about_portrait",
+        image_path: fallbackPortrait,
+        caption: "Miller S.K. — Founder, Miller Artz",
+      },
+    };
+  },
   head: () => ({
     meta: [
       { title: "About — Miller Artz" },
@@ -54,6 +65,8 @@ const disciplinesWorked = [
 ];
 
 function About() {
+  const { portrait } = Route.useLoaderData();
+
   return (
     <Layout>
       <section className="grain relative pt-16 pb-8">
@@ -107,14 +120,14 @@ function About() {
           </div>
           <div className="md:col-span-5">
             <img
-              src={artistPortrait}
+              src={portrait.image_path}
               alt="Miller S.K., founding artist of Miller Artz"
               loading="lazy"
               className="aspect-[4/5] w-full rounded-sm object-cover shadow-2xl"
             />
             <div className="mt-4 flex items-center justify-between">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/50">
-                Miller S.K. — Founder, Miller Artz
+                {portrait.caption}
               </p>
               <img
                 src={brushMark}
