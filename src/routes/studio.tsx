@@ -353,7 +353,9 @@ function ArtworkEditor({
           description: form.description ?? "",
           year: form.year,
           imagePath: form.image,
-          sortOrder: nextSortOrder,
+          // Preserve the existing position when editing; only brand-new
+          // artworks (no sortOrder yet) go to the end of the list.
+          sortOrder: form.sortOrder ?? nextSortOrder,
         },
       });
       onSaved();

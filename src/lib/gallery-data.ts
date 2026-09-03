@@ -22,6 +22,7 @@ export interface Artwork {
   image: string;
   description: string;
   year: number;
+  sortOrder: number;
 }
 
 /** Shape returned by the artworks table — kept separate from Artwork so the
@@ -37,6 +38,7 @@ export interface ArtworkDbRow {
   description: string;
   year: number;
   image_path: string;
+  sort_order: number;
 }
 
 export function fromArtworkRow(row: ArtworkDbRow): Artwork {
@@ -51,6 +53,7 @@ export function fromArtworkRow(row: ArtworkDbRow): Artwork {
     image: row.image_path,
     description: row.description,
     year: row.year,
+    sortOrder: row.sort_order,
   };
 }
 
