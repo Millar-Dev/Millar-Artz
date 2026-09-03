@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { categories } from "@/lib/gallery-data";
@@ -15,8 +15,12 @@ const galleryCategories = categories.filter((c) => c.value !== "all");
 
 export function Nav() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [galleryMenuOpen, setGalleryMenuOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -26,31 +30,21 @@ export function Nav() {
     };
   }, [open]);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <nav
-      className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
-        scrolled
-          ? "bg-canvas/95 border-ink/5 shadow-sm"
-          : "border-transparent bg-canvas/70"
-      }`}
-    >
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+    <header className="sticky top-0 z-50 flex justify-center px-3 pt-3 md:px-6 md:pt-5">
+      <nav
+        className={`flex w-full max-w-6xl items-center justify-between rounded-full border px-4 py-2.5 shadow-2xl shadow-black/20 transition-colors md:px-6 ${
+          open ? "border-white/10 bg-band" : "border-white/10 bg-band/70"
+        }`}
+      >
         <Link
           to="/"
-          className="font-display text-xl font-bold uppercase tracking-tight text-ink md:text-2xl"
-          onClick={() => setOpen(false)}
+          className="shrink-0 font-display text-lg font-bold uppercase tracking-tight text-band-foreground md:text-xl"
         >
           Miller Artz
         </Link>
 
-        <div className="hidden items-center gap-10 text-[10px] font-semibold uppercase tracking-[0.2em] md:flex">
+        <div className="hidden items-center gap-8 text-[11px] font-semibold uppercase tracking-[0.15em] md:flex">
           {links.map((l) =>
             l.to === "/gallery" ? (
               <div
@@ -61,8 +55,8 @@ export function Nav() {
               >
                 <Link
                   to={l.to}
-                  className="flex items-center gap-1 text-ink transition-colors hover:text-gold"
-                  activeProps={{ className: "text-gold" }}
+                  className="flex items-center gap-1 text-band-foreground/80 transition-colors hover:text-gold"
+                  activeProps={{ className: "!text-gold" }}
                 >
                   {l.label}
                   <ChevronDown
@@ -71,7 +65,7 @@ export function Nav() {
                   />
                 </Link>
                 {galleryMenuOpen && (
-                  <div className="animate-fade absolute left-1/2 top-full mt-3 w-72 -translate-x-1/2 rounded-lg border border-white/10 bg-band p-4 shadow-2xl">
+                  <div className="animate-fade absolute left-1/2 top-full mt-4 w-72 -translate-x-1/2 rounded-2xl border border-white/10 bg-band p-4 shadow-2xl">
                     <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                       {galleryCategories.map((c) => (
                         <Link
@@ -97,46 +91,45 @@ export function Nav() {
               <Link
                 key={l.to}
                 to={l.to}
-                className="text-ink transition-colors hover:text-gold"
-                activeProps={{ className: "text-gold" }}
+                className="text-band-foreground/80 transition-colors hover:text-gold"
+                activeProps={{ className: "!text-gold" }}
                 activeOptions={{ exact: l.to === "/" }}
               >
                 {l.label}
               </Link>
             ),
           )}
+        </div>
+
+        <div className="flex items-center gap-2 md:gap-3">
           <Link
             to="/contact"
             search={{ type: "commission" }}
-            className="rounded-full bg-gold px-4 py-2 text-band transition-colors hover:bg-gold-soft"
+            className="hidden rounded-full bg-gold px-4 py-2 text-[11px] font-bold uppercase tracking-[0.15em] text-band transition-colors hover:bg-gold-soft sm:inline-block"
           >
             Commission
           </Link>
-          <ThemeToggle />
-        </div>
-
-        <div className="flex items-center gap-3 md:hidden">
-          <ThemeToggle />
+          <ThemeToggle className="text-band-foreground/70 hover:text-gold" />
           <button
-            className="text-ink"
+            className="text-band-foreground md:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
           >
-            {open ? <X size={22} /> : <Menu size={22} />}
+            {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-      </div>
+      </nav>
 
       {open && (
-        <div className="animate-fade border-t border-ink/5 bg-canvas md:hidden">
-          <div className="mx-auto flex max-w-7xl flex-col px-6 py-6">
+        <div className="animate-fade absolute inset-x-3 top-[calc(100%+0.5rem)] rounded-3xl border border-white/10 bg-band p-6 shadow-2xl md:hidden">
+          <div className="flex flex-col">
             {links.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
-                className="border-b border-ink/5 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-ink"
-                activeProps={{ className: "text-gold" }}
+                className="border-b border-band-foreground/10 py-4 text-sm font-semibold uppercase tracking-[0.15em] text-band-foreground"
+                activeProps={{ className: "!text-gold" }}
                 activeOptions={{ exact: l.to === "/" }}
               >
                 {l.label}
@@ -153,6 +146,6 @@ export function Nav() {
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

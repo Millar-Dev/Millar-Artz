@@ -108,7 +108,7 @@ function Gallery() {
       </section>
 
       {/* Filter bar */}
-      <section className="sticky top-20 z-30 border-y border-ink/5 bg-canvas py-4">
+      <section className="sticky top-[4.75rem] z-30 border-y border-ink/5 bg-canvas py-4 md:top-[5.75rem]">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 md:flex-row md:items-center md:justify-between">
           <div className="no-scrollbar flex gap-x-6 gap-y-2 overflow-x-auto text-[11px] font-bold uppercase tracking-[0.2em]">
             {categories.map((c) => (
@@ -186,16 +186,18 @@ function Gallery() {
                   className="group cursor-zoom-in"
                   onClick={() => setViewing(a)}
                 >
-                  <div className="relative mb-4 overflow-hidden bg-paper">
-                    <img
-                      src={a.image}
-                      alt={a.title}
-                      loading="lazy"
-                      className="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 flex items-end justify-end p-4 opacity-0 transition-opacity group-hover:opacity-100">
-                      <div className="rounded-full bg-canvas/90 p-2 text-ink">
-                        <ZoomIn size={16} />
+                  <div className="gradient-stroke mb-4 rounded-lg p-1">
+                    <div className="relative overflow-hidden rounded-[7px] bg-paper">
+                      <img
+                        src={a.image}
+                        alt={a.title}
+                        loading="lazy"
+                        className="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 flex items-end justify-end p-4 opacity-0 transition-opacity group-hover:opacity-100">
+                        <div className="rounded-full bg-canvas/90 p-2 text-ink">
+                          <ZoomIn size={16} />
+                        </div>
                       </div>
                     </div>
                   </div>

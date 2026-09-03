@@ -45,17 +45,30 @@
   /* Fixed contrast band — deliberately-dark sections (footer, commission
      CTA, lightbox) that stay this color regardless of the light/dark
      toggle, so the site never loses its deepest, richest note. */
-  --color-band: oklch(0.09 0.014 50);
+  --color-band: oklch(0.14 0.035 40);
   --color-band-foreground: oklch(0.97 0.008 85);
+
+  --color-grad-cream: var(--grad-cream);
+  --color-grad-vermilion: var(--grad-vermilion);
+  --color-grad-sienna: var(--grad-sienna);
+  --color-grad-burnt: var(--grad-burnt);
 }
 
 :root {
   --radius: 0.375rem;
 
+  /* Studio palette for the site-wide backdrop and gradient-stroke frames —
+     fixed regardless of light/dark toggle, it's the brand's paint, not a UI
+     token. 30% cream / 40% vermilion / 20% raw sienna / 10% dark burnt sienna. */
+  --grad-cream: #f4e3c8;
+  --grad-vermilion: #e1432b;
+  --grad-sienna: #c1702e;
+  --grad-burnt: #4a2216;
+
   /* Gallery Noir palette — light mode (opt-in via the theme toggle) */
-  --canvas: oklch(0.972 0.007 85);
+  --canvas: oklch(0.972 0.007 85 / 68%);
   --ink: oklch(0.19 0.005 60);
-  --paper: oklch(1 0 0);
+  --paper: oklch(1 0 0 / 80%);
   --gold: oklch(0.6 0.055 65);
   --gold-soft: oklch(0.78 0.04 75);
   --teal: oklch(0.52 0.1 195);
@@ -84,14 +97,16 @@
 }
 
 .dark {
-  /* Gallery-at-night — the default theme. A warm near-black wall the art
-     glows against, with accents pulled from the work itself: gold gallery
-     light, the teal of the bee-eater paintings, the coral of the savanna
-     sunset and the raised-fist piece, a violet thread from the zebra/prism
-     pieces. Used sparingly — this is still a dark, quiet room. */
-  --canvas: oklch(0.145 0.014 50);
+  /* Gallery-at-night — the default theme. Tuned as a warm terracotta-dark
+     (drawn from the burnt-sienna end of the studio gradient) rather than a
+     neutral near-black, so the wavy backdrop reads as one warm room instead
+     of two palettes fighting each other. Accents still pull from the work
+     itself: gold gallery light, the teal of the bee-eater paintings, the
+     coral of the savanna sunset and the raised-fist piece, a violet thread
+     from the zebra/prism pieces. */
+  --canvas: oklch(0.24 0.045 40 / 55%);
   --ink: oklch(0.96 0.01 85);
-  --paper: oklch(0.195 0.016 48);
+  --paper: oklch(0.3 0.05 40 / 72%);
   --gold: oklch(0.78 0.12 75);
   --gold-soft: oklch(0.85 0.08 78);
   --teal: oklch(0.75 0.11 195);
@@ -106,10 +121,10 @@
   --popover-foreground: var(--ink);
   --primary: var(--ink);
   --primary-foreground: var(--canvas);
-  --secondary: oklch(0.235 0.017 48);
+  --secondary: oklch(0.33 0.05 42);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.235 0.017 48);
-  --muted-foreground: oklch(0.68 0.015 60);
+  --muted: oklch(0.33 0.05 42);
+  --muted-foreground: oklch(0.78 0.03 60);
   --accent: var(--gold);
   --accent-foreground: var(--canvas);
   --border: oklch(1 0 0 / 10%);
@@ -153,6 +168,33 @@
     transform: scale(1.08);
   }
 }
+@keyframes splash-fade {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.85) rotate(0deg);
+  }
+  30% {
+    opacity: 0.35;
+    transform: scale(1) rotate(4deg);
+  }
+  60% {
+    opacity: 0.26;
+    transform: scale(1.06) rotate(-3deg);
+  }
+  85% {
+    opacity: 0;
+    transform: scale(0.92) rotate(2deg);
+  }
+}
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
 
 @utility animate-reveal {
   animation: reveal-up 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
@@ -162,6 +204,25 @@
 }
 @utility animate-slow-zoom {
   animation: slow-zoom 8s ease-out both;
+}
+@utility animate-splash {
+  animation: splash-fade 14s ease-in-out infinite both;
+}
+@utility animate-marquee {
+  animation: marquee-x 32s linear infinite;
+}
+
+/* Gradient-stroke frame — wrap an image in this, keep the image's own
+   corners a few px tighter, and the studio palette shows as a painted ring
+   around the artwork instead of a flat border. */
+@utility gradient-stroke {
+  background: linear-gradient(
+    135deg,
+    var(--grad-cream),
+    var(--grad-vermilion),
+    var(--grad-sienna),
+    var(--grad-burnt)
+  );
 }
 
 /* Translucent glass surfaces — deliberately theme-independent (always a dark
@@ -284,27 +345,29 @@
     -webkit-font-smoothing: antialiased;
     position: relative;
   }
-  /* A quiet gallery-spotlight glow behind the whole page. Grain texture is
-     applied per-section via the .grain utility instead of a page-wide fixed
-     overlay — a fixed, blend-mode layer over the whole viewport produced a
-     black compositing glitch on scroll in testing. */
+  /* Studio backdrop — a diagonal wavy gradient (30% cream / 40% vermilion /
+     20% raw sienna / 10% dark burnt sienna) behind every page, from a
+     pre-drawn SVG (public/wavy-bg.svg, hand-built wave paths) rather than a
+     live CSS filter — an feDisplacementMap-warped gradient on a
+     viewport-sized fixed element hung the renderer in testing. A single
+     fixed layer (scrim baked into the same background shorthand as the
+     image, rather than a second ::after) so there's only one fixed,
+     viewport-sized element for the page to repaint on scroll — stacking
+     several independently-updating fixed layers is what produced a stale
+     gray compositing glitch on scroll in testing. Grain texture is applied
+     per-section via .grain instead of here for the same reason. */
   body::before {
     content: "";
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     pointer-events: none;
     background:
-      radial-gradient(
-        1100px circle at 15% -10%,
-        color-mix(in oklab, var(--gold) 16%, transparent),
-        transparent 55%
+      linear-gradient(
+        color-mix(in oklab, var(--color-canvas) 22%, transparent),
+        color-mix(in oklab, var(--color-canvas) 22%, transparent)
       ),
-      radial-gradient(
-        900px circle at 100% 15%,
-        color-mix(in oklab, var(--teal) 10%, transparent),
-        transparent 50%
-      );
+      url("/wavy-bg.svg") center / cover no-repeat;
   }
   ::selection {
     background-color: color-mix(in oklab, var(--gold) 30%, transparent);
