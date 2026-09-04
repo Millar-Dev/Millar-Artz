@@ -6,11 +6,21 @@ import { adminLogin, adminLogout, checkAdminSession } from "@/lib/data/admin-aut
 import {
   deleteArtwork,
   listArtworks,
+  reorderArtworks,
   uploadArtworkImage,
   upsertArtwork,
 } from "@/lib/data/artworks";
 import { getSiteImage, updateSiteImage, uploadSiteImage } from "@/lib/data/site-images";
-import { Loader2, Pencil, Plus, Trash2, Upload, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  Pencil,
+  Plus,
+  Trash2,
+  Upload,
+  X,
+} from "lucide-react";
 
 export const Route = createFileRoute("/studio")({
   loader: async () => {
@@ -132,6 +142,19 @@ function Dashboard({
     await refresh();
   }
 
+  /** Moves a piece up or down the running order. The list order here is the
+   *  order pieces appear in their category row on Home and in the Gallery,
+   *  so this is how you choose what leads each row. Optimistic — the list
+   *  reorders immediately, then persists. */
+  async function move(index: number, direction: -1 | 1) {
+    const target = index + direction;
+    if (target < 0 || target >= artworks.length) return;
+    const next = [...artworks];
+    [next[index], next[target]] = [next[target], next[index]];
+    setArtworks(next);
+    await reorderArtworks({ data: next.map((a) => a.id) });
+  }
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink/10 pb-6">
@@ -176,12 +199,34 @@ function Dashboard({
       </div>
 
       {/* Artworks table */}
-      <div className="mt-10 space-y-3">
-        {artworks.map((a) => (
+      <p className="mt-10 text-xs text-ink/50">
+        Order here is the order pieces appear in their category row — the top
+        of each category leads the row on the Home page.
+      </p>
+      <div className="mt-3 space-y-3">
+        {artworks.map((a, i) => (
           <div
             key={a.id}
             className="flex items-center gap-4 border border-ink/10 bg-paper p-3"
           >
+            <div className="flex flex-col">
+              <button
+                onClick={() => move(i, -1)}
+                disabled={i === 0}
+                aria-label={`Move ${a.title} up`}
+                className="rounded-sm p-1 text-ink/50 hover:bg-ink/5 hover:text-ink disabled:pointer-events-none disabled:opacity-25"
+              >
+                <ChevronUp size={16} />
+              </button>
+              <button
+                onClick={() => move(i, 1)}
+                disabled={i === artworks.length - 1}
+                aria-label={`Move ${a.title} down`}
+                className="rounded-sm p-1 text-ink/50 hover:bg-ink/5 hover:text-ink disabled:pointer-events-none disabled:opacity-25"
+              >
+                <ChevronDown size={16} />
+              </button>
+            </div>
             <img src={a.image} alt="" className="h-16 w-14 rounded-sm object-cover" />
             <div className="min-w-0 flex-1">
               <p className="truncate font-display text-lg italic text-ink">{a.title}</p>
