@@ -147,7 +147,7 @@ function Gallery() {
       </section>
 
       {/* Grid */}
-      <section className="py-16">
+      <section className="bg-gallery py-16">
         <div className="mx-auto max-w-7xl px-6">
           {filtered.length === 0 ? (
             <div className="py-24 text-center text-ink/50">
@@ -192,8 +192,8 @@ function Gallery() {
                   className="group cursor-zoom-in"
                   onClick={() => setViewing(a)}
                 >
-                  <div className="gradient-stroke mb-4 rounded-lg p-1">
-                    <div className="relative overflow-hidden rounded-[7px] bg-paper">
+                  <div className="gradient-stroke mb-4 rounded-sm p-px shadow-lg shadow-black/25">
+                    <div className="relative overflow-hidden rounded-[1px] bg-paper">
                       <img
                         src={a.image}
                         alt={a.title}

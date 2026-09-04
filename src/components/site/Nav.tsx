@@ -31,12 +31,12 @@ export function Nav() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 flex justify-center px-3 pt-3 md:px-6 md:pt-5">
-      <nav
-        className={`flex w-full max-w-6xl items-center justify-between rounded-full border px-4 py-2.5 shadow-2xl shadow-black/20 transition-colors md:px-6 ${
-          open ? "border-white/10 bg-band" : "border-white/10 bg-band/70"
-        }`}
-      >
+    <header className="sticky top-0 z-50">
+      {/* Opaque scrim that fades downward, so page content disappears behind
+          the bar instead of bleeding through the gap around the pill. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[180%] bg-gradient-to-b from-band via-band/85 to-transparent" />
+      <div className="relative flex justify-center px-3 pt-3 pb-3 md:px-6 md:pt-5">
+        <nav className="flex w-full max-w-6xl items-center justify-between rounded-full border border-white/10 bg-band px-4 py-2.5 shadow-2xl shadow-black/30 md:px-6">
         <Link
           to="/"
           className="shrink-0 font-display text-lg font-bold uppercase tracking-tight text-band-foreground md:text-xl"
@@ -118,10 +118,11 @@ export function Nav() {
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-      </nav>
+        </nav>
+      </div>
 
       {open && (
-        <div className="animate-fade absolute inset-x-3 top-[calc(100%+0.5rem)] rounded-3xl border border-white/10 bg-band p-6 shadow-2xl md:hidden">
+        <div className="animate-fade absolute inset-x-3 top-full rounded-3xl border border-white/10 bg-band p-6 shadow-2xl md:hidden">
           <div className="flex flex-col">
             {links.map((l) => (
               <Link

@@ -14,6 +14,8 @@ import appCss from "../styles.css?url";
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
+      {/* Without this the browser tab is blank on any mistyped link. */}
+      <title>Page not found — Miller Artz</title>
       <div className="max-w-md text-center">
         <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
           Miller Artz

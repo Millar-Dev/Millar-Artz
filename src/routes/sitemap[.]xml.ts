@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-const BASE_URL = "";
+/** Sitemaps require fully-qualified absolute URLs — relative <loc> values are
+ *  rejected by search engines. Derived from the request so it stays correct
+ *  on preview deployments and a future custom domain alike. */
+function baseUrlFrom(request: Request): string {
+  const url = new URL(request.url);
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+  const host = forwardedHost ?? url.host;
+  const proto = forwardedProto ?? (host.startsWith("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
+}
 
 interface SitemapEntry {
   path: string;
@@ -12,7 +22,8 @@ interface SitemapEntry {
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async () => {
+      GET: async ({ request }: { request: Request }) => {
+        const BASE_URL = baseUrlFrom(request);
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/gallery", changefreq: "weekly", priority: "0.9" },

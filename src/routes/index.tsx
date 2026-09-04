@@ -218,12 +218,12 @@ function Home() {
         </div>
         <div
           className="frayed-bottom"
-          style={{ "--frayed-color": "var(--color-paper)" } as CSSProperties}
+          style={{ "--frayed-color": "var(--color-gallery)" } as CSSProperties}
         />
       </section>
 
       {/* Category rows — Netflix-style horizontal scroll */}
-      <section className="bg-paper py-20">
+      <section className="bg-gallery py-20">
         <div className="mx-auto max-w-7xl space-y-16 px-6">
           {rows.map((row) => {
             const items = artworks.filter((a) =>
@@ -253,9 +253,9 @@ function Home() {
                       key={a.id}
                       to="/gallery"
                       search={{ category: a.category }}
-                      className="gradient-stroke group relative w-[220px] shrink-0 overflow-hidden rounded-lg p-1 sm:w-[260px]"
+                      className="gradient-stroke group relative w-[220px] shrink-0 overflow-hidden rounded-sm p-px shadow-lg shadow-black/25 sm:w-[260px]"
                     >
-                      <div className="relative overflow-hidden rounded-[7px]">
+                      <div className="relative overflow-hidden rounded-[1px]">
                         <img
                           src={a.image}
                           alt={a.title}
