@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { subscribe } from "@/lib/data/subscribers";
 
 export const Route = createFileRoute("/subscription")({
   head: () => ({
@@ -56,13 +57,21 @@ const plans = [
 function Subscription() {
   const [email, setEmail] = useState("");
   const [tier, setTier] = useState<"free" | "premium">("free");
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [error, setError] = useState("");
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setStatus("sent");
-    setTimeout(() => setStatus("idle"), 6000);
-    setEmail("");
+    setError("");
+    setStatus("sending");
+    try {
+      await subscribe({ data: { email, tier } });
+      setStatus("sent");
+      setEmail("");
+    } catch (err) {
+      setStatus("idle");
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    }
   }
 
   return (
@@ -183,15 +192,19 @@ function Subscription() {
 
             <button
               type="submit"
-              className="w-full rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
+              disabled={status === "sending"}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft disabled:opacity-60"
             >
+              {status === "sending" && <Loader2 size={14} className="animate-spin" />}
               {tier === "free" ? "Subscribe for free" : "Request an invitation"}
             </button>
+
+            {error && <p className="text-center text-sm text-red-400">{error}</p>}
 
             {status === "sent" && (
               <p className="text-center text-sm italic text-gold">
                 {tier === "free"
-                  ? "Welcome to the list — check your inbox."
+                  ? "You're on the list — thank you."
                   : "Thank you — we'll be in touch about the Collector's Circle."}
               </p>
             )}

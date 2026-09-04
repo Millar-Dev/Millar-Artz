@@ -25,6 +25,43 @@ create table if not exists site_images (
   updated_at timestamptz not null default now()
 );
 
+-- Price is optional: a piece with no price shows "Price on request" rather
+-- than a number, which is normal for commission-led studios.
+alter table artworks add column if not exists price numeric;
+alter table artworks add column if not exists currency text not null default 'USD';
+
+-- Newsletter signups captured from the Subscription page.
+create table if not exists subscribers (
+  email text primary key,
+  tier text not null default 'free',
+  created_at timestamptz not null default now()
+);
+
+-- Commission/contact enquiries. Saved server-side so there's a record in the
+-- Studio even when someone never follows through on the email or WhatsApp
+-- handoff.
+create table if not exists inquiries (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text not null default '',
+  style text not null default '',
+  budget text not null default '',
+  timeline text not null default '',
+  subject text not null default '',
+  message text not null default '',
+  handled boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+-- Small key/value store for things the artist should be able to edit without
+-- a deploy: social profile URLs, contact details, etc.
+create table if not exists site_settings (
+  key text primary key,
+  value text not null default '',
+  updated_at timestamptz not null default now()
+);
+
 -- Row Level Security: the app only ever talks to these tables through the
 -- server (using the service role key, which bypasses RLS entirely), never
 -- from the browser. RLS is enabled anyway as a safety net — with no policies
@@ -32,6 +69,9 @@ create table if not exists site_images (
 -- role key.
 alter table artworks enable row level security;
 alter table site_images enable row level security;
+alter table subscribers enable row level security;
+alter table inquiries enable row level security;
+alter table site_settings enable row level security;
 
 -- Public storage bucket for artwork/site images, uploaded by the admin
 -- through the app and served directly to visitors.

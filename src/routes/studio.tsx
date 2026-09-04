@@ -12,6 +12,22 @@ import {
 } from "@/lib/data/artworks";
 import { getSiteImage, updateSiteImage, uploadSiteImage } from "@/lib/data/site-images";
 import {
+  deleteInquiry,
+  listInquiries,
+  setInquiryHandled,
+  type InquiryRow,
+} from "@/lib/data/inquiries";
+import {
+  deleteSubscriber,
+  listSubscribers,
+  type SubscriberRow,
+} from "@/lib/data/subscribers";
+import {
+  getSiteSettings,
+  updateSiteSettings,
+  type SiteSettings,
+} from "@/lib/data/site-settings";
+import {
   ChevronDown,
   ChevronUp,
   Loader2,
@@ -26,11 +42,21 @@ export const Route = createFileRoute("/studio")({
   loader: async () => {
     const { isAdmin } = await checkAdminSession();
     if (!isAdmin) return { isAdmin: false as const };
-    const [rows, portrait] = await Promise.all([
+    const [rows, portrait, inquiries, subscribers, settings] = await Promise.all([
       listArtworks(),
       getSiteImage({ data: "about_portrait" }),
+      listInquiries(),
+      listSubscribers(),
+      getSiteSettings(),
     ]);
-    return { isAdmin: true as const, artworks: rows.map(fromArtworkRow), portrait };
+    return {
+      isAdmin: true as const,
+      artworks: rows.map(fromArtworkRow),
+      portrait,
+      inquiries,
+      subscribers,
+      settings,
+    };
   },
   head: () => ({ meta: [{ title: "Studio — Miller Artz" }, { name: "robots", content: "noindex" }] }),
   component: Studio,
@@ -53,6 +79,9 @@ function Studio() {
       <Dashboard
         initialArtworks={data.artworks}
         initialPortrait={data.portrait}
+        initialInquiries={data.inquiries}
+        initialSubscribers={data.subscribers}
+        initialSettings={data.settings}
         onSignedOut={() => router.invalidate()}
       />
     </Layout>
@@ -114,15 +143,22 @@ const emptyDraft = (): Partial<Artwork> => ({
   category: "hyperrealism",
   status: "available",
   year: new Date().getFullYear(),
+  currency: "USD",
 });
 
 function Dashboard({
   initialArtworks,
   initialPortrait,
+  initialInquiries,
+  initialSubscribers,
+  initialSettings,
   onSignedOut,
 }: {
   initialArtworks: Artwork[];
   initialPortrait: { id: string; image_path: string; caption: string } | null;
+  initialInquiries: InquiryRow[];
+  initialSubscribers: SubscriberRow[];
+  initialSettings: SiteSettings;
   onSignedOut: () => void;
 }) {
   const [artworks, setArtworks] = useState(initialArtworks);
@@ -257,6 +293,10 @@ function Dashboard({
         )}
       </div>
 
+      <InquiriesPanel initial={initialInquiries} />
+      <SubscribersPanel initial={initialSubscribers} />
+      <SettingsPanel initial={initialSettings} />
+
       {editing && (
         <ArtworkEditor
           draft={editing}
@@ -268,6 +308,241 @@ function Dashboard({
           }}
         />
       )}
+    </section>
+  );
+}
+
+/** Commission/contact enquiries submitted through the Contact page. */
+function InquiriesPanel({ initial }: { initial: InquiryRow[] }) {
+  const [rows, setRows] = useState(initial);
+  const [showHandled, setShowHandled] = useState(false);
+
+  const visible = showHandled ? rows : rows.filter((r) => !r.handled);
+  const openCount = rows.filter((r) => !r.handled).length;
+
+  async function toggleHandled(row: InquiryRow) {
+    const handled = !row.handled;
+    setRows((rs) => rs.map((r) => (r.id === row.id ? { ...r, handled } : r)));
+    await setInquiryHandled({ data: { id: row.id, handled } });
+  }
+
+  async function remove(id: string) {
+    if (!confirm("Delete this enquiry? This can't be undone.")) return;
+    setRows((rs) => rs.filter((r) => r.id !== id));
+    await deleteInquiry({ data: id });
+  }
+
+  return (
+    <section className="mt-16 border-t border-ink/10 pt-10">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-display text-2xl italic text-ink">
+          Enquiries{" "}
+          {openCount > 0 && (
+            <span className="ml-1 rounded-full bg-gold px-2 py-0.5 align-middle font-sans text-[11px] font-bold not-italic text-band">
+              {openCount} new
+            </span>
+          )}
+        </h2>
+        <label className="flex items-center gap-2 text-xs text-ink/60">
+          <input
+            type="checkbox"
+            checked={showHandled}
+            onChange={(e) => setShowHandled(e.target.checked)}
+          />
+          Show handled
+        </label>
+      </div>
+
+      <div className="mt-5 space-y-3">
+        {visible.map((r) => (
+          <div
+            key={r.id}
+            className={`border border-ink/10 bg-paper p-4 ${r.handled ? "opacity-55" : ""}`}
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-display text-lg italic text-ink">
+                  {r.subject || "Enquiry"}
+                </p>
+                <p className="mt-1 text-xs text-ink/60">
+                  {r.full_name} ·{" "}
+                  <a href={`mailto:${r.email}`} className="hover:text-gold">
+                    {r.email}
+                  </a>
+                  {r.phone && ` · ${r.phone}`}
+                  {" · "}
+                  {new Date(r.created_at).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                <button
+                  onClick={() => toggleHandled(r)}
+                  className="rounded-sm border border-ink/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-ink/70 hover:border-gold hover:text-gold"
+                >
+                  {r.handled ? "Reopen" : "Mark handled"}
+                </button>
+                <button
+                  onClick={() => remove(r.id)}
+                  aria-label="Delete enquiry"
+                  className="rounded-sm p-2 text-ink/50 hover:bg-red-500/10 hover:text-red-500"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            </div>
+            {(r.style || r.budget || r.timeline) && (
+              <p className="mt-3 text-xs uppercase tracking-widest text-ink/50">
+                {[r.style, r.budget, r.timeline].filter(Boolean).join(" · ")}
+              </p>
+            )}
+            <p className="mt-3 whitespace-pre-wrap text-sm text-ink/75">
+              {r.message}
+            </p>
+          </div>
+        ))}
+        {visible.length === 0 && (
+          <p className="py-10 text-center text-sm text-ink/50">
+            {rows.length === 0
+              ? "No enquiries yet."
+              : "Nothing outstanding — every enquiry is handled."}
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/** Newsletter signups, with a copy-to-clipboard for pasting into a mail tool. */
+function SubscribersPanel({ initial }: { initial: SubscriberRow[] }) {
+  const [rows, setRows] = useState(initial);
+  const [copied, setCopied] = useState(false);
+
+  async function copyAll() {
+    try {
+      await navigator.clipboard.writeText(rows.map((r) => r.email).join(", "));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Clipboard blocked — the list is on screen to copy by hand anyway.
+    }
+  }
+
+  async function remove(email: string) {
+    if (!confirm(`Remove ${email} from the list?`)) return;
+    setRows((rs) => rs.filter((r) => r.email !== email));
+    await deleteSubscriber({ data: email });
+  }
+
+  return (
+    <section className="mt-16 border-t border-ink/10 pt-10">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-display text-2xl italic text-ink">
+          Collector&rsquo;s Circle{" "}
+          <span className="text-base not-italic text-ink/50">
+            ({rows.length})
+          </span>
+        </h2>
+        {rows.length > 0 && (
+          <button
+            onClick={copyAll}
+            className="rounded-sm border border-ink/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-ink/70 hover:border-gold hover:text-gold"
+          >
+            {copied ? "Copied" : "Copy all emails"}
+          </button>
+        )}
+      </div>
+
+      <div className="mt-5 space-y-2">
+        {rows.map((r) => (
+          <div
+            key={r.email}
+            className="flex items-center justify-between gap-3 border border-ink/10 bg-paper px-4 py-2.5"
+          >
+            <span className="truncate text-sm text-ink/80">{r.email}</span>
+            <span className="shrink-0 text-[10px] uppercase tracking-widest text-ink/40">
+              {r.tier} · {new Date(r.created_at).toLocaleDateString()}
+            </span>
+            <button
+              onClick={() => remove(r.email)}
+              aria-label={`Remove ${r.email}`}
+              className="shrink-0 rounded-sm p-1.5 text-ink/40 hover:bg-red-500/10 hover:text-red-500"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        ))}
+        {rows.length === 0 && (
+          <p className="py-10 text-center text-sm text-ink/50">
+            No signups yet.
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/** Contact details and social links — editable without a deploy. */
+function SettingsPanel({ initial }: { initial: SiteSettings }) {
+  const [form, setForm] = useState(initial);
+  const [busy, setBusy] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  function update(key: keyof SiteSettings, value: string) {
+    setForm((f) => ({ ...f, [key]: value }));
+    setSaved(false);
+  }
+
+  async function save() {
+    setBusy(true);
+    try {
+      await updateSiteSettings({ data: form });
+      setSaved(true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="mt-16 border-t border-ink/10 pt-10">
+      <h2 className="font-display text-2xl italic text-ink">Contact &amp; social</h2>
+      <p className="mt-1 text-xs text-ink/50">
+        Shown in the footer and on the Contact page. Social icons stay hidden
+        until you add a real profile link.
+      </p>
+
+      <div className="mt-6 grid gap-5 sm:grid-cols-2">
+        {(
+          [
+            ["instagram_url", "Instagram URL", "https://instagram.com/yourhandle"],
+            ["facebook_url", "Facebook URL", "https://facebook.com/yourpage"],
+            ["whatsapp_number", "WhatsApp number", "255616110100"],
+            ["email", "Email", "studio@millerartz.com"],
+            ["phone_primary", "Phone (primary)", "+255 616 110 100"],
+            ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
+            ["location", "Location", "Tanzania — visits by appointment."],
+          ] as const
+        ).map(([key, label, placeholder]) => (
+          <Field key={key} label={label}>
+            <input
+              value={form[key] ?? ""}
+              onChange={(e) => update(key, e.target.value)}
+              placeholder={placeholder}
+              className="w-full border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
+            />
+          </Field>
+        ))}
+      </div>
+
+      <div className="mt-6 flex items-center gap-4">
+        <button
+          onClick={save}
+          disabled={busy}
+          className="inline-flex items-center gap-2 rounded-sm bg-gold px-6 py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-band disabled:opacity-50"
+        >
+          {busy && <Loader2 size={14} className="animate-spin" />} Save details
+        </button>
+        {saved && <span className="text-sm italic text-gold">Saved.</span>}
+      </div>
     </section>
   );
 }
@@ -394,6 +669,8 @@ function ArtworkEditor({
           categoryLabel: category?.label ?? form.category,
           medium: form.medium,
           dimensions: form.dimensions,
+          price: form.price ?? null,
+          currency: form.currency || "USD",
           status: form.status,
           description: form.description ?? "",
           year: form.year,
@@ -512,8 +789,37 @@ function ArtworkEditor({
             <input
               value={form.dimensions ?? ""}
               onChange={(e) => update("dimensions", e.target.value)}
-              className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
+              placeholder="e.g. 60 × 80 cm"
+              className="w-full border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
             />
+          </Field>
+          <Field label="Price">
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value={form.price ?? ""}
+              onChange={(e) =>
+                update(
+                  "price",
+                  e.target.value === "" ? null : Number(e.target.value),
+                )
+              }
+              placeholder="Leave blank for “on request”"
+              className="w-full border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
+            />
+          </Field>
+          <Field label="Currency">
+            <select
+              value={form.currency ?? "USD"}
+              onChange={(e) => update("currency", e.target.value)}
+              className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
+            >
+              <option value="USD">USD ($)</option>
+              <option value="TZS">TZS (Tanzanian shilling)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+            </select>
           </Field>
           <Field label="Year" required>
             <input

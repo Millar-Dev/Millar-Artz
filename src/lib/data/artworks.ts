@@ -16,6 +16,8 @@ export interface ArtworkRow {
   year: number;
   image_path: string;
   sort_order: number;
+  price: number | null;
+  currency: string | null;
 }
 
 export const listArtworks = createServerFn({ method: "GET" }).handler(async (): Promise<ArtworkRow[]> => {
@@ -46,6 +48,9 @@ export interface ArtworkInput {
   year: number;
   imagePath: string;
   sortOrder?: number;
+  /** Optional — pieces without a price show "Price on request". */
+  price?: number | null;
+  currency?: string;
 }
 
 export const upsertArtwork = createServerFn({ method: "POST" })
@@ -66,6 +71,8 @@ export const upsertArtwork = createServerFn({ method: "POST" })
         year: input.year,
         image_path: input.imagePath,
         sort_order: input.sortOrder ?? 0,
+        price: input.price ?? null,
+        currency: input.currency || "USD",
         updated_at: new Date().toISOString(),
       });
     if (error) throw new Error(error.message);

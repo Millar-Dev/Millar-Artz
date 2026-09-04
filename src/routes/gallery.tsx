@@ -14,6 +14,7 @@ import { Layout } from "@/components/site/Layout";
 import {
   categories,
   disciplines,
+  formatPrice,
   fromArtworkRow,
   type ArtworkCategory,
   type Artwork,
@@ -214,7 +215,13 @@ function Gallery() {
                       </h3>
                       <p className="mt-1 text-xs uppercase tracking-tighter text-ink/50">
                         {a.medium}
+                        {a.dimensions ? ` · ${a.dimensions}` : ""}
                       </p>
+                      {a.status !== "sold" && formatPrice(a) && (
+                        <p className="mt-1 font-display text-base italic text-gold">
+                          {formatPrice(a)}
+                        </p>
+                      )}
                     </div>
                     <StatusPill status={a.status} />
                   </figcaption>
@@ -363,6 +370,16 @@ function Lightbox({
                 Status
               </dt>
               <dd className="uppercase tracking-wider">{artwork.status}</dd>
+            </div>
+            <div className="flex justify-between border-t border-band-foreground/10 pt-3">
+              <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
+                Price
+              </dt>
+              <dd className="font-display text-lg italic text-gold">
+                {artwork.status === "sold"
+                  ? "Sold"
+                  : (formatPrice(artwork) ?? "On request")}
+              </dd>
             </div>
           </dl>
           <Link

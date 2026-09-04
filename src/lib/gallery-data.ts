@@ -23,6 +23,9 @@ export interface Artwork {
   description: string;
   year: number;
   sortOrder: number;
+  /** Null when the piece is priced on request. */
+  price: number | null;
+  currency: string;
 }
 
 /** Shape returned by the artworks table — kept separate from Artwork so the
@@ -39,6 +42,8 @@ export interface ArtworkDbRow {
   year: number;
   image_path: string;
   sort_order: number;
+  price: number | null;
+  currency: string | null;
 }
 
 export function fromArtworkRow(row: ArtworkDbRow): Artwork {
@@ -54,7 +59,24 @@ export function fromArtworkRow(row: ArtworkDbRow): Artwork {
     description: row.description,
     year: row.year,
     sortOrder: row.sort_order,
+    price: row.price ?? null,
+    currency: row.currency ?? "USD",
   };
+}
+
+/** "$450" / "TZS 1,200,000" — or null when the piece is priced on request. */
+export function formatPrice(artwork: Pick<Artwork, "price" | "currency">): string | null {
+  if (artwork.price == null) return null;
+  try {
+    return new Intl.NumberFormat("en", {
+      style: "currency",
+      currency: artwork.currency || "USD",
+      maximumFractionDigits: 0,
+    }).format(artwork.price);
+  } catch {
+    // Unknown currency code — fall back to a plain formatted number.
+    return `${artwork.currency || ""} ${artwork.price.toLocaleString()}`.trim();
+  }
 }
 
 export const categories: {

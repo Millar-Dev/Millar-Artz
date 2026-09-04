@@ -10,6 +10,7 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { getSiteSettings } from "@/lib/data/site-settings";
 
 function NotFoundComponent() {
   return (
@@ -113,6 +114,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
       ],
     }),
+    // Loaded once here rather than per-route, since the Footer (on every
+    // page) needs the artist's contact details and social links.
+    loader: () => getSiteSettings(),
     shellComponent: RootShell,
     component: RootComponent,
     notFoundComponent: NotFoundComponent,

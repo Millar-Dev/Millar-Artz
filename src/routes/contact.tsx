@@ -9,8 +9,11 @@ import {
   Instagram,
   Facebook,
 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { categories, disciplines } from "@/lib/gallery-data";
+import { submitInquiry } from "@/lib/data/inquiries";
+import { getSiteSettings } from "@/lib/data/site-settings";
 
 const contactSearchSchema = z.object({
   type: z.string().optional(),
@@ -33,10 +36,9 @@ export const Route = createFileRoute("/contact")({
       },
     ],
   }),
+  loader: () => getSiteSettings(),
   component: Contact,
 });
-
-const WHATSAPP_NUMBER = "255616110100";
 
 const styleOptions = [
   ...categories.filter((c) => c.value !== "all").map((c) => c.label),
@@ -60,7 +62,9 @@ const timelineOptions = [
 
 function Contact() {
   const search = Route.useSearch();
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const settings = Route.useLoaderData();
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -95,18 +99,37 @@ function Contact() {
       .join("\n");
   }
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
+    setStatus("sending");
+
+    // Save to the studio inbox first so there's a record even if the visitor
+    // never completes the email handoff (or has no mail client configured,
+    // which is common on phones).
+    let saved = false;
+    try {
+      await submitInquiry({ data: form });
+      saved = true;
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Couldn't reach the studio inbox — please use WhatsApp instead.",
+      );
+    }
+
     const details = composeDetails();
     const body = `From: ${form.fullName} (${form.email}${form.phone ? `, ${form.phone}` : ""})\n${
       details ? `\n${details}\n` : ""
     }\n${form.message}`;
-    const mailto = `mailto:studio@millerartz.com?subject=${encodeURIComponent(
+    const mailto = `mailto:${settings.email}?subject=${encodeURIComponent(
       form.subject || "Commission inquiry",
     )}&body=${encodeURIComponent(body)}`;
     window.location.href = mailto;
-    setStatus("sent");
-    setTimeout(() => setStatus("idle"), 8000);
+
+    setStatus(saved ? "sent" : "idle");
+    if (saved) setTimeout(() => setStatus("idle"), 10000);
   }
 
   function openWhatsApp() {
@@ -117,7 +140,7 @@ function Contact() {
       }.\n${details ? `\n${details}\n` : ""}\n${form.message}`,
     );
     window.open(
-      `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`,
+      `https://wa.me/${settings.whatsapp_number}?text=${text}`,
       "_blank",
       "noopener",
     );
@@ -154,18 +177,22 @@ function Contact() {
                   <p className="text-[10px] font-bold uppercase tracking-widest text-ink">
                     Phone
                   </p>
-                  <a
-                    href="tel:+255616110100"
-                    className="mt-1 block hover:text-gold"
-                  >
-                    +255 616 110 100
-                  </a>
-                  <a
-                    href="tel:+255754300543"
-                    className="mt-1 block hover:text-gold"
-                  >
-                    +255 754 300 543
-                  </a>
+                  {settings.phone_primary && (
+                    <a
+                      href={`tel:${settings.phone_primary.replace(/\s/g, "")}`}
+                      className="mt-1 block hover:text-gold"
+                    >
+                      {settings.phone_primary}
+                    </a>
+                  )}
+                  {settings.phone_secondary && (
+                    <a
+                      href={`tel:${settings.phone_secondary.replace(/\s/g, "")}`}
+                      className="mt-1 block hover:text-gold"
+                    >
+                      {settings.phone_secondary}
+                    </a>
+                  )}
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -175,10 +202,10 @@ function Contact() {
                     Email
                   </p>
                   <a
-                    href="mailto:studio@millerartz.com"
+                    href={`mailto:${settings.email}`}
                     className="mt-1 block hover:text-gold"
                   >
-                    studio@millerartz.com
+                    {settings.email}
                   </a>
                 </div>
               </div>
@@ -188,34 +215,46 @@ function Contact() {
                   <p className="text-[10px] font-bold uppercase tracking-widest text-ink">
                     Location
                   </p>
-                  <p className="mt-1">Tanzania — visits by appointment.</p>
+                  <p className="mt-1">{settings.location}</p>
                 </div>
               </div>
             </div>
 
             <div className="mt-10 flex gap-3">
-              <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}`}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center gap-2 rounded-sm bg-gold px-4 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
-              >
-                <MessageCircle size={14} /> WhatsApp
-              </a>
-              <a
-                href="https://instagram.com"
-                aria-label="Instagram"
-                className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold"
-              >
-                <Instagram size={16} />
-              </a>
-              <a
-                href="https://facebook.com"
-                aria-label="Facebook"
-                className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold"
-              >
-                <Facebook size={16} />
-              </a>
+              {settings.whatsapp_number && (
+                <a
+                  href={`https://wa.me/${settings.whatsapp_number}`}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex items-center gap-2 rounded-sm bg-gold px-4 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
+                >
+                  <MessageCircle size={14} /> WhatsApp
+                </a>
+              )}
+              {/* Social icons only render once a real profile URL is saved in
+                  the Studio — better no icon than one linking to instagram.com. */}
+              {settings.instagram_url && (
+                <a
+                  href={settings.instagram_url}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Instagram"
+                  className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold"
+                >
+                  <Instagram size={16} />
+                </a>
+              )}
+              {settings.facebook_url && (
+                <a
+                  href={settings.facebook_url}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Facebook"
+                  className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold"
+                >
+                  <Facebook size={16} />
+                </a>
+              )}
             </div>
 
             <div className="mt-10 border border-dashed border-ink/15 bg-paper p-5 text-xs text-ink/50">
@@ -329,8 +368,12 @@ function Contact() {
               <div className="flex flex-wrap items-center gap-4 pt-4">
                 <button
                   type="submit"
-                  className="rounded-sm bg-gold px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
+                  disabled={status === "sending"}
+                  className="inline-flex items-center gap-2 rounded-sm bg-gold px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft disabled:opacity-60"
                 >
+                  {status === "sending" && (
+                    <Loader2 size={14} className="animate-spin" />
+                  )}
                   Send message
                 </button>
                 <button
@@ -342,9 +385,11 @@ function Contact() {
                 </button>
                 {status === "sent" && (
                   <p className="text-sm italic text-gold">
-                    Opening your email app with the message ready to send...
+                    Received — your message is with the studio. Your email app
+                    should also be opening with a copy.
                   </p>
                 )}
+                {error && <p className="text-sm text-red-400">{error}</p>}
               </div>
             </form>
           </div>
