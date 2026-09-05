@@ -82,7 +82,7 @@ function Home() {
   return (
     <Layout>
       {/* Hero — a scattered gallery wall, not a slideshow. Every piece invites a hover. */}
-      <section className="grain relative overflow-hidden pb-20 pt-14 md:pb-28 md:pt-20">
+      <section className="grain relative overflow-hidden pb-28 pt-14 md:pb-36 md:pt-20">
         <div className="glow-gold pointer-events-none absolute -left-40 -top-20 h-[520px] w-[520px] rounded-full opacity-[0.22] blur-3xl" />
         <div className="glow-teal pointer-events-none absolute -right-32 top-32 h-[420px] w-[420px] rounded-full opacity-[0.18] blur-3xl" />
         <div className="glow-coral pointer-events-none absolute bottom-0 left-1/3 h-[360px] w-[360px] rounded-full opacity-[0.14] blur-3xl" />
@@ -114,6 +114,24 @@ function Home() {
                 — hyperrealistic portraits, wildlife in oil and acrylic, murals,
                 and whatever you bring us next.
               </p>
+
+              {/* Scrolling ribbon of the collection, sitting under the intro
+                  where it has room to breathe. */}
+              <div className="glass mt-8 overflow-hidden rounded-full py-3 shadow-xl">
+                <div className="animate-marquee flex w-max gap-4 px-4">
+                  {[...marqueeIds, ...marqueeIds]
+                    .map((id) => byId(id))
+                    .filter((a): a is Artwork => Boolean(a))
+                    .map((a, i) => (
+                      <img
+                        key={`${a.id}-${i}`}
+                        src={a.image}
+                        alt=""
+                        className="h-14 w-14 shrink-0 rounded-full object-cover opacity-95 ring-2 ring-white/25"
+                      />
+                    ))}
+                </div>
+              </div>
 
               <div className="mt-8 flex flex-wrap gap-2">
                 {quickCategories.map((c) => (
@@ -177,21 +195,6 @@ function Home() {
                     z={40}
                   />
                 </div>
-                <div className="glass absolute -top-5 left-1/2 z-50 w-[108%] -translate-x-1/2 overflow-hidden rounded-full py-3 shadow-2xl">
-                  <div className="animate-marquee flex w-max gap-4 px-4">
-                    {[...marqueeIds, ...marqueeIds]
-                      .map((id) => byId(id))
-                      .filter((a): a is Artwork => Boolean(a))
-                      .map((a, i) => (
-                        <img
-                          key={`${a.id}-${i}`}
-                          src={a.image}
-                          alt=""
-                          className="h-14 w-14 shrink-0 rounded-full object-cover opacity-95 ring-2 ring-white/25"
-                        />
-                      ))}
-                  </div>
-                </div>
               </div>
 
               {/* Mobile / tablet — slides stacked in front of one another,
@@ -216,9 +219,22 @@ function Home() {
             </Link>
           </div>
         </div>
+        {/* Torn edge pinned to the very bottom of the section — the hero's
+            pb- clears it, so it never rides up over the intro copy. */}
+        {/* Inline positioning deliberately: the .frayed-bottom utility sets
+            position:relative itself, which beat the absolute class and left
+            the torn edge sitting on top of the intro copy. */}
         <div
           className="frayed-bottom"
-          style={{ "--frayed-color": "var(--color-gallery)" } as CSSProperties}
+          style={
+            {
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              "--frayed-color": "var(--color-gallery)",
+            } as CSSProperties
+          }
         />
       </section>
 
