@@ -180,6 +180,20 @@
     transform: scale(1.08);
   }
 }
+/* Gallery spotlight over the hero bouquet — breathes very slightly so it
+   reads as a lit stage rather than a static gradient. */
+@keyframes spotlight-breathe {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: translateX(-50%) scaleX(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(1.06);
+  }
+}
+
 /* The colour field in motion. Each gradient layer travels a different path
    at a different rate, so the mix never repeats the same way twice within a
    cycle — the veil (first layer) and the wave image (last) stay put. */
@@ -263,6 +277,9 @@
 }
 @utility animate-marquee {
   animation: marquee-x 32s linear infinite;
+}
+@utility animate-spotlight {
+  animation: spotlight-breathe 7s ease-in-out infinite;
 }
 
 /* Gradient-stroke frame — wrap an image in this, keep the image's own

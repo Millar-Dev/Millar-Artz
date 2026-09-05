@@ -43,17 +43,20 @@ export const Route = createFileRoute("/studio")({
   loader: async () => {
     const { isAdmin } = await checkAdminSession();
     if (!isAdmin) return { isAdmin: false as const };
-    const [rows, portrait, inquiries, subscribers, settings] = await Promise.all([
-      listArtworks(),
-      getSiteImage({ data: "about_portrait" }),
-      listInquiries(),
-      listSubscribers(),
-      getSiteSettings(),
-    ]);
+    const [rows, portrait, studioPhoto, inquiries, subscribers, settings] =
+      await Promise.all([
+        listArtworks(),
+        getSiteImage({ data: "about_portrait" }),
+        getSiteImage({ data: "studio_photo" }),
+        listInquiries(),
+        listSubscribers(),
+        getSiteSettings(),
+      ]);
     return {
       isAdmin: true as const,
       artworks: rows.map(fromArtworkRow),
       portrait,
+      studioPhoto,
       inquiries,
       subscribers,
       settings,
@@ -80,6 +83,7 @@ function Studio() {
       <Dashboard
         initialArtworks={data.artworks}
         initialPortrait={data.portrait}
+        initialStudioPhoto={data.studioPhoto}
         initialInquiries={data.inquiries}
         initialSubscribers={data.subscribers}
         initialSettings={data.settings}
@@ -150,6 +154,7 @@ const emptyDraft = (): Partial<Artwork> => ({
 function Dashboard({
   initialArtworks,
   initialPortrait,
+  initialStudioPhoto,
   initialInquiries,
   initialSubscribers,
   initialSettings,
@@ -157,6 +162,7 @@ function Dashboard({
 }: {
   initialArtworks: Artwork[];
   initialPortrait: { id: string; image_path: string; caption: string } | null;
+  initialStudioPhoto: { id: string; image_path: string; caption: string } | null;
   initialInquiries: InquiryRow[];
   initialSubscribers: SubscriberRow[];
   initialSettings: SiteSettings;
@@ -166,6 +172,9 @@ function Dashboard({
   const [editing, setEditing] = useState<Partial<Artwork> | null>(null);
   const [portrait, setPortrait] = useState(
     initialPortrait ?? { id: "about_portrait", image_path: "", caption: "" },
+  );
+  const [studioPhoto, setStudioPhoto] = useState(
+    initialStudioPhoto ?? { id: "studio_photo", image_path: "", caption: "" },
   );
 
   async function refresh() {
@@ -232,6 +241,25 @@ function Dashboard({
             About page portrait
           </p>
           <PortraitEditor portrait={portrait} onSaved={setPortrait} />
+        </div>
+      </div>
+
+      {/* Studio photograph — shown in the About page's studio section */}
+      <div className="mt-4 flex flex-wrap items-center gap-6 border border-ink/10 bg-paper p-6">
+        <img
+          src={studioPhoto.image_path || undefined}
+          alt=""
+          className="h-24 w-32 rounded-sm bg-ink/5 object-cover"
+        />
+        <div className="min-w-[240px] flex-1">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/60">
+            Studio photo
+          </p>
+          <p className="mt-1 text-xs text-ink/45">
+            Appears in “The Studio” section on the About page. Until you upload
+            one, that section shows a placeholder note instead.
+          </p>
+          <PortraitEditor portrait={studioPhoto} onSaved={setStudioPhoto} />
         </div>
       </div>
 
@@ -657,6 +685,8 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
   );
 }
 
+/** Caption + replace-photo control for any single site image (the About
+ *  portrait, the studio photograph, and anything added later). */
 function PortraitEditor({
   portrait,
   onSaved,
@@ -667,13 +697,14 @@ function PortraitEditor({
   const [caption, setCaption] = useState(portrait.caption);
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const id = portrait.id;
 
   async function save(newImagePath?: string) {
     setBusy(true);
     try {
       const imagePath = newImagePath ?? portrait.image_path;
-      await updateSiteImage({ data: { id: "about_portrait", imagePath, caption } });
-      onSaved({ id: "about_portrait", image_path: imagePath, caption });
+      await updateSiteImage({ data: { id, imagePath, caption } });
+      onSaved({ id, image_path: imagePath, caption });
     } finally {
       setBusy(false);
     }

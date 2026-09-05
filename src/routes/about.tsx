@@ -3,16 +3,26 @@ import { Layout } from "@/components/site/Layout";
 import fallbackPortrait from "@/assets/me-portrait.jpg";
 import brushMark from "@/assets/brand/miller-artz-logo-sign.jpg";
 import { getSiteImage } from "@/lib/data/site-images";
+import { getSiteSettings } from "@/lib/data/site-settings";
+import { MapPin, Clock, Palette, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   loader: async () => {
-    const portrait = await getSiteImage({ data: "about_portrait" });
+    const [portrait, studio, settings] = await Promise.all([
+      getSiteImage({ data: "about_portrait" }),
+      getSiteImage({ data: "studio_photo" }),
+      getSiteSettings(),
+    ]);
     return {
       portrait: portrait ?? {
         id: "about_portrait",
         image_path: fallbackPortrait,
         caption: "Miller S.K. — Founder, Miller Artz",
       },
+      // Null until a studio photo is uploaded — the section renders without
+      // an image rather than showing a stock placeholder.
+      studio,
+      settings,
     };
   },
   head: () => ({
@@ -65,7 +75,7 @@ const disciplinesWorked = [
 ];
 
 function About() {
-  const { portrait } = Route.useLoaderData();
+  const { portrait, studio, settings } = Route.useLoaderData();
 
   return (
     <Layout>
@@ -155,6 +165,119 @@ function About() {
                 {d}
               </span>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* The studio itself — where the work actually gets made */}
+      <section className="grain relative overflow-hidden py-24">
+        <div className="relative mx-auto max-w-7xl px-6">
+          <div className="grid items-center gap-14 lg:grid-cols-12">
+            <div className="min-w-0 lg:col-span-6">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+                The Studio
+              </span>
+              <h2 className="mt-5 font-display text-4xl italic text-ink md:text-5xl">
+                Where the work happens.
+              </h2>
+              <div className="mt-6 space-y-4 text-base font-light leading-relaxed text-ink/70">
+                <p>
+                  Every piece on this site is made by hand in one room in
+                  Tanzania — no assistants, no print reproductions passed off as
+                  originals. Graphite and charcoal work happens at the desk;
+                  canvases go up on the easel; murals leave the studio entirely
+                  and get painted on site.
+                </p>
+                <p>
+                  It doubles as the meeting room. If you're commissioning
+                  something substantial, you're welcome to come and see work in
+                  progress, look at finished pieces in person, and talk through
+                  sizes and framing properly — photographs flatten things, and
+                  scale is hard to judge on a screen.
+                </p>
+              </div>
+
+              <dl className="mt-10 grid gap-6 sm:grid-cols-2">
+                <div className="flex items-start gap-3">
+                  <MapPin size={17} className="mt-0.5 shrink-0 text-gold" />
+                  <div>
+                    <dt className="text-[10px] font-bold uppercase tracking-widest text-ink">
+                      Location
+                    </dt>
+                    <dd className="mt-1 text-sm text-ink/65">
+                      {settings.location}
+                    </dd>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Clock size={17} className="mt-0.5 shrink-0 text-gold" />
+                  <div>
+                    <dt className="text-[10px] font-bold uppercase tracking-widest text-ink">
+                      Visits
+                    </dt>
+                    <dd className="mt-1 text-sm text-ink/65">
+                      By appointment — message ahead and we'll find a time.
+                    </dd>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Palette size={17} className="mt-0.5 shrink-0 text-gold" />
+                  <div>
+                    <dt className="text-[10px] font-bold uppercase tracking-widest text-ink">
+                      Made here
+                    </dt>
+                    <dd className="mt-1 text-sm text-ink/65">
+                      Graphite, charcoal, acrylic and oil — plus mural work on
+                      location.
+                    </dd>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Mail size={17} className="mt-0.5 shrink-0 text-gold" />
+                  <div>
+                    <dt className="text-[10px] font-bold uppercase tracking-widest text-ink">
+                      Arrange a visit
+                    </dt>
+                    <dd className="mt-1 text-sm text-ink/65">
+                      <Link
+                        to="/contact"
+                        search={{ type: "Studio visit" }}
+                        className="text-gold hover:underline"
+                      >
+                        Send a message →
+                      </Link>
+                    </dd>
+                  </div>
+                </div>
+              </dl>
+            </div>
+
+            <div className="min-w-0 lg:col-span-6">
+              {studio ? (
+                <figure>
+                  <div className="gradient-stroke overflow-hidden rounded-lg p-px shadow-2xl">
+                    <img
+                      src={studio.image_path}
+                      alt={studio.caption || "Inside the Miller Artz studio"}
+                      loading="lazy"
+                      className="aspect-[4/3] w-full rounded-lg object-cover"
+                    />
+                  </div>
+                  {studio.caption && (
+                    <figcaption className="mt-3 text-xs uppercase tracking-[0.15em] text-ink/50">
+                      {studio.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              ) : (
+                <div className="flex aspect-[4/3] items-center justify-center rounded-lg border border-dashed border-ink/20 bg-paper/50 p-8 text-center">
+                  <p className="max-w-xs text-sm text-ink/45">
+                    A photograph of the studio goes here — upload one in the
+                    Studio under “Studio photo”.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>

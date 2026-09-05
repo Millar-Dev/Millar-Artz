@@ -121,7 +121,11 @@ function Home() {
 
         <div className="relative mx-auto max-w-7xl px-6">
           <div className="grid items-center gap-16 lg:grid-cols-12">
-            <div className="lg:col-span-6">
+            {/* min-w-0 is load-bearing: the marquee inside is w-max (~1170px
+                of thumbnails), and a grid item defaults to min-width:auto —
+                so without this the column grows to fit it and shoves the
+                headline and copy off the side of a phone screen. */}
+            <div className="min-w-0 lg:col-span-6">
               <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">
                 The Art of Imagination
               </span>
@@ -149,7 +153,7 @@ function Home() {
 
               {/* Scrolling ribbon of the collection, sitting under the intro
                   where it has room to breathe. */}
-              <div className="glass mt-8 overflow-hidden rounded-full py-3 shadow-xl">
+              <div className="glass mt-8 max-w-md overflow-hidden rounded-full py-3 shadow-xl">
                 <div className="animate-marquee flex w-max gap-4 px-4">
                   {[...marqueeIds, ...marqueeIds]
                     .map((id) => byId(id))
@@ -202,6 +206,25 @@ function Home() {
                   Hover any piece to bring it upright and forward. */}
               <div className="relative hidden lg:block">
                 <div className="relative mx-auto aspect-[5/4]">
+                  {/* Gallery spotlight — a soft cone thrown down over the
+                      bouquet from above, plus a warm pool where it lands. */}
+                  <div
+                    aria-hidden="true"
+                    className="animate-spotlight pointer-events-none absolute -top-[18%] left-1/2 z-0 h-[85%] w-[62%] -translate-x-1/2 blur-2xl"
+                    style={{
+                      background:
+                        "linear-gradient(to bottom, color-mix(in oklab, var(--gold) 42%, transparent), transparent 78%)",
+                      clipPath: "polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%)",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="animate-spotlight pointer-events-none absolute bottom-[2%] left-1/2 z-0 h-[34%] w-[72%] -translate-x-1/2 rounded-[50%] blur-3xl"
+                    style={{
+                      background:
+                        "radial-gradient(ellipse at center, color-mix(in oklab, var(--gold) 34%, transparent), transparent 70%)",
+                    }}
+                  />
                   {heroPieces.map((artwork, i) =>
                     artwork ? (
                       <HeroCard
