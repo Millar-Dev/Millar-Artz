@@ -180,6 +180,25 @@
     transform: scale(1.08);
   }
 }
+/* Dust drifting down through the beam. Each mote gets its own delay and
+   duration inline, so the fall never looks synchronised. */
+@keyframes mote-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -12%, 0);
+  }
+  12% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--mote-drift, 10px), 115%, 0);
+  }
+}
+
 /* Gallery spotlight over the hero bouquet — breathes very slightly so it
    reads as a lit stage rather than a static gradient. */
 @keyframes spotlight-breathe {
@@ -280,6 +299,9 @@
 }
 @utility animate-spotlight {
   animation: spotlight-breathe 7s ease-in-out infinite;
+}
+@utility animate-mote {
+  animation: mote-fall 9s linear infinite;
 }
 
 /* Gradient-stroke frame — wrap an image in this, keep the image's own

@@ -101,6 +101,23 @@ const DEFAULT_HERO_IDS = [
  *  rotating a card about its bottom edge swings its top corner outward, so
  *  a petal flush to the edge gets its corner shaved off by the hero's
  *  overflow-hidden on narrower desktops. The inset is the swing clearance. */
+/** Dust motes falling through the spotlight. Irregular sizes, offsets and
+ *  durations so the drift never reads as a repeating pattern. */
+const MOTES = [
+  { left: "6%", size: "3px", delay: "0s", duration: "11s", drift: "14px" },
+  { left: "14%", size: "2px", delay: "3.4s", duration: "9s", drift: "-10px" },
+  { left: "23%", size: "4px", delay: "1.2s", duration: "13s", drift: "18px" },
+  { left: "31%", size: "2px", delay: "6.1s", duration: "10s", drift: "-6px" },
+  { left: "39%", size: "3px", delay: "2.3s", duration: "12s", drift: "10px" },
+  { left: "47%", size: "2px", delay: "7.8s", duration: "9.5s", drift: "-14px" },
+  { left: "55%", size: "4px", delay: "0.7s", duration: "14s", drift: "8px" },
+  { left: "63%", size: "2px", delay: "4.6s", duration: "10.5s", drift: "-12px" },
+  { left: "71%", size: "3px", delay: "8.9s", duration: "11.5s", drift: "16px" },
+  { left: "79%", size: "2px", delay: "2.9s", duration: "9.8s", drift: "-8px" },
+  { left: "87%", size: "3px", delay: "5.5s", duration: "12.5s", drift: "12px" },
+  { left: "94%", size: "2px", delay: "10.2s", duration: "10.8s", drift: "-16px" },
+];
+
 const BOUQUET = [
   { className: "bottom-[7%] left-[12%] w-[30%] origin-bottom rotate-[-20deg]", z: 10 },
   { className: "bottom-[2%] left-[19%] w-[34%] origin-bottom rotate-[-10deg]", z: 20 },
@@ -226,33 +243,66 @@ function Home() {
                       and a warm pool at the base where the light lands. All
                       sit at z-0, under every card, so the light falls behind
                       the work rather than washing over it. */}
+                  {/* Screen blending is what makes these read as emitted
+                      light rather than a translucent film — warm gold at low
+                      alpha over a warm brown ground is nearly invisible
+                      otherwise, which is exactly how the first attempt
+                      failed. */}
                   <div
                     aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute -inset-x-[22%] -top-[30%] bottom-[-14%] z-0"
+                    className="animate-spotlight pointer-events-none absolute -inset-x-[24%] -top-[34%] bottom-[-16%] z-0"
                     style={{
                       background:
-                        "radial-gradient(ellipse 58% 52% at 50% 34%, color-mix(in oklab, var(--gold) 26%, transparent) 0%, color-mix(in oklab, var(--gold) 12%, transparent) 38%, transparent 72%)",
-                      filter: "blur(28px)",
+                        "radial-gradient(ellipse 58% 54% at 50% 34%, color-mix(in oklab, var(--gold) 62%, transparent) 0%, color-mix(in oklab, var(--gold) 30%, transparent) 40%, transparent 74%)",
+                      filter: "blur(40px)",
+                      mixBlendMode: "screen",
                     }}
                   />
                   <div
                     aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute inset-x-[6%] top-[-6%] bottom-[6%] z-0"
+                    className="animate-spotlight pointer-events-none absolute inset-x-[2%] top-[-10%] bottom-[4%] z-0"
                     style={{
                       background:
-                        "radial-gradient(ellipse 46% 44% at 50% 42%, color-mix(in oklab, var(--gold-soft) 34%, transparent) 0%, color-mix(in oklab, var(--gold) 16%, transparent) 45%, transparent 74%)",
-                      filter: "blur(34px)",
+                        "radial-gradient(ellipse 44% 46% at 50% 40%, color-mix(in oklab, var(--gold-soft) 85%, transparent) 0%, color-mix(in oklab, var(--gold) 45%, transparent) 42%, transparent 76%)",
+                      filter: "blur(46px)",
+                      mixBlendMode: "screen",
                     }}
                   />
                   <div
                     aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute inset-x-[10%] bottom-[-4%] z-0 h-[30%]"
+                    className="animate-spotlight pointer-events-none absolute inset-x-[8%] bottom-[-6%] z-0 h-[34%]"
                     style={{
                       background:
-                        "radial-gradient(ellipse 52% 60% at 50% 70%, color-mix(in oklab, var(--gold) 30%, transparent) 0%, transparent 68%)",
-                      filter: "blur(30px)",
+                        "radial-gradient(ellipse 54% 62% at 50% 72%, color-mix(in oklab, var(--gold) 70%, transparent) 0%, transparent 70%)",
+                      filter: "blur(38px)",
+                      mixBlendMode: "screen",
                     }}
                   />
+
+                  {/* Dust drifting down through the beam. */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-[14%] -top-[12%] bottom-[8%] z-0 overflow-hidden"
+                  >
+                    {MOTES.map((m, i) => (
+                      <span
+                        key={i}
+                        className="animate-mote absolute top-0 rounded-full bg-gold-soft"
+                        style={
+                          {
+                            left: m.left,
+                            height: m.size,
+                            width: m.size,
+                            opacity: 0,
+                            filter: "blur(0.5px)",
+                            animationDelay: m.delay,
+                            animationDuration: m.duration,
+                            "--mote-drift": m.drift,
+                          } as CSSProperties
+                        }
+                      />
+                    ))}
+                  </div>
                   {heroPieces.map((artwork, i) =>
                     artwork ? (
                       <HeroCard
