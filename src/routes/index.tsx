@@ -4,13 +4,21 @@ import { Layout } from "@/components/site/Layout";
 import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { getSiteSettings } from "@/lib/data/site-settings";
+import { getSiteImage } from "@/lib/data/site-images";
+import artistPortraitFallback from "@/assets/me-portrait.jpg";
 import { Music, PersonStanding, Sparkles, Box } from "lucide-react";
 import type { Artwork, ArtworkCategory, Discipline } from "@/lib/gallery-data";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [rows, settings] = await Promise.all([listArtworks(), getSiteSettings()]);
-    return { artworks: rows.map(fromArtworkRow), settings };
+    const [rows, settings, portrait] = await Promise.all([
+      listArtworks(),
+      getSiteSettings(),
+      // Same record the About page uses, so replacing the portrait in the
+      // Studio updates the artist message here too.
+      getSiteImage({ data: "about_portrait" }),
+    ]);
+    return { artworks: rows.map(fromArtworkRow), settings, portrait };
   },
   head: () => ({
     meta: [
@@ -87,18 +95,24 @@ const DEFAULT_HERO_IDS = [
 
 /** The bouquet: five stems fanning out of one point low-centre. Outer petals
  *  sit higher and lean further out; the centre stem stands tallest and in
- *  front, the way a gathered bunch reads. Index order runs left → right. */
+ *  front, the way a gathered bunch reads. Index order runs left → right.
+ *
+ *  The outer pair are inset from the stage edges rather than pinned to 0:
+ *  rotating a card about its bottom edge swings its top corner outward, so
+ *  a petal flush to the edge gets its corner shaved off by the hero's
+ *  overflow-hidden on narrower desktops. The inset is the swing clearance. */
 const BOUQUET = [
-  { className: "bottom-[6%] left-0 w-[34%] origin-bottom rotate-[-24deg]", z: 10 },
-  { className: "bottom-[2%] left-[17%] w-[36%] origin-bottom rotate-[-12deg]", z: 20 },
-  { className: "bottom-0 left-1/2 w-[38%] -translate-x-1/2 origin-bottom rotate-0", z: 40 },
-  { className: "bottom-[2%] right-[17%] w-[36%] origin-bottom rotate-[12deg]", z: 20 },
-  { className: "bottom-[6%] right-0 w-[34%] origin-bottom rotate-[24deg]", z: 10 },
+  { className: "bottom-[7%] left-[12%] w-[30%] origin-bottom rotate-[-20deg]", z: 10 },
+  { className: "bottom-[2%] left-[19%] w-[34%] origin-bottom rotate-[-10deg]", z: 20 },
+  { className: "bottom-0 left-1/2 w-[36%] -translate-x-1/2 origin-bottom rotate-0", z: 40 },
+  { className: "bottom-[2%] right-[19%] w-[34%] origin-bottom rotate-[10deg]", z: 20 },
+  { className: "bottom-[7%] right-[12%] w-[30%] origin-bottom rotate-[20deg]", z: 10 },
 ];
 
 function Home() {
-  const { artworks, settings } = Route.useLoaderData();
+  const { artworks, settings, portrait } = Route.useLoaderData();
   const byId = (id: string) => artworks.find((a) => a.id === id);
+  const artistPortrait = portrait?.image_path || artistPortraitFallback;
 
   // Studio-chosen hero pieces, falling back to the defaults (and skipping any
   // id that no longer exists, so deleting an artwork can't blank the hero).
@@ -199,30 +213,44 @@ function Home() {
               </div>
             </div>
 
-            <div className="lg:col-span-6">
+            <div className="min-w-0 lg:col-span-6">
               {/* Desktop / large tablet — the pieces fan out of a single
                   point like flowers gathered in a bunch: tight and low in
                   the centre, opening wider and higher toward the edges.
                   Hover any piece to bring it upright and forward. */}
               <div className="relative hidden lg:block">
-                <div className="relative mx-auto aspect-[5/4]">
-                  {/* Gallery spotlight — a soft cone thrown down over the
-                      bouquet from above, plus a warm pool where it lands. */}
+                <div className="relative mx-auto aspect-[5/4] w-full max-w-[36rem]">
+                  {/* Studio spotlight. Three stacked radial gradients, no hard
+                      edges anywhere: a wide ambient wash that bleeds into the
+                      hero background, a brighter core centred on the bouquet,
+                      and a warm pool at the base where the light lands. All
+                      sit at z-0, under every card, so the light falls behind
+                      the work rather than washing over it. */}
                   <div
                     aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute -top-[18%] left-1/2 z-0 h-[85%] w-[62%] -translate-x-1/2 blur-2xl"
+                    className="animate-spotlight pointer-events-none absolute -inset-x-[22%] -top-[30%] bottom-[-14%] z-0"
                     style={{
                       background:
-                        "linear-gradient(to bottom, color-mix(in oklab, var(--gold) 42%, transparent), transparent 78%)",
-                      clipPath: "polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%)",
+                        "radial-gradient(ellipse 58% 52% at 50% 34%, color-mix(in oklab, var(--gold) 26%, transparent) 0%, color-mix(in oklab, var(--gold) 12%, transparent) 38%, transparent 72%)",
+                      filter: "blur(28px)",
                     }}
                   />
                   <div
                     aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute bottom-[2%] left-1/2 z-0 h-[34%] w-[72%] -translate-x-1/2 rounded-[50%] blur-3xl"
+                    className="animate-spotlight pointer-events-none absolute inset-x-[6%] top-[-6%] bottom-[6%] z-0"
                     style={{
                       background:
-                        "radial-gradient(ellipse at center, color-mix(in oklab, var(--gold) 34%, transparent), transparent 70%)",
+                        "radial-gradient(ellipse 46% 44% at 50% 42%, color-mix(in oklab, var(--gold-soft) 34%, transparent) 0%, color-mix(in oklab, var(--gold) 16%, transparent) 45%, transparent 74%)",
+                      filter: "blur(34px)",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="animate-spotlight pointer-events-none absolute inset-x-[10%] bottom-[-4%] z-0 h-[30%]"
+                    style={{
+                      background:
+                        "radial-gradient(ellipse 52% 60% at 50% 70%, color-mix(in oklab, var(--gold) 30%, transparent) 0%, transparent 68%)",
+                      filter: "blur(30px)",
                     }}
                   />
                   {heroPieces.map((artwork, i) =>
@@ -244,20 +272,43 @@ function Home() {
             </div>
           </div>
 
-          {/* Intro — a little about the artist, more on the About page */}
+          {/* The artist speaking directly to the visitor — portrait beside the
+              note on desktop, stacked on mobile. Deliberately restrained: a
+              hairline, a soft ground and one warm accent edge, so it reads as
+              a gallery placard rather than a chat app. */}
           <div className="mt-16 max-w-2xl border-t border-ink/10 pt-10 lg:mt-24">
-            <p className="text-base font-light leading-relaxed text-ink/70">
-              I'm Miller S.K. — the hand behind Miller Artz. What started as
-              graphite portraits and wildlife studies has grown into a studio
-              working across nine disciplines, based here in Tanzania and
-              built one commission at a time.
-            </p>
-            <Link
-              to="/about"
-              className="mt-4 inline-flex items-center gap-2 border-b border-gold/40 pb-1 text-sm font-medium text-gold transition-colors hover:border-gold"
-            >
-              More about me →
-            </Link>
+            <figure className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
+              <div className="relative shrink-0">
+                <span
+                  aria-hidden="true"
+                  className="absolute -inset-1 rounded-full bg-gold/25 blur-md"
+                />
+                <img
+                  src={artistPortrait}
+                  alt="Miller S.K., founder of Miller Artz"
+                  loading="lazy"
+                  className="relative h-16 w-16 rounded-full object-cover ring-1 ring-gold/40 sm:h-[4.5rem] sm:w-[4.5rem]"
+                />
+              </div>
+
+              <figcaption className="min-w-0 rounded-2xl rounded-tl-sm border border-ink/10 bg-paper/45 px-6 py-5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">
+                  Miller S.K.
+                </p>
+                <p className="mt-3 text-base font-light leading-relaxed text-ink/75">
+                  I'm Miller S.K. — the hand behind Miller Artz. What started as
+                  graphite portraits and wildlife studies has grown into a
+                  studio working across nine disciplines, based here in Tanzania
+                  and built one commission at a time.
+                </p>
+                <Link
+                  to="/about"
+                  className="mt-4 inline-flex items-center gap-2 border-b border-gold/40 pb-1 text-sm font-medium text-gold transition-colors hover:border-gold"
+                >
+                  More about me →
+                </Link>
+              </figcaption>
+            </figure>
           </div>
         </div>
         {/* Torn edge pinned to the very bottom of the section — the hero's
