@@ -3,13 +3,14 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { Layout } from "@/components/site/Layout";
 import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
+import { getSiteSettings } from "@/lib/data/site-settings";
 import { Music, PersonStanding, Sparkles, Box } from "lucide-react";
 import type { Artwork, ArtworkCategory, Discipline } from "@/lib/gallery-data";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const rows = await listArtworks();
-    return { artworks: rows.map(fromArtworkRow) };
+    const [rows, settings] = await Promise.all([listArtworks(), getSiteSettings()]);
+    return { artworks: rows.map(fromArtworkRow), settings };
   },
   head: () => ({
     meta: [
@@ -75,9 +76,40 @@ const mobileSlideIds = [
   "prism-dancer",
 ];
 
+/** Used when the Studio hasn't chosen a hero selection yet. */
+const DEFAULT_HERO_IDS = [
+  "uprising",
+  "kindred-bee-eaters",
+  "woman-of-the-savanna",
+  "the-storyteller",
+  "prism-dancer",
+];
+
+/** The bouquet: five stems fanning out of one point low-centre. Outer petals
+ *  sit higher and lean further out; the centre stem stands tallest and in
+ *  front, the way a gathered bunch reads. Index order runs left → right. */
+const BOUQUET = [
+  { className: "bottom-[6%] left-0 w-[34%] origin-bottom rotate-[-24deg]", z: 10 },
+  { className: "bottom-[2%] left-[17%] w-[36%] origin-bottom rotate-[-12deg]", z: 20 },
+  { className: "bottom-0 left-1/2 w-[38%] -translate-x-1/2 origin-bottom rotate-0", z: 40 },
+  { className: "bottom-[2%] right-[17%] w-[36%] origin-bottom rotate-[12deg]", z: 20 },
+  { className: "bottom-[6%] right-0 w-[34%] origin-bottom rotate-[24deg]", z: 10 },
+];
+
 function Home() {
-  const { artworks } = Route.useLoaderData();
+  const { artworks, settings } = Route.useLoaderData();
   const byId = (id: string) => artworks.find((a) => a.id === id);
+
+  // Studio-chosen hero pieces, falling back to the defaults (and skipping any
+  // id that no longer exists, so deleting an artwork can't blank the hero).
+  const chosenIds = (settings.hero_collage_ids || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const heroPieces = (chosenIds.length ? chosenIds : DEFAULT_HERO_IDS)
+    .map(byId)
+    .filter((a): a is Artwork => Boolean(a))
+    .slice(0, BOUQUET.length);
 
   return (
     <Layout>
@@ -164,36 +196,22 @@ function Home() {
             </div>
 
             <div className="lg:col-span-6">
-              {/* Desktop / large tablet — fanned collage, a scrolling ribbon
-                  of thumbnails layered above it. Hover any piece to bring it
-                  forward. */}
+              {/* Desktop / large tablet — the pieces fan out of a single
+                  point like flowers gathered in a bunch: tight and low in
+                  the centre, opening wider and higher toward the edges.
+                  Hover any piece to bring it upright and forward. */}
               <div className="relative hidden lg:block">
-                <div className="relative mx-auto aspect-square">
-                  <HeroCard
-                    artwork={byId("woman-of-the-savanna")}
-                    className="left-[8%] top-0 w-[52%] rotate-[-4deg]"
-                    z={10}
-                  />
-                  <HeroCard
-                    artwork={byId("kindred-bee-eaters")}
-                    className="right-0 top-[6%] w-[42%] rotate-[7deg]"
-                    z={20}
-                  />
-                  <HeroCard
-                    artwork={byId("uprising")}
-                    className="bottom-[18%] left-0 w-[40%] rotate-[9deg]"
-                    z={20}
-                  />
-                  <HeroCard
-                    artwork={byId("the-storyteller")}
-                    className="bottom-[4%] right-[6%] w-[44%] rotate-[-6deg]"
-                    z={30}
-                  />
-                  <HeroCard
-                    artwork={byId("prism-dancer")}
-                    className="left-[28%] top-[38%] w-[34%] rotate-[3deg]"
-                    z={40}
-                  />
+                <div className="relative mx-auto aspect-[5/4]">
+                  {heroPieces.map((artwork, i) =>
+                    artwork ? (
+                      <HeroCard
+                        key={artwork.id}
+                        artwork={artwork}
+                        className={BOUQUET[i].className}
+                        z={BOUQUET[i].z}
+                      />
+                    ) : null,
+                  )}
                 </div>
               </div>
 

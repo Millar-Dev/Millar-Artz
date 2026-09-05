@@ -17,15 +17,18 @@ const BLOB_C =
 // Spread down the full height of the page (percentages, not vh) so splashes
 // keep appearing the whole way through a scroll rather than clustering in the
 // first screen. Staggered delays keep them from pulsing in unison.
+// Bright studio-palette colours rather than the backdrop's earth tones — the
+// old sienna/burnt splashes were near-invisible against a warm background.
 const splashes = [
-  { className: "-left-16 top-[4%] h-56 w-56 md:h-72 md:w-72", color: "var(--grad-vermilion)", delay: "0s", duration: "15s", path: BLOB_A },
-  { className: "left-[36%] top-[11%] h-40 w-40 md:h-52 md:w-52", color: "var(--grad-burnt)", delay: "7s", duration: "13s", path: BLOB_C },
-  { className: "-right-20 top-[22%] h-64 w-64 md:h-80 md:w-80", color: "var(--grad-sienna)", delay: "3s", duration: "17s", path: BLOB_B },
-  { className: "-left-24 top-[38%] h-60 w-60 md:h-80 md:w-80", color: "var(--grad-sienna)", delay: "11s", duration: "16s", path: BLOB_C },
-  { className: "right-[12%] top-[50%] h-44 w-44 md:h-60 md:w-60", color: "var(--grad-vermilion)", delay: "5s", duration: "14s", path: BLOB_A },
-  { className: "left-[8%] top-[63%] h-52 w-52 md:h-72 md:w-72", color: "var(--grad-burnt)", delay: "9s", duration: "18s", path: BLOB_B },
-  { className: "-right-16 top-[76%] h-56 w-56 md:h-72 md:w-72", color: "var(--grad-vermilion)", delay: "2s", duration: "15s", path: BLOB_C },
-  { className: "left-[30%] top-[89%] h-48 w-48 md:h-64 md:w-64", color: "var(--grad-sienna)", delay: "13s", duration: "16s", path: BLOB_A },
+  { className: "-left-16 top-[4%] h-56 w-56 md:h-72 md:w-72", color: "#f5c542", delay: "0s", duration: "15s", path: BLOB_A }, // yellow
+  { className: "left-[36%] top-[11%] h-40 w-40 md:h-52 md:w-52", color: "#3fa34d", delay: "6s", duration: "13s", path: BLOB_C }, // green
+  { className: "-right-20 top-[21%] h-64 w-64 md:h-80 md:w-80", color: "#ec4899", delay: "3s", duration: "17s", path: BLOB_B }, // pink
+  { className: "-left-24 top-[36%] h-60 w-60 md:h-80 md:w-80", color: "#3b82f6", delay: "10s", duration: "16s", path: BLOB_C }, // blue
+  { className: "right-[12%] top-[49%] h-44 w-44 md:h-60 md:w-60", color: "#ffffff", delay: "4s", duration: "14s", path: BLOB_A }, // white
+  { className: "left-[8%] top-[62%] h-52 w-52 md:h-72 md:w-72", color: "#e11d48", delay: "8s", duration: "18s", path: BLOB_B }, // red
+  { className: "-right-16 top-[75%] h-56 w-56 md:h-72 md:w-72", color: "#f5c542", delay: "2s", duration: "15s", path: BLOB_C }, // yellow
+  { className: "left-[28%] top-[86%] h-48 w-48 md:h-64 md:w-64", color: "#3fa34d", delay: "12s", duration: "16s", path: BLOB_A }, // green
+  { className: "right-[26%] top-[95%] h-44 w-44 md:h-60 md:w-60", color: "#3b82f6", delay: "5s", duration: "17s", path: BLOB_B }, // blue
 ];
 
 export function PaintSplashes() {
@@ -38,7 +41,7 @@ export function PaintSplashes() {
         <svg
           key={i}
           viewBox="-100 -100 200 200"
-          className={`animate-splash absolute opacity-0 blur-2xl ${s.className}`}
+          className={`animate-splash absolute opacity-0 blur-xl ${s.className}`}
           style={{
             animationDelay: s.delay,
             animationDuration: s.duration,

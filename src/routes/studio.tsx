@@ -25,6 +25,7 @@ import {
 import {
   getSiteSettings,
   updateSiteSettings,
+  HERO_COLLAGE_SLOTS,
   type SiteSettings,
 } from "@/lib/data/site-settings";
 import {
@@ -293,6 +294,7 @@ function Dashboard({
         )}
       </div>
 
+      <HeroCollagePanel initial={initialSettings} artworks={artworks} />
       <InquiriesPanel initial={initialInquiries} />
       <SubscribersPanel initial={initialSubscribers} />
       <SettingsPanel initial={initialSettings} />
@@ -308,6 +310,114 @@ function Dashboard({
           }}
         />
       )}
+    </section>
+  );
+}
+
+/** Which pieces fill the fanned bouquet on the home page, and in what order.
+ *  Slot 3 is the centre stem — the one that stands tallest and in front. */
+function HeroCollagePanel({
+  initial,
+  artworks,
+}: {
+  initial: SiteSettings;
+  artworks: Artwork[];
+}) {
+  const parse = (v: string) =>
+    v
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+  const [slots, setSlots] = useState<string[]>(() => {
+    const saved = parse(initial.hero_collage_ids || "");
+    return Array.from(
+      { length: HERO_COLLAGE_SLOTS },
+      (_, i) => saved[i] ?? artworks[i]?.id ?? "",
+    );
+  });
+  const [busy, setBusy] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  function setSlot(index: number, id: string) {
+    setSlots((s) => s.map((v, i) => (i === index ? id : v)));
+    setSaved(false);
+  }
+
+  async function save() {
+    setBusy(true);
+    try {
+      await updateSiteSettings({
+        data: { hero_collage_ids: slots.filter(Boolean).join(",") },
+      });
+      setSaved(true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const positions = [
+    "Left petal",
+    "Inner left",
+    "Centre (front)",
+    "Inner right",
+    "Right petal",
+  ];
+
+  return (
+    <section className="mt-16 border-t border-ink/10 pt-10">
+      <h2 className="font-display text-2xl italic text-ink">Home hero bouquet</h2>
+      <p className="mt-1 text-xs text-ink/50">
+        The five pieces fanned out at the top of the home page, left to right.
+        The centre one sits tallest and in front.
+      </p>
+
+      <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {slots.map((id, i) => {
+          const chosen = artworks.find((a) => a.id === id);
+          return (
+            <div key={i} className="border border-ink/10 bg-paper p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
+                {positions[i]}
+              </p>
+              <div className="mt-3 flex items-center gap-3">
+                <div className="h-20 w-16 shrink-0 overflow-hidden rounded-sm bg-ink/10">
+                  {chosen && (
+                    <img
+                      src={chosen.image}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  )}
+                </div>
+                <select
+                  value={id}
+                  onChange={(e) => setSlot(i, e.target.value)}
+                  className="w-full border-b border-ink/20 bg-transparent py-2 text-sm text-ink focus:border-gold focus:outline-none"
+                >
+                  <option value="">— empty —</option>
+                  {artworks.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 flex items-center gap-4">
+        <button
+          onClick={save}
+          disabled={busy}
+          className="inline-flex items-center gap-2 rounded-sm bg-gold px-6 py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-band disabled:opacity-50"
+        >
+          {busy && <Loader2 size={14} className="animate-spin" />} Save bouquet
+        </button>
+        {saved && <span className="text-sm italic text-gold">Saved.</span>}
+      </div>
     </section>
   );
 }

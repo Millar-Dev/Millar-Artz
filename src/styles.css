@@ -180,17 +180,45 @@
     transform: scale(1.08);
   }
 }
-/* Slow wander for the studio backdrop — a few percent of drift and scale is
-   enough to read as alive without ever calling attention to itself. */
-@keyframes backdrop-drift {
+/* The colour field in motion. Each gradient layer travels a different path
+   at a different rate, so the mix never repeats the same way twice within a
+   cycle — the veil (first layer) and the wave image (last) stay put. */
+@keyframes backdrop-flow {
   0% {
-    transform: scale(1.04) translate3d(0, 0, 0) rotate(0deg);
+    background-position:
+      0% 0%,
+      0% 20%,
+      100% 0%,
+      20% 100%,
+      100% 90%,
+      center;
   }
-  50% {
-    transform: scale(1.09) translate3d(-1.5%, 1%, 0) rotate(0.6deg);
+  33% {
+    background-position:
+      0% 0%,
+      70% 60%,
+      20% 80%,
+      90% 10%,
+      10% 30%,
+      center;
+  }
+  66% {
+    background-position:
+      0% 0%,
+      30% 100%,
+      80% 40%,
+      50% 0%,
+      60% 100%,
+      center;
   }
   100% {
-    transform: scale(1.05) translate3d(1.5%, -1%, 0) rotate(-0.6deg);
+    background-position:
+      0% 0%,
+      100% 30%,
+      0% 100%,
+      0% 40%,
+      40% 0%,
+      center;
   }
 }
 @keyframes splash-fade {
@@ -200,11 +228,11 @@
     transform: scale(0.85) rotate(0deg);
   }
   30% {
-    opacity: 0.35;
+    opacity: 0.5;
     transform: scale(1) rotate(4deg);
   }
   60% {
-    opacity: 0.26;
+    opacity: 0.4;
     transform: scale(1.06) rotate(-3deg);
   }
   85% {
@@ -353,34 +381,58 @@
     -webkit-font-smoothing: antialiased;
     position: relative;
   }
-  /* Studio backdrop — a diagonal wavy gradient (30% cream / 40% vermilion /
-     20% raw sienna / 10% dark burnt sienna) behind every page, from a
-     pre-drawn SVG (public/wavy-bg.svg, hand-built wave paths) rather than a
-     live CSS filter — an feDisplacementMap-warped gradient on a
-     viewport-sized fixed element hung the renderer in testing. A single
-     fixed layer (scrim baked into the same background shorthand as the
-     image, rather than a second ::after) so there's only one fixed,
-     viewport-sized element for the page to repaint on scroll — stacking
-     several independently-updating fixed layers is what produced a stale
-     gray compositing glitch on scroll in testing. Grain texture is applied
-     per-section via .grain instead of here for the same reason. */
+  /* Studio backdrop — a living colour field rather than a still image.
+     Four oversized radial gradients (cream, vermilion, raw sienna, burnt
+     sienna) drift across each other on their own offsets, so the colour
+     under the page is always slowly recombining. The wavy SVG still sits
+     underneath for the painted wave edges.
+
+     Everything lives on ONE fixed layer: stacking several independently
+     animating fixed layers is what produced a stale gray compositing
+     glitch on scroll in testing. Grain is applied per-section via .grain
+     for the same reason. */
   body::before {
     content: "";
     position: fixed;
-    /* Oversized so the slow drift never exposes an edge. */
     inset: -8%;
     z-index: -2;
     pointer-events: none;
     background:
+      /* Legibility veil, always on top of the colour. */
       linear-gradient(
         color-mix(in oklab, var(--color-canvas) var(--backdrop-veil), transparent),
         color-mix(in oklab, var(--color-canvas) var(--backdrop-veil), transparent)
       ),
+      radial-gradient(
+        circle at 20% 25%,
+        color-mix(in oklab, var(--grad-cream) 40%, transparent) 0%,
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at 75% 30%,
+        color-mix(in oklab, var(--grad-vermilion) 70%, transparent) 0%,
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at 30% 75%,
+        color-mix(in oklab, var(--grad-sienna) 30%, transparent) 0%,
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        color-mix(in oklab, var(--grad-burnt) 40%, transparent) 0%,
+        transparent 55%
+      ),
       url("/wavy-bg.svg") center / cover no-repeat;
-    /* Transform-only animation so it stays on the compositor — the waves
-       drift and breathe rather than sitting still behind the page. */
-    animation: backdrop-drift 48s ease-in-out infinite alternate;
-    will-change: transform;
+    background-size:
+      100% 100%,
+      170% 170%,
+      190% 190%,
+      180% 180%,
+      200% 200%,
+      cover;
+    background-repeat: no-repeat;
+    animation: backdrop-flow 26s ease-in-out infinite alternate;
   }
   @media (prefers-reduced-motion: reduce) {
     body::before {
