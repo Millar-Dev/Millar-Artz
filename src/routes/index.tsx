@@ -248,53 +248,65 @@ function Home() {
                       alpha over a warm brown ground is nearly invisible
                       otherwise, which is exactly how the first attempt
                       failed. */}
+                  {/* 1 — ambient spill: the softest, widest layer, just enough
+                      to lift the background around the bouquet. */}
                   <div
                     aria-hidden="true"
                     className="animate-spotlight pointer-events-none absolute -inset-x-[24%] -top-[34%] bottom-[-16%] z-0"
                     style={{
                       background:
-                        "radial-gradient(ellipse 58% 54% at 50% 34%, color-mix(in oklab, var(--gold) 62%, transparent) 0%, color-mix(in oklab, var(--gold) 30%, transparent) 40%, transparent 74%)",
-                      filter: "blur(40px)",
+                        "radial-gradient(ellipse 56% 56% at 50% 46%, rgb(255 255 255 / 0.20) 0%, rgb(255 255 255 / 0.09) 42%, transparent 74%)",
+                      filter: "blur(44px)",
                       mixBlendMode: "screen",
                     }}
                   />
+                  {/* 2 — the beam itself: a tall, narrow shaft coming down
+                      from above the frame, widening as it falls. Built from a
+                      stretched ellipse so it has no edge anywhere. */}
                   <div
                     aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute inset-x-[2%] top-[-10%] bottom-[4%] z-0"
+                    className="animate-spotlight pointer-events-none absolute inset-x-[16%] -top-[40%] bottom-[16%] z-0"
                     style={{
                       background:
-                        "radial-gradient(ellipse 44% 46% at 50% 40%, color-mix(in oklab, var(--gold-soft) 85%, transparent) 0%, color-mix(in oklab, var(--gold) 45%, transparent) 42%, transparent 76%)",
-                      filter: "blur(46px)",
+                        "radial-gradient(ellipse 34% 78% at 50% 8%, rgb(255 255 255 / 0.42) 0%, rgb(255 255 255 / 0.20) 38%, rgb(255 255 255 / 0.07) 62%, transparent 82%)",
+                      filter: "blur(30px)",
                       mixBlendMode: "screen",
                     }}
                   />
+                  {/* 3 — the pool where the beam lands on the bouquet. */}
                   <div
                     aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute inset-x-[8%] bottom-[-6%] z-0 h-[34%]"
+                    className="animate-spotlight pointer-events-none absolute inset-x-[6%] bottom-[-8%] z-0 h-[46%]"
                     style={{
                       background:
-                        "radial-gradient(ellipse 54% 62% at 50% 72%, color-mix(in oklab, var(--gold) 70%, transparent) 0%, transparent 70%)",
-                      filter: "blur(38px)",
+                        "radial-gradient(ellipse 50% 58% at 50% 66%, rgb(255 255 255 / 0.34) 0%, rgb(255 255 255 / 0.14) 40%, transparent 72%)",
+                      filter: "blur(34px)",
                       mixBlendMode: "screen",
                     }}
                   />
 
-                  {/* Dust drifting down through the beam. */}
+                  {/* Dust falling inside the beam. Held to the beam's own
+                      column and stopped at the bouquet, so the motes read as
+                      part of the light rather than weather over the whole
+                      hero. Screen-blended for the same reason the beam is. */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-[14%] -top-[12%] bottom-[8%] z-0 overflow-hidden"
+                    className="pointer-events-none absolute inset-x-[20%] -top-[34%] bottom-[26%] z-0 overflow-hidden"
+                    style={{ mixBlendMode: "screen" }}
                   >
                     {MOTES.map((m, i) => (
                       <span
                         key={i}
-                        className="animate-mote absolute top-0 rounded-full bg-gold-soft"
+                        className="animate-mote absolute top-0 rounded-full"
                         style={
                           {
                             left: m.left,
                             height: m.size,
                             width: m.size,
                             opacity: 0,
-                            filter: "blur(0.5px)",
+                            background: "rgb(255 255 255 / 0.9)",
+                            boxShadow: "0 0 6px 2px rgb(255 255 255 / 0.45)",
+                            filter: "blur(0.6px)",
                             animationDelay: m.delay,
                             animationDuration: m.duration,
                             "--mote-drift": m.drift,
