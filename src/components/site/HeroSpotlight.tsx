@@ -1,104 +1,130 @@
 /**
- * A stage spotlight thrown down over the hero bouquet.
+ * A stage spotlight thrown over the hero bouquet, in two halves.
  *
- * The hard-won lesson from the previous attempt: light only reads as light
- * when it has darkness to cut through. Three soft ellipses over a mid-tone
- * warm background produced haze, not a beam. So this layers, back to front:
+ * `HeroSpotlightBack` renders beneath the artwork: the darkness the beam
+ * cuts through, the shafts, the lamp core and the pool where it lands.
+ * `HeroSpotlightFront` renders above it: the volumetric haze and the falling
+ * snow. Splitting them is what makes the light legible — a beam entirely
+ * behind the work reads as a background gradient, because in reality light
+ * scatters in the air *in front of* what it illuminates too.
  *
- *   1. a dark vignette that sinks the area behind the artwork
- *   2. radiating shafts (repeating-conic) fanning out of a point above
- *   3. a hot core at that point, where the lamp itself sits
- *   4. a pool of light where the beam lands on the bouquet
- *   5. glowing motes drifting down inside the cone
- *
- * Everything is pointer-events-none and sits at z-0, beneath every card.
+ * Colour is deliberately not the background's warm brown: the light is a
+ * saturated gold-yellow and the snow is pure white, so both separate from
+ * the terracotta ground instead of blending into it.
  */
 
-/** Motes are spread across the cone's width and staggered in time so the
- *  fall never pulses in unison. Positions are percentages of the beam box. */
+/** Saturated gold — distinctly yellower than the hero's brown. */
+const GOLD = "255,205,70";
+/** Snow stays pure white so it reads at any size. */
+const SNOW = "255,255,255";
+
+/** Spread across the cone and staggered in time so the fall never pulses in
+ *  unison. `left` is a percentage of the beam box. */
 const MOTES = [
-  { left: 26, size: 3, delay: 0, duration: 11, drift: 14 },
-  { left: 34, size: 2, delay: 3.5, duration: 9, drift: -10 },
-  { left: 41, size: 4, delay: 1.2, duration: 13, drift: 18 },
-  { left: 47, size: 2, delay: 6.1, duration: 10, drift: -6 },
-  { left: 52, size: 5, delay: 2.4, duration: 14, drift: 8 },
-  { left: 57, size: 2, delay: 8.3, duration: 9.5, drift: -14 },
-  { left: 62, size: 3, delay: 4.7, duration: 12, drift: 12 },
-  { left: 68, size: 2, delay: 0.8, duration: 10.5, drift: -8 },
-  { left: 73, size: 4, delay: 5.6, duration: 13.5, drift: 16 },
-  { left: 44, size: 2, delay: 7.4, duration: 11.5, drift: -12 },
-  { left: 55, size: 3, delay: 9.6, duration: 12.5, drift: 6 },
-  { left: 65, size: 2, delay: 10.8, duration: 10, drift: -16 },
-  { left: 38, size: 3, delay: 12.2, duration: 13, drift: 10 },
-  { left: 70, size: 2, delay: 2.9, duration: 9.8, drift: -5 },
+  { left: 24, size: 3, delay: 0, duration: 11, drift: 16 },
+  { left: 31, size: 2, delay: 3.5, duration: 9, drift: -12 },
+  { left: 38, size: 4, delay: 1.2, duration: 13, drift: 20 },
+  { left: 44, size: 2, delay: 6.1, duration: 10, drift: -7 },
+  { left: 49, size: 5, delay: 2.4, duration: 14, drift: 9 },
+  { left: 54, size: 2, delay: 8.3, duration: 9.5, drift: -16 },
+  { left: 59, size: 3, delay: 4.7, duration: 12, drift: 13 },
+  { left: 64, size: 2, delay: 0.8, duration: 10.5, drift: -9 },
+  { left: 70, size: 4, delay: 5.6, duration: 13.5, drift: 18 },
+  { left: 41, size: 2, delay: 7.4, duration: 11.5, drift: -13 },
+  { left: 56, size: 3, delay: 9.6, duration: 12.5, drift: 7 },
+  { left: 66, size: 2, delay: 10.8, duration: 10, drift: -18 },
+  { left: 35, size: 3, delay: 12.2, duration: 13, drift: 11 },
+  { left: 72, size: 2, delay: 2.9, duration: 9.8, drift: -6 },
+  { left: 47, size: 3, delay: 14.1, duration: 11.8, drift: 15 },
+  { left: 61, size: 4, delay: 6.8, duration: 12.8, drift: -10 },
 ];
 
-export function HeroSpotlight() {
+const BEAM_BOX =
+  "pointer-events-none absolute left-1/2 top-[-95%] h-[215%] w-[165%] -translate-x-1/2 overflow-hidden";
+
+/** Everything behind the artwork. */
+export function HeroSpotlightBack() {
   return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute left-1/2 top-[-95%] z-0 h-[215%] w-[165%] -translate-x-1/2 overflow-hidden"
-    >
-      {/* 1 — Darkness for the light to cut through. Without this the beam has
-          nothing to read against on the warm hero ground. */}
+    <div aria-hidden="true" className={`${BEAM_BOX} z-0`}>
+      {/* The darkness the beam cuts through. Without this there is no
+          contrast for light to register against on a warm ground. */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 52% 46% at 50% 62%, rgba(28,10,4,0.62) 0%, rgba(28,10,4,0.34) 45%, transparent 76%)",
+            "radial-gradient(ellipse 54% 48% at 50% 60%, rgba(22,7,2,0.74) 0%, rgba(22,7,2,0.42) 46%, transparent 78%)",
         }}
       />
 
-      {/* 2 — The shafts. A repeating conic from a point just above the frame
-          gives real rays rather than a smooth wash; the mask fades them out
-          before they reach any edge so the cone never ends in a hard line. */}
+      {/* Shafts. A repeating conic from a point above the frame gives real
+          rays; the mask keeps the cone from ending on a hard edge. */}
       <div
         className="animate-beam-sway absolute inset-0 mix-blend-screen"
         style={{
-          background:
-            "repeating-conic-gradient(from 168deg at 50% 4%, rgba(255,241,214,0) 0deg, rgba(255,241,214,0.10) 1.1deg, rgba(255,241,214,0.02) 2.2deg, rgba(255,241,214,0) 3.6deg)",
+          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${GOLD},0) 0deg, rgba(${GOLD},0.30) 1.1deg, rgba(${GOLD},0.07) 2.2deg, rgba(${GOLD},0) 3.6deg)`,
           maskImage:
-            "radial-gradient(ellipse 40% 62% at 50% 6%, #000 0%, rgba(0,0,0,0.72) 40%, transparent 82%)",
+            "radial-gradient(ellipse 42% 64% at 50% 6%, #000 0%, rgba(0,0,0,0.74) 42%, transparent 84%)",
           WebkitMaskImage:
-            "radial-gradient(ellipse 40% 62% at 50% 6%, #000 0%, rgba(0,0,0,0.72) 40%, transparent 82%)",
-          filter: "blur(6px)",
+            "radial-gradient(ellipse 42% 64% at 50% 6%, #000 0%, rgba(0,0,0,0.74) 42%, transparent 84%)",
+          filter: "blur(5px)",
         }}
       />
 
-      {/* 3 — The lamp itself: a small, genuinely bright core at the apex. */}
+      {/* The lamp itself — blown out at the centre. */}
       <div
-        className="animate-spotlight absolute left-1/2 top-[1%] h-[26%] w-[34%] -translate-x-1/2 mix-blend-screen"
+        className="animate-spotlight absolute left-1/2 top-[1%] h-[28%] w-[36%] -translate-x-1/2 mix-blend-screen"
         style={{
-          background:
-            "radial-gradient(ellipse 50% 50% at 50% 30%, rgba(255,247,228,0.85) 0%, rgba(255,226,170,0.42) 32%, rgba(255,214,150,0.12) 58%, transparent 78%)",
-          filter: "blur(18px)",
+          background: `radial-gradient(ellipse 50% 50% at 50% 30%, rgba(255,252,238,1) 0%, rgba(${GOLD},0.82) 26%, rgba(${GOLD},0.34) 52%, transparent 76%)`,
+          filter: "blur(16px)",
         }}
       />
 
-      {/* 4 — Where the beam lands, over the bouquet. */}
+      {/* Where the beam lands on the bouquet. */}
       <div
-        className="animate-spotlight absolute left-1/2 top-[52%] h-[34%] w-[74%] -translate-x-1/2 mix-blend-screen"
+        className="animate-spotlight absolute left-1/2 top-[52%] h-[36%] w-[76%] -translate-x-1/2 mix-blend-screen"
         style={{
-          background:
-            "radial-gradient(ellipse 50% 46% at 50% 50%, rgba(255,238,205,0.34) 0%, rgba(255,224,175,0.14) 44%, transparent 74%)",
-          filter: "blur(26px)",
+          background: `radial-gradient(ellipse 50% 46% at 50% 50%, rgba(${GOLD},0.60) 0%, rgba(${GOLD},0.26) 44%, transparent 74%)`,
+          filter: "blur(24px)",
+        }}
+      />
+    </div>
+  );
+}
+
+/** Everything in front of the artwork — kept below z-50 so hovering a card
+ *  still lifts it clear of the haze. */
+export function HeroSpotlightFront() {
+  return (
+    <div aria-hidden="true" className={`${BEAM_BOX} z-[45]`}>
+      {/* Airborne haze in front of the work. Low alpha: enough to sell the
+          beam as volumetric without veiling the paintings. */}
+      <div
+        className="animate-beam-sway absolute inset-0 mix-blend-screen"
+        style={{
+          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${GOLD},0) 0deg, rgba(${GOLD},0.13) 1.3deg, rgba(${GOLD},0.03) 2.6deg, rgba(${GOLD},0) 4deg)`,
+          maskImage:
+            "radial-gradient(ellipse 40% 70% at 50% 8%, #000 0%, rgba(0,0,0,0.55) 46%, transparent 86%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 40% 70% at 50% 8%, #000 0%, rgba(0,0,0,0.55) 46%, transparent 86%)",
+          filter: "blur(7px)",
         }}
       />
 
-      {/* 5 — Dust inside the cone. Each mote carries its own glow so it reads
-          as a lit speck rather than a flat dot. */}
-      <div className="absolute inset-x-0 top-[6%] bottom-[8%] mix-blend-screen">
+      {/* Snow, in front so it's actually visible against the artwork. Each
+          fleck carries its own halo so it reads as lit, not as a flat dot. */}
+      <div className="absolute inset-x-0 bottom-[6%] top-[6%] mix-blend-screen">
         {MOTES.map((m, i) => (
           <span
             key={i}
-            className="animate-mote absolute top-0 rounded-full bg-[rgb(255,243,220)]"
+            className="animate-mote absolute top-0 rounded-full"
             style={{
               left: `${m.left}%`,
               width: `${m.size}px`,
               height: `${m.size}px`,
+              background: `rgb(${SNOW})`,
               animationDelay: `${m.delay}s`,
               animationDuration: `${m.duration}s`,
-              boxShadow: `0 0 ${m.size * 3}px ${m.size}px rgba(255,232,190,0.55)`,
+              boxShadow: `0 0 ${m.size * 4}px ${m.size * 1.5}px rgba(${SNOW},0.75)`,
               ["--mote-drift" as string]: `${m.drift}px`,
             }}
           />

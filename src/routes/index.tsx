@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type CSSProperties } from "react";
 import { Layout } from "@/components/site/Layout";
-import { HeroSpotlight } from "@/components/site/HeroSpotlight";
+import {
+  HeroSpotlightBack,
+  HeroSpotlightFront,
+} from "@/components/site/HeroSpotlight";
 import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { getSiteSettings } from "@/lib/data/site-settings";
@@ -228,7 +231,7 @@ function Home() {
                     the bouquet its presence — the fan reaching past the fold
                     is intentional. */}
                 <div className="relative mx-auto aspect-[5/4] w-full max-w-[38rem]">
-                  <HeroSpotlight />
+                  <HeroSpotlightBack />
 
                   {heroPieces.map((artwork, i) =>
                     artwork ? (
@@ -240,6 +243,10 @@ function Home() {
                       />
                     ) : null,
                   )}
+
+                  {/* Haze and snow sit in front of the work — light scatters
+                      in the air between the viewer and what it lights. */}
+                  <HeroSpotlightFront />
                 </div>
               </div>
 
