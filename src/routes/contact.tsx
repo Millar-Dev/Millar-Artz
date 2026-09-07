@@ -14,6 +14,7 @@ import { Layout } from "@/components/site/Layout";
 import { categories, disciplines } from "@/lib/gallery-data";
 import { submitInquiry } from "@/lib/data/inquiries";
 import { getSiteSettings } from "@/lib/data/site-settings";
+import { canonical } from "@/lib/seo";
 
 const contactSearchSchema = z.object({
   type: z.string().optional(),

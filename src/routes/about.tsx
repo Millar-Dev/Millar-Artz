@@ -4,6 +4,7 @@ import fallbackPortrait from "@/assets/me-portrait.jpg";
 import brushMark from "@/assets/brand/miller-artz-logo-sign.jpg";
 import { getSiteImage } from "@/lib/data/site-images";
 import { getSiteSettings } from "@/lib/data/site-settings";
+import { canonical } from "@/lib/seo";
 import { MapPin, Clock, Palette, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/about")({

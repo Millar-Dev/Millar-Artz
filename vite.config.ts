@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -6,7 +6,9 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
 // Plain Vite + TanStack Start config — no third-party framework wrapper.
 export default defineConfig(async ({ command }) => {
-  const plugins = [
+  // Explicitly PluginOption[]: inferred from the literal, TS narrows this to
+  // the first plugin's very specific type and then rejects the Nitro push.
+  const plugins: PluginOption[] = [
     tsconfigPaths(),
     tailwindcss(),
     tanstackStart({
@@ -28,7 +30,9 @@ export default defineConfig(async ({ command }) => {
 
   return {
     plugins,
-    css: { transformer: "lightningcss" },
+    // `as const` keeps this a literal — widened to `string` it no longer
+    // matches Vite's union and the whole config fails to typecheck.
+    css: { transformer: "lightningcss" as const },
     resolve: {
       dedupe: [
         "react",
