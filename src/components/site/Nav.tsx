@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { categories } from "@/lib/gallery-data";
 import { ThemeToggle } from "./ThemeToggle";
+import { BrandWordmark } from "./BrandLogo";
 
 const links = [
   { to: "/", label: "Home" },
@@ -38,11 +39,10 @@ export function Nav() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[180%] bg-gradient-to-b from-band via-band/85 to-transparent" />
       <div className="relative flex justify-center px-3 pt-3 pb-3 md:px-6 md:pt-5">
         <nav className="flex w-full max-w-6xl items-center justify-between rounded-full border border-white/10 bg-band px-4 py-2.5 shadow-2xl shadow-black/30 md:px-6">
-        <Link
-          to="/"
-          className="shrink-0 font-display text-lg font-bold uppercase tracking-tight text-band-foreground md:text-xl"
-        >
-          Miller Artz
+        <Link to="/" className="shrink-0 text-band-foreground" aria-label="MILLERPIX — home">
+          {/* The band is fixed-dark in both themes, so the accent is pinned to
+              the brighter of the two reds rather than inherited. */}
+          <BrandWordmark accent="#ef3b52" className="h-5 w-auto md:h-6" />
         </Link>
 
         <div className="hidden items-center gap-8 text-[11px] font-semibold uppercase tracking-[0.15em] md:flex">

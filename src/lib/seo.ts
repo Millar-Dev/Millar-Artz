@@ -6,7 +6,7 @@
  * when the page is served from a preview deployment. Change this one value
  * when a custom domain is connected.
  */
-export const SITE_URL = "https://miller-artz.vercel.app";
+export const SITE_URL = "https://millerpix.vercel.app";
 
 export const absoluteUrl = (path: string) =>
   `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
@@ -23,7 +23,7 @@ export const jsonLd = (data: unknown) => ({
   children: JSON.stringify(data),
 });
 
-const STUDIO_NAME = "Miller Artz";
+const STUDIO_NAME = "Millerpix";
 
 /** The artist and the studio, described once and reused across pages. */
 export function artistGraph() {

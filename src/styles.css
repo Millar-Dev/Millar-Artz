@@ -71,6 +71,10 @@
   --grad-sienna: #c1702e;
   --grad-burnt: #4a2216;
 
+  /* Logo accent. The mark's red has to hold up on cream *and* on the
+     near-black band, so it is retuned per surface rather than fixed. */
+  --brand-accent: #c4122b;
+
   /* Gallery Noir palette — light mode (opt-in via the theme toggle) */
   --canvas: oklch(0.972 0.007 85 / 88%);
   --ink: oklch(0.19 0.005 60);
@@ -119,6 +123,7 @@
   --paper: oklch(0.3 0.05 40 / 78%);
   --gallery-surface: oklch(0.175 0.012 45 / 97%);
   --backdrop-veil: 22%;
+  --brand-accent: #ef3b52;
   --gold: oklch(0.78 0.12 75);
   --gold-soft: oklch(0.85 0.08 78);
   --teal: oklch(0.75 0.11 195);

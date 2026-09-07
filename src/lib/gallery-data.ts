@@ -144,7 +144,7 @@ export const disciplines: Discipline[] = [
   {
     id: "music",
     label: "Music",
-    blurb: "Composition and sound work — a new discipline Miller Artz is opening up for collaboration.",
+    blurb: "Composition and sound work — a new discipline Millerpix is opening up for collaboration.",
     icon: "music",
   },
   {

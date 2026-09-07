@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "@tanstack/react-router";
 import { Instagram, MessageCircle, Facebook, Mail } from "lucide-react";
-import brandLogo from "@/assets/brand/miller-artz-logo-full.jpg";
+import { BrandWordmark } from "./BrandLogo";
 import { SETTING_DEFAULTS } from "@/lib/data/site-settings";
 
 export function Footer() {
@@ -15,9 +15,10 @@ export function Footer() {
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="mb-16 grid gap-12 md:grid-cols-4">
           <div>
-            <div className="mb-6 inline-block rounded-md bg-[#f8f4ec] p-2 shadow-lg">
-              <img src={brandLogo} alt="Miller Artz" className="h-14 w-auto" />
-            </div>
+            <BrandWordmark
+              accent="#ef3b52"
+              className="mb-6 h-8 w-auto text-band-foreground"
+            />
             <p className="text-sm leading-relaxed text-band-foreground/50">
               Transforming ideas and memories into timeless works of art through
               creative excellence — across nine disciplines, and counting.
@@ -141,7 +142,7 @@ export function Footer() {
         </div>
         <div className="flex flex-col items-start justify-between gap-4 border-t border-band-foreground/5 pt-8 text-[10px] font-semibold uppercase tracking-[0.2em] text-band-foreground/30 sm:flex-row sm:items-center">
           <p>
-            © {new Date().getFullYear()} Miller Artz Studio. All rights
+            © {new Date().getFullYear()} Millerpix Studio. All rights
             reserved.
           </p>
           <p>Where imagination meets creativity.</p>

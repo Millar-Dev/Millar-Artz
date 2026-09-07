@@ -16,10 +16,10 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       {/* Without this the browser tab is blank on any mistyped link. */}
-      <title>Page not found — Miller Artz</title>
+      <title>Page not found — Millerpix</title>
       <div className="max-w-md text-center">
         <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-          Miller Artz
+          Millerpix
         </p>
         <h1 className="mt-6 font-display text-7xl text-ink">404</h1>
         <h2 className="mt-4 font-display text-2xl italic text-ink">
@@ -83,14 +83,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "author", content: "Miller Artz" },
+        { name: "author", content: "Millerpix" },
         { name: "theme-color", content: "#0d0906" },
         { property: "og:type", content: "website" },
-        { property: "og:site_name", content: "Miller Artz" },
+        { property: "og:site_name", content: "Millerpix" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [
         { rel: "stylesheet", href: appCss },
+        /* SVG first for browsers that take it, PNG as the fallback. */
+        { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
         {
           rel: "icon",
           href: "/favicon-32.png",

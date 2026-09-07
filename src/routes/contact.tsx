@@ -24,16 +24,16 @@ export const Route = createFileRoute("/contact")({
   validateSearch: contactSearchSchema,
   head: () => ({
     meta: [
-      { title: "Contact — Miller Artz" },
+      { title: "Contact — Millerpix" },
       {
         name: "description",
         content:
-          "Request a commission or get in touch with Miller Artz. Phone, WhatsApp and email — a quotation follows within days.",
+          "Request a commission or get in touch with Millerpix. Phone, WhatsApp and email — a quotation follows within days.",
       },
-      { property: "og:title", content: "Contact Miller Artz" },
+      { property: "og:title", content: "Contact Millerpix" },
       {
         property: "og:description",
-        content: "Reach the Miller Artz studio for commissions and inquiries.",
+        content: "Reach the Millerpix studio for commissions and inquiries.",
       },
     ],
     links: [canonical("/contact")],
@@ -137,7 +137,7 @@ function Contact() {
   function openWhatsApp() {
     const details = composeDetails();
     const text = encodeURIComponent(
-      `Hello Miller Artz,\n\nMy name is ${form.fullName || "..."} and I'd like to inquire about: ${
+      `Hello Millerpix,\n\nMy name is ${form.fullName || "..."} and I'd like to inquire about: ${
         form.subject || "an artwork"
       }.\n${details ? `\n${details}\n` : ""}\n${form.message}`,
     );

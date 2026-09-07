@@ -1,4 +1,4 @@
--- Miller Artz — admin content schema.
+-- Millerpix — admin content schema.
 -- Run this once in the Supabase SQL editor (Project → SQL Editor → New query)
 -- for a fresh project. Safe to re-run: every statement is idempotent.
 

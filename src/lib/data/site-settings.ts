@@ -25,7 +25,7 @@ export const SETTING_DEFAULTS: SiteSettings = {
   instagram_url: "",
   facebook_url: "",
   whatsapp_number: "255616110100",
-  email: "studio@millerartz.com",
+  email: "studio@millerpix.com",
   phone_primary: "+255 616 110 100",
   phone_secondary: "+255 754 300 543",
   location: "Tanzania — visits by appointment.",

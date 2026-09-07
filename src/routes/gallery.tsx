@@ -48,17 +48,17 @@ export const Route = createFileRoute("/gallery")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: "Gallery — Miller Artz" },
+      { title: "Gallery — Millerpix" },
       {
         name: "description",
         content:
-          "Browse hyperrealism, wildlife, portraits, traditional, abstract, mural, modern and cartoon works by Miller Artz.",
+          "Browse hyperrealism, wildlife, portraits, traditional, abstract, mural, modern and cartoon works by Millerpix.",
       },
-      { property: "og:title", content: "Gallery — Miller Artz" },
+      { property: "og:title", content: "Gallery — Millerpix" },
       {
         property: "og:description",
         content:
-          "The Miller Artz collection across nine disciplines, plus custom commissions.",
+          "The Millerpix collection across nine disciplines, plus custom commissions.",
       },
     ],
     links: [canonical("/gallery")],
@@ -247,7 +247,7 @@ function Gallery() {
             Other disciplines, open for commission.
           </h2>
           <p className="mt-6 max-w-2xl text-band-foreground/70">
-            Miller Artz is building toward a multidisciplinary studio. These
+            Millerpix is building toward a multidisciplinary studio. These
             practices don't have a gallery yet — but the conversation can start
             now.
           </p>

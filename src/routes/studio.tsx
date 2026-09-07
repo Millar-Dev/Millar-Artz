@@ -62,7 +62,7 @@ export const Route = createFileRoute("/studio")({
       settings,
     };
   },
-  head: () => ({ meta: [{ title: "Studio — Miller Artz" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Studio — Millerpix" }, { name: "robots", content: "noindex" }] }),
   component: Studio,
 });
 
@@ -654,7 +654,7 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
             ["instagram_url", "Instagram URL", "https://instagram.com/yourhandle"],
             ["facebook_url", "Facebook URL", "https://facebook.com/yourpage"],
             ["whatsapp_number", "WhatsApp number", "255616110100"],
-            ["email", "Email", "studio@millerartz.com"],
+            ["email", "Email", "studio@millerpix.com"],
             ["phone_primary", "Phone (primary)", "+255 616 110 100"],
             ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
             ["location", "Location", "Tanzania — visits by appointment."],

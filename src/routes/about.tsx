@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/site/Layout";
 import fallbackPortrait from "@/assets/me-portrait.jpg";
-import brushMark from "@/assets/brand/miller-artz-logo-sign.jpg";
+import { BrandMark } from "@/components/site/BrandLogo";
 import { getSiteImage } from "@/lib/data/site-images";
 import { getSiteSettings } from "@/lib/data/site-settings";
 import { canonical } from "@/lib/seo";
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/about")({
       portrait: portrait ?? {
         id: "about_portrait",
         image_path: fallbackPortrait,
-        caption: "Miller S.K. — Founder, Miller Artz",
+        caption: "Miller S.K. — Founder, Millerpix",
       },
       // Null until a studio photo is uploaded — the section renders without
       // an image rather than showing a stock placeholder.
@@ -28,16 +28,16 @@ export const Route = createFileRoute("/about")({
   },
   head: () => ({
     meta: [
-      { title: "About — Miller Artz" },
+      { title: "About — Millerpix" },
       {
         name: "description",
         content:
-          "Miller Artz is a Tanzania-based artist working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, murals, and more.",
+          "Millerpix is a Tanzania-based studio working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, murals, and more.",
       },
-      { property: "og:title", content: "About Miller Artz" },
+      { property: "og:title", content: "About Millerpix" },
       {
         property: "og:description",
-        content: "The story, mission and vision behind Miller Artz.",
+        content: "The story, mission and vision behind Millerpix.",
       },
     ],
     links: [canonical("/about")],
@@ -88,7 +88,7 @@ function About() {
             About
           </span>
           <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.05] text-ink md:text-7xl">
-            About <span className="italic">Miller Artz</span>
+            About <span className="italic">Millerpix</span>
           </h1>
         </div>
       </section>
@@ -97,7 +97,7 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
-              Miller Artz is a Tanzania-based studio built around one artist's
+              Millerpix is a Tanzania-based studio built around one artist's
               hand: hyperrealistic graphite and charcoal work developed over
               hundreds of hours of observation, acrylic and oil wildlife
               painting rooted in East Africa, and commissioned portraits and
@@ -120,20 +120,20 @@ function About() {
               it.
             </p>
             <p>
-              Drawing and painting remain the foundation, but Miller Artz is
+              Drawing and painting remain the foundation, but Millerpix is
               designed with a wider horizon in mind — the studio is already
               opening conversations around music, dance and performance, digital
               art, and sculpture, for collectors and collaborators who want to
               build something new together.
             </p>
             <p className="font-display text-2xl italic text-ink">
-              At Miller Artz, every masterpiece begins with imagination.
+              At Millerpix, every masterpiece begins with imagination.
             </p>
           </div>
           <div className="md:col-span-5">
             <img
               src={portrait.image_path}
-              alt="Miller S.K., founding artist of Miller Artz"
+              alt="Miller S.K., founding artist of Millerpix"
               loading="lazy"
               className="aspect-[4/5] w-full rounded-sm object-cover shadow-2xl"
             />
@@ -141,12 +141,7 @@ function About() {
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/50">
                 {portrait.caption}
               </p>
-              <img
-                src={brushMark}
-                alt=""
-                aria-hidden="true"
-                className="h-8 w-auto rounded bg-[#f8f4ec] p-1 opacity-90"
-              />
+              <BrandMark className="h-8 w-auto shrink-0 text-ink/45" title="" />
             </div>
           </div>
         </div>
@@ -260,7 +255,7 @@ function About() {
                   <div className="gradient-stroke overflow-hidden rounded-lg p-px shadow-2xl">
                     <img
                       src={studio.image_path}
-                      alt={studio.caption || "Inside the Miller Artz studio"}
+                      alt={studio.caption || "Inside the Millerpix studio"}
                       loading="lazy"
                       className="aspect-[4/3] w-full rounded-lg object-cover"
                     />
@@ -308,7 +303,7 @@ function About() {
               An African art house with a global voice.
             </h2>
             <p className="mt-6 text-ink/70">
-              To grow Miller Artz into a multidisciplinary studio — expanding
+              To grow Millerpix into a multidisciplinary studio — expanding
               into new mediums, exhibitions, and communities while never letting
               go of the discipline of the hand.
             </p>

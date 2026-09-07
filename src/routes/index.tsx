@@ -28,21 +28,21 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Miller Artz — Hyperrealism, Wildlife & Custom Art Commissions",
+        title: "Millerpix — Hyperrealism, Wildlife & Custom Art Commissions",
       },
       {
         name: "description",
         content:
-          "Miller Artz is a Tanzania-based studio working across hyperrealism, wildlife, portraits, traditional, abstract, mural and cartoon art. Where imagination meets creativity.",
+          "Millerpix is a Tanzania-based studio working across hyperrealism, wildlife, portraits, traditional, abstract, mural and cartoon art. Where imagination meets creativity.",
       },
       {
         property: "og:title",
-        content: "Miller Artz — Where Imagination Meets Creativity",
+        content: "Millerpix — Where Imagination Meets Creativity",
       },
       {
         property: "og:description",
         content:
-          "Original hyperrealistic drawings, wildlife paintings, murals and bespoke commissions from Miller Artz.",
+          "Original hyperrealistic drawings, wildlife paintings, murals and bespoke commissions from Millerpix.",
       },
     ],
     links: [canonical("/")],
@@ -269,7 +269,7 @@ function Home() {
                 />
                 <img
                   src={artistPortrait}
-                  alt="Miller S.K., founder of Miller Artz"
+                  alt="Miller S.K., founder of Millerpix"
                   loading="lazy"
                   className="relative h-16 w-16 rounded-full object-cover ring-1 ring-gold/40 sm:h-[4.5rem] sm:w-[4.5rem]"
                 />
@@ -280,7 +280,7 @@ function Home() {
                   Miller S.K.
                 </p>
                 <p className="mt-3 text-base font-light leading-relaxed text-ink/75">
-                  I'm Miller S.K. — the hand behind Miller Artz. What started as
+                  I'm Miller S.K. — the hand behind Millerpix. What started as
                   graphite portraits and wildlife studies has grown into a
                   studio working across nine disciplines, based here in Tanzania
                   and built one commission at a time.

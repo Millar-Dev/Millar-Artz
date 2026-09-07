@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="MILLERPIX">
+  <!-- The palette alone carries the mark at favicon sizes; the brush and the
+       letterforms turn to mush below about 48px. The tile is the site's dark
+       band so the mark holds up against light and dark browser chrome alike. -->
+  <rect width="128" height="128" rx="28" fill="#1d1008"/>
+  <g transform="translate(20,24.7) scale(0.7857)">
+    <path fill="#f7f1e6" fill-rule="evenodd" d="M0,50a56,50 0 1,0 112,0a56,50 0 1,0 -112,0Z
+      M20,68a12,12 0 1,0 24,0a12,12 0 1,0 -24,0Z
+      M31,26a9,9 0 1,0 18,0a9,9 0 1,0 -18,0Z
+      M56,18a8,8 0 1,0 16,0a8,8 0 1,0 -16,0Z
+      M78,32a8,8 0 1,0 16,0a8,8 0 1,0 -16,0Z
+      M86,56a7,7 0 1,0 14,0a7,7 0 1,0 -14,0Z
+      M67,74a7,7 0 1,0 14,0a7,7 0 1,0 -14,0Z"/>
+    <!-- One loaded dab, in the brand red. -->
+    <circle cx="64" cy="18" r="8" fill="#ef3b52"/>
+  </g>
+</svg>
