@@ -199,6 +199,21 @@
   }
 }
 
+/* The shafts drift and shimmer, the way real beams do as dust moves through
+   them. Kept to a fraction of a degree — any more and it reads as a rotating
+   graphic rather than light. */
+@keyframes beam-sway {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: rotate(-0.5deg) scaleY(1);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(0.5deg) scaleY(1.03);
+  }
+}
+
 /* Gallery spotlight over the hero bouquet — breathes very slightly so it
    reads as a lit stage rather than a static gradient. */
 @keyframes spotlight-breathe {
@@ -302,6 +317,9 @@
 }
 @utility animate-mote {
   animation: mote-fall 9s linear infinite;
+}
+@utility animate-beam-sway {
+  animation: beam-sway 11s ease-in-out infinite;
 }
 
 /* Gradient-stroke frame — wrap an image in this, keep the image's own

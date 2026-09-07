@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type CSSProperties } from "react";
 import { Layout } from "@/components/site/Layout";
+import { HeroSpotlight } from "@/components/site/HeroSpotlight";
 import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { getSiteSettings } from "@/lib/data/site-settings";
@@ -104,29 +105,12 @@ const DEFAULT_HERO_IDS = [
  *  rotating a card about its bottom edge swings its top corner outward, so
  *  a petal flush to the edge gets its corner shaved off by the hero's
  *  overflow-hidden on narrower desktops. The inset is the swing clearance. */
-/** Dust motes falling through the spotlight. Irregular sizes, offsets and
- *  durations so the drift never reads as a repeating pattern. */
-const MOTES = [
-  { left: "6%", size: "3px", delay: "0s", duration: "11s", drift: "14px" },
-  { left: "14%", size: "2px", delay: "3.4s", duration: "9s", drift: "-10px" },
-  { left: "23%", size: "4px", delay: "1.2s", duration: "13s", drift: "18px" },
-  { left: "31%", size: "2px", delay: "6.1s", duration: "10s", drift: "-6px" },
-  { left: "39%", size: "3px", delay: "2.3s", duration: "12s", drift: "10px" },
-  { left: "47%", size: "2px", delay: "7.8s", duration: "9.5s", drift: "-14px" },
-  { left: "55%", size: "4px", delay: "0.7s", duration: "14s", drift: "8px" },
-  { left: "63%", size: "2px", delay: "4.6s", duration: "10.5s", drift: "-12px" },
-  { left: "71%", size: "3px", delay: "8.9s", duration: "11.5s", drift: "16px" },
-  { left: "79%", size: "2px", delay: "2.9s", duration: "9.8s", drift: "-8px" },
-  { left: "87%", size: "3px", delay: "5.5s", duration: "12.5s", drift: "12px" },
-  { left: "94%", size: "2px", delay: "10.2s", duration: "10.8s", drift: "-16px" },
-];
-
 const BOUQUET = [
-  { className: "bottom-[7%] left-[12%] w-[30%] origin-bottom rotate-[-20deg]", z: 10 },
+  { className: "bottom-[7%] left-[4%] w-[32%] origin-bottom rotate-[-20deg]", z: 10 },
   { className: "bottom-[2%] left-[19%] w-[34%] origin-bottom rotate-[-10deg]", z: 20 },
   { className: "bottom-0 left-1/2 w-[36%] -translate-x-1/2 origin-bottom rotate-0", z: 40 },
   { className: "bottom-[2%] right-[19%] w-[34%] origin-bottom rotate-[10deg]", z: 20 },
-  { className: "bottom-[7%] right-[12%] w-[30%] origin-bottom rotate-[20deg]", z: 10 },
+  { className: "bottom-[7%] right-[4%] w-[32%] origin-bottom rotate-[20deg]", z: 10 },
 ];
 
 function Home() {
@@ -239,88 +223,13 @@ function Home() {
                   the centre, opening wider and higher toward the edges.
                   Hover any piece to bring it upright and forward. */}
               <div className="relative hidden lg:block">
-                {/* Capped against the viewport height as well as the column
-                    width, so on short/laptop screens the fan finishes above
-                    the fold instead of running off the bottom edge. */}
-                <div className="relative mx-auto aspect-[5/4] w-full max-w-[min(36rem,52vh)]">
-                  {/* Studio spotlight. Three stacked radial gradients, no hard
-                      edges anywhere: a wide ambient wash that bleeds into the
-                      hero background, a brighter core centred on the bouquet,
-                      and a warm pool at the base where the light lands. All
-                      sit at z-0, under every card, so the light falls behind
-                      the work rather than washing over it. */}
-                  {/* Screen blending is what makes these read as emitted
-                      light rather than a translucent film — warm gold at low
-                      alpha over a warm brown ground is nearly invisible
-                      otherwise, which is exactly how the first attempt
-                      failed. */}
-                  {/* 1 — ambient spill: the softest, widest layer, just enough
-                      to lift the background around the bouquet. */}
-                  <div
-                    aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute -inset-x-[24%] -top-[34%] bottom-[-16%] z-0"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse 56% 56% at 50% 46%, rgb(255 255 255 / 0.20) 0%, rgb(255 255 255 / 0.09) 42%, transparent 74%)",
-                      filter: "blur(44px)",
-                      mixBlendMode: "screen",
-                    }}
-                  />
-                  {/* 2 — the beam itself: a tall, narrow shaft coming down
-                      from above the frame, widening as it falls. Built from a
-                      stretched ellipse so it has no edge anywhere. */}
-                  <div
-                    aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute inset-x-[16%] -top-[40%] bottom-[16%] z-0"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse 34% 78% at 50% 8%, rgb(255 255 255 / 0.42) 0%, rgb(255 255 255 / 0.20) 38%, rgb(255 255 255 / 0.07) 62%, transparent 82%)",
-                      filter: "blur(30px)",
-                      mixBlendMode: "screen",
-                    }}
-                  />
-                  {/* 3 — the pool where the beam lands on the bouquet. */}
-                  <div
-                    aria-hidden="true"
-                    className="animate-spotlight pointer-events-none absolute inset-x-[6%] bottom-[-8%] z-0 h-[46%]"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse 50% 58% at 50% 66%, rgb(255 255 255 / 0.34) 0%, rgb(255 255 255 / 0.14) 40%, transparent 72%)",
-                      filter: "blur(34px)",
-                      mixBlendMode: "screen",
-                    }}
-                  />
+                {/* Sized off the column, not the viewport height. A 52vh cap
+                    here shrank the artwork to fix a spacing problem and cost
+                    the bouquet its presence — the fan reaching past the fold
+                    is intentional. */}
+                <div className="relative mx-auto aspect-[5/4] w-full max-w-[38rem]">
+                  <HeroSpotlight />
 
-                  {/* Dust falling inside the beam. Held to the beam's own
-                      column and stopped at the bouquet, so the motes read as
-                      part of the light rather than weather over the whole
-                      hero. Screen-blended for the same reason the beam is. */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-[20%] -top-[34%] bottom-[26%] z-0 overflow-hidden"
-                    style={{ mixBlendMode: "screen" }}
-                  >
-                    {MOTES.map((m, i) => (
-                      <span
-                        key={i}
-                        className="animate-mote absolute top-0 rounded-full"
-                        style={
-                          {
-                            left: m.left,
-                            height: m.size,
-                            width: m.size,
-                            opacity: 0,
-                            background: "rgb(255 255 255 / 0.9)",
-                            boxShadow: "0 0 6px 2px rgb(255 255 255 / 0.45)",
-                            filter: "blur(0.6px)",
-                            animationDelay: m.delay,
-                            animationDuration: m.duration,
-                            "--mote-drift": m.drift,
-                          } as CSSProperties
-                        }
-                      />
-                    ))}
-                  </div>
                   {heroPieces.map((artwork, i) =>
                     artwork ? (
                       <HeroCard
