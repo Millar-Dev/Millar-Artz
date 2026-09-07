@@ -21,6 +21,7 @@ import {
   type Discipline,
 } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
+import { artworkListGraph, canonical, jsonLd } from "@/lib/seo";
 
 const gallerySearchSchema = z.object({
   category: z
@@ -45,7 +46,7 @@ export const Route = createFileRoute("/gallery")({
     const rows = await listArtworks();
     return { artworks: rows.map(fromArtworkRow) };
   },
-  head: () => ({
+  head: ({ loaderData }) => ({
     meta: [
       { title: "Gallery — Miller Artz" },
       {
@@ -60,6 +61,10 @@ export const Route = createFileRoute("/gallery")({
           "The Miller Artz collection across nine disciplines, plus custom commissions.",
       },
     ],
+    links: [canonical("/gallery")],
+    // Each piece described as a VisualArtwork so the collection can surface
+    // in image and rich results rather than as one opaque page.
+    scripts: [jsonLd(artworkListGraph(loaderData?.artworks ?? []))],
   }),
   component: Gallery,
 });

@@ -39,6 +39,7 @@ export const Route = createFileRoute("/about")({
         content: "The story, mission and vision behind Miller Artz.",
       },
     ],
+    links: [canonical("/about")],
   }),
   component: About,
 });

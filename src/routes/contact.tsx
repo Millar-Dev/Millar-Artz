@@ -35,6 +35,7 @@ export const Route = createFileRoute("/contact")({
         content: "Reach the Miller Artz studio for commissions and inquiries.",
       },
     ],
+    links: [canonical("/contact")],
   }),
   loader: () => getSiteSettings(),
   component: Contact,

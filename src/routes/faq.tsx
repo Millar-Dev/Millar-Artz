@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { canonical, faqGraph, jsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
@@ -19,6 +20,9 @@ export const Route = createFileRoute("/faq")({
           "How commissions work at Miller Artz: process, pricing, timelines, delivery and payment.",
       },
     ],
+    links: [canonical("/faq")],
+    // FAQPage markup — these can surface as expandable answers in search.
+    scripts: [jsonLd(faqGraph(groups.flatMap((g) => g.items)))],
   }),
   component: Faq,
 });

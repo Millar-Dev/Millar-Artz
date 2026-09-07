@@ -6,6 +6,7 @@ import { listArtworks } from "@/lib/data/artworks";
 import { getSiteSettings } from "@/lib/data/site-settings";
 import { getSiteImage } from "@/lib/data/site-images";
 import artistPortraitFallback from "@/assets/me-portrait.jpg";
+import { artistGraph, canonical, jsonLd } from "@/lib/seo";
 import { Music, PersonStanding, Sparkles, Box } from "lucide-react";
 import type { Artwork, ArtworkCategory, Discipline } from "@/lib/gallery-data";
 
@@ -40,6 +41,8 @@ export const Route = createFileRoute("/")({
           "Original hyperrealistic drawings, wildlife paintings, murals and bespoke commissions from Miller Artz.",
       },
     ],
+    links: [canonical("/")],
+    scripts: [jsonLd(artistGraph())],
   }),
   component: Home,
 });
@@ -236,7 +239,10 @@ function Home() {
                   the centre, opening wider and higher toward the edges.
                   Hover any piece to bring it upright and forward. */}
               <div className="relative hidden lg:block">
-                <div className="relative mx-auto aspect-[5/4] w-full max-w-[36rem]">
+                {/* Capped against the viewport height as well as the column
+                    width, so on short/laptop screens the fan finishes above
+                    the fold instead of running off the bottom edge. */}
+                <div className="relative mx-auto aspect-[5/4] w-full max-w-[min(36rem,52vh)]">
                   {/* Studio spotlight. Three stacked radial gradients, no hard
                       edges anywhere: a wide ambient wash that bleeds into the
                       hero background, a brighter core centred on the bouquet,
