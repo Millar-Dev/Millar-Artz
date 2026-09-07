@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { subscribe } from "@/lib/data/subscribers";
+import { canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/subscription")({
   head: () => ({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/subscription")({
           "Free and premium memberships for early access to Miller Artz collections and exclusive previews.",
       },
     ],
+    links: [canonical("/subscription")],
   }),
   component: Subscription,
 });
