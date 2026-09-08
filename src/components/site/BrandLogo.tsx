@@ -1,47 +1,27 @@
 /**
- * The MILLERPIX wordmark, drawn as vector geometry rather than shipped as a
- * bitmap.
+ * The MILLERPIX wordmark.
  *
- * The supplied logo is flat black on white, which is unusable here: the nav
- * and footer sit on a near-black band, so a JPEG of it needs a light box
- * behind it and ends up looking pasted on. Redrawing it means the letterforms
- * can take `currentColor` — near-white on the dark band, ink on paper — while
- * the red accents ride a single `--brand-accent` custom property that each
- * surface can retune for contrast.
+ * These two paths are a trace of Millar's supplied artwork
+ * (millerpix-logo-v2-white-bg.png), not a redrawing: the source was split into
+ * a black mask and a red mask by pixel classification, each was run through
+ * potrace, and the coordinates were rounded to integers on the artwork's own
+ * 1803x331 grid. A pixel diff against the source puts the two within 0.7% of
+ * its ink, which is edge antialiasing.
  *
- * Geometry lives on a 100-unit cap height with the baseline at y=100. The
- * brushes reach above the cap line, hence the negative viewBox origin.
+ * It is vector rather than the original bitmap because the nav and footer sit
+ * on a fixed near-black band: as paths the letterforms take `currentColor` —
+ * near-white on the band, ink on paper — while the red rides
+ * `--brand-accent`, which each surface retunes for contrast. Both paths need
+ * `evenodd`; the counters and the palette's dabs are knockouts.
  */
 
-/** Circle expressed as a path subpath, so holes can share one `evenodd` path. */
-const circle = (cx: number, cy: number, r: number) =>
-  `M${cx - r},${cy}a${r},${r} 0 1,0 ${r * 2},0a${r},${r} 0 1,0 ${-r * 2},0Z`;
+/** Letterforms, both brushes, the palette and the X's left chevron. */
+const INK =
+  "M 1216 2 C 1208 3, 1208 3, 1213 5 C 1224 8, 1225 17, 1216 37 C 1209 52, 1208 61, 1213 71 C 1218 82, 1227 87, 1240 86 C 1252 85, 1260 79, 1266 67 C 1270 59, 1270 41, 1266 32 C 1261 17, 1247 5, 1234 2 C 1226 0, 1225 0, 1216 2 M 317 16 L 312 17 315 18 C 326 22, 327 30, 319 47 C 312 63, 310 72, 314 81 C 320 100, 347 105, 361 89 C 365 84, 369 75, 370 69 C 374 36, 345 7, 317 16 M 1352 34 C 1304 39, 1275 65, 1280 98 C 1282 113, 1290 123, 1309 136 C 1322 145, 1325 148, 1326 156 C 1327 165, 1321 173, 1310 178 C 1308 178, 1301 180, 1294 181 C 1276 183, 1270 187, 1268 195 C 1267 206, 1285 224, 1306 233 C 1333 244, 1369 243, 1396 229 C 1449 202, 1474 149, 1456 97 C 1451 80, 1443 69, 1428 56 C 1408 40, 1377 31, 1352 34 M 583 166 L 583 284 657 284 L 731 284 731 262 L 731 239 698 239 C 680 239, 663 239, 661 239 C 659 239, 653 239, 649 238 L 642 238 642 142 L 642 47 613 47 L 583 47 583 166 M 757 48 C 756 48, 756 101, 756 166 L 756 284 845 284 L 934 284 934 262 L 934 239 921 239 C 913 239, 887 239, 862 239 L 816 239 815 167 L 815 95 874 95 L 934 95 934 71 L 934 47 846 47 C 797 47, 757 47, 757 48 M 963 165 L 963 284 992 284 L 1020 284 1020 246 L 1020 208 1022 208 C 1025 207, 1046 207, 1048 208 C 1048 208, 1052 214, 1055 220 C 1059 226, 1068 243, 1077 258 L 1091 284 1126 284 C 1153 284, 1160 284, 1159 283 C 1159 282, 1148 266, 1136 247 C 1104 199, 1104 200, 1104 198 C 1104 198, 1106 197, 1108 196 C 1110 195, 1116 192, 1122 188 C 1141 175, 1150 158, 1153 134 C 1158 95, 1141 67, 1107 54 C 1090 48, 1089 48, 1023 47 L 963 47 963 165 M 409 166 L 409 284 412 284 C 425 284, 556 284, 557 284 C 557 283, 557 273, 557 261 L 558 239 516 239 C 493 239, 473 239, 471 238 L 468 238 468 143 L 468 48 439 48 L 409 48 409 166 M 1486 166 L 1486 284 1516 284 L 1546 284 1546 166 L 1546 48 1516 48 L 1486 48 1486 166 M 1585 49 L 1575 50 1583 61 C 1587 67, 1594 78, 1599 85 C 1604 92, 1611 103, 1616 110 C 1621 117, 1629 128, 1633 136 C 1638 143, 1645 153, 1649 159 L 1656 169 1651 177 C 1648 181, 1639 194, 1631 206 C 1616 227, 1609 235, 1593 258 C 1589 265, 1583 274, 1580 277 L 1575 284 1607 284 L 1639 284 1667 242 C 1714 175, 1719 167, 1719 166 C 1718 165, 1712 155, 1704 144 C 1696 133, 1686 118, 1681 111 C 1669 92, 1659 78, 1648 63 L 1639 50 1629 49 C 1618 48, 1600 48, 1585 49 M 13 50 L 0 50 0 168 L 0 285 28 285 L 55 285 55 216 C 55 178, 55 147, 56 147 C 57 147, 59 152, 67 168 C 71 174, 77 186, 80 193 C 84 200, 92 214, 96 223 C 101 232, 108 245, 111 251 L 117 262 139 262 C 150 262, 160 262, 160 261 C 160 261, 167 247, 177 230 C 186 213, 199 189, 206 176 C 226 140, 231 130, 241 110 C 247 100, 255 85, 259 78 C 266 63, 273 50, 273 50 C 273 49, 261 49, 246 49 L 219 50 212 62 C 205 74, 193 96, 184 113 C 176 127, 160 157, 152 172 C 143 188, 139 195, 138 195 C 138 195, 113 150, 104 132 C 103 130, 101 126, 99 122 C 97 118, 87 101, 78 83 C 68 65, 61 50, 61 50 C 60 50, 24 49, 13 50 M 1333 63 C 1322 64, 1314 73, 1314 82 C 1314 93, 1324 100, 1339 100 C 1353 100, 1363 92, 1363 82 C 1364 69, 1350 61, 1333 63 M 1390 92 C 1374 100, 1381 119, 1400 119 C 1410 119, 1417 115, 1420 109 C 1426 95, 1406 84, 1390 92 M 1223 94 C 1219 111, 1218 123, 1217 136 C 1216 150, 1216 151, 1218 152 C 1225 158, 1245 158, 1253 153 L 1255 151 1255 138 C 1254 124, 1252 104, 1250 96 L 1249 91 1246 92 C 1242 93, 1232 93, 1227 92 C 1223 91, 1223 91, 1223 94 M 1020 129 L 1021 163 1044 163 C 1075 163, 1080 162, 1090 152 C 1097 145, 1100 138, 1100 127 C 1100 114, 1097 108, 1088 102 C 1080 96, 1076 95, 1046 95 L 1020 95 1020 129 M 324 118 C 322 134, 320 150, 320 158 L 320 164 324 166 C 333 171, 351 169, 356 164 C 357 162, 357 161, 356 147 C 355 130, 352 113, 351 108 C 350 104, 350 104, 346 105 C 342 106, 334 106, 329 105 L 326 104 324 118 M 1410 135 C 1405 137, 1399 143, 1398 147 C 1396 165, 1429 171, 1437 154 C 1442 142, 1427 130, 1410 135 M 1216 193 C 1216 257, 1222 308, 1231 328 C 1233 332, 1233 332, 1236 327 C 1243 312, 1250 265, 1253 221 C 1254 195, 1255 160, 1255 159 C 1254 158, 1253 159, 1251 160 C 1243 164, 1230 164, 1221 160 C 1219 159, 1217 158, 1216 158 C 1216 158, 1216 174, 1216 193 M 320 193 C 322 249, 330 308, 338 318 C 340 320, 340 320, 341 317 C 350 299, 357 237, 357 188 C 357 172, 357 171, 355 171 C 343 176, 327 176, 321 171 C 320 170, 320 173, 320 193 M 1390 178 C 1383 181, 1381 190, 1385 195 C 1389 198, 1392 199, 1398 199 C 1403 199, 1404 199, 1407 195 C 1412 191, 1412 187, 1409 183 C 1405 177, 1397 176, 1390 178 M 1339 192 C 1324 197, 1319 209, 1327 219 C 1336 230, 1358 231, 1367 220 C 1375 211, 1373 199, 1361 194 C 1356 191, 1344 190, 1339 192";
 
-/** A brush standing in for a letter: hair, two ferrule bands, tapered handle. */
-function Brush() {
-  return (
-    <>
-      <path d="M15,-24 C3,-12 0,1 5,13 L25,13 C30,1 27,-12 15,-24 Z" />
-      <path d="M5,17 H25 V24 H5 Z" />
-      <path d="M5,28 H25 V35 H5 Z" />
-      <path d="M6,39 H24 L17,100 H13 Z" />
-    </>
-  );
-}
-
-/** The palette that carries the P: bowl, thumb hole, five knocked-out dabs. */
-function Palette() {
-  const bowl = "M0,50a56,50 0 1,0 112,0a56,50 0 1,0 -112,0Z";
-  const holes = [
-    circle(32, 68, 12), // thumb
-    circle(40, 26, 9),
-    circle(64, 18, 8),
-    circle(86, 32, 8),
-    circle(93, 56, 7),
-    circle(74, 74, 7),
-  ].join("");
-  return <path fillRule="evenodd" d={bowl + holes} />;
-}
+/** The wedge in the M, the E's middle arm, and the X's two right arms. */
+const ACCENT =
+  "M 1720 73 C 1710 87, 1703 98, 1703 99 C 1703 99, 1706 104, 1710 110 C 1724 131, 1735 147, 1736 148 C 1736 148, 1740 143, 1745 136 C 1749 130, 1764 108, 1778 87 C 1792 67, 1803 50, 1803 49 C 1803 48, 1793 48, 1770 48 L 1736 48 1720 73 M 262 133 C 248 145, 236 161, 225 183 L 219 194 219 239 L 219 285 246 285 L 272 285 272 206 C 272 160, 272 127, 271 127 C 271 127, 267 130, 262 133 M 850 166 C 847 177, 844 187, 843 188 L 843 190 881 190 L 919 190 919 187 C 920 185, 920 175, 920 166 L 920 148 888 147 L 856 147 850 166 M 1733 189 C 1732 190, 1729 194, 1727 198 C 1724 202, 1718 211, 1712 219 C 1706 228, 1702 235, 1701 235 C 1701 237, 1714 258, 1728 279 L 1732 285 1767 285 C 1786 285, 1801 285, 1801 284 C 1801 283, 1793 270, 1749 204 C 1742 194, 1737 186, 1736 186 C 1736 186, 1734 187, 1733 189";
 
 interface BrandProps {
   className?: string;
@@ -56,86 +36,40 @@ export function BrandWordmark({
   accent,
   title = "MILLERPIX",
 }: BrandProps) {
-  const red = accent ?? "var(--brand-accent, #e0243c)";
   return (
     <svg
-      viewBox="0 -26 707 130"
+      viewBox="0 0 1803 331"
       role="img"
       aria-label={title}
       className={className}
       fill="currentColor"
     >
-      {/* M — with the accent wedge seated in its left counter. */}
-      <path d="M0,100 V0 H28 L46,44 L64,0 H92 V100 H68 V38 L54,74 H38 L24,38 V100 Z" />
-      <path fill={red} d="M24,100 V46 L41,64 V100 Z" />
-
-      <g transform="translate(102,0)">
-        <Brush />
-      </g>
-
-      <path transform="translate(142,0)" d="M0,0 H25 V76 H58 V100 H0 Z" />
-      <path transform="translate(208,0)" d="M0,0 H25 V76 H58 V100 H0 Z" />
-
-      {/* E — the middle arm is the accent, as in the original mark. */}
+      <path fillRule="evenodd" d={INK} />
       <path
-        transform="translate(274,0)"
-        d="M0,0 H60 V24 H25 V76 H60 V100 H0 Z"
-      />
-      <path
-        transform="translate(274,0)"
-        fill={red}
-        d="M27,40 H56 L52,60 H23 Z"
-      />
-
-      {/* R */}
-      <path
-        transform="translate(342,0)"
         fillRule="evenodd"
-        d="M0,0 H42 C59,0 69,11 69,29 C69,42 62,50 52,54 L70,100 H42 L28,58 H25 V100 H0 Z M25,18 V42 H40 C47,42 50,37 50,30 C50,23 47,18 40,18 Z"
-      />
-
-      <g transform="translate(422,0)">
-        <Brush />
-      </g>
-      <g transform="translate(456,0)">
-        <Palette />
-      </g>
-
-      <path transform="translate(580,0)" d="M0,0 H25 V100 H0 Z" />
-
-      {/* X — black chevron meeting an accent chevron at the crossing. */}
-      <path
-        transform="translate(615,0)"
-        d="M0,0 H27 L46,50 L27,100 H0 L19,50 Z"
-      />
-      <path
-        transform="translate(615,0)"
-        fill={red}
-        d="M92,0 H65 L46,50 L65,100 H92 L73,50 Z"
+        fill={accent ?? "var(--brand-accent, #e0243c)"}
+        d={ACCENT}
       />
     </svg>
   );
 }
 
-/** Brush + palette alone, for favicons, stamps and anywhere too tight for the
- *  full name. */
+/** Brush and palette alone, for favicons, stamps and anywhere too tight for
+ *  the full name. Same geometry, cropped by the viewBox. */
 export function BrandMark({
   className,
   title = "MILLERPIX",
 }: Omit<BrandProps, "accent">) {
   return (
     <svg
-      viewBox="0 -26 146 130"
+      viewBox="1205 -4 260 339"
       role={title ? "img" : undefined}
       aria-label={title || undefined}
       aria-hidden={title ? undefined : true}
       className={className}
       fill="currentColor"
     >
-      <Brush />
-      <g transform="translate(34,0)">
-        <Palette />
-      </g>
+      <path fillRule="evenodd" d={INK} />
     </svg>
   );
 }
