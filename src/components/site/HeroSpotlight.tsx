@@ -15,7 +15,7 @@
 
 /** Saturated gold — distinctly yellower than the hero's brown. */
 const GOLD = "255,205,70";
-/** Snow stays pure white so it reads at any size. */
+/** Snow is exactly #ffffff — no warm tint, or it sinks into the ground. */
 const SNOW = "255,255,255";
 
 /** Spread across the cone and staggered in time so the fall never pulses in
@@ -52,7 +52,7 @@ export function HeroSpotlightBack() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 54% 48% at 50% 60%, rgba(22,7,2,0.74) 0%, rgba(22,7,2,0.42) 46%, transparent 78%)",
+            "radial-gradient(ellipse 54% 48% at 50% 60%, rgba(20,6,2,0.82) 0%, rgba(20,6,2,0.48) 46%, transparent 78%)",
         }}
       />
 
@@ -61,7 +61,7 @@ export function HeroSpotlightBack() {
       <div
         className="animate-beam-sway absolute inset-0 mix-blend-screen"
         style={{
-          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${GOLD},0) 0deg, rgba(${GOLD},0.30) 1.1deg, rgba(${GOLD},0.07) 2.2deg, rgba(${GOLD},0) 3.6deg)`,
+          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${GOLD},0) 0deg, rgba(${GOLD},0.46) 1.1deg, rgba(${GOLD},0.13) 2.2deg, rgba(${GOLD},0) 3.6deg)`,
           maskImage:
             "radial-gradient(ellipse 42% 64% at 50% 6%, #000 0%, rgba(0,0,0,0.74) 42%, transparent 84%)",
           WebkitMaskImage:
@@ -74,7 +74,7 @@ export function HeroSpotlightBack() {
       <div
         className="animate-spotlight absolute left-1/2 top-[1%] h-[28%] w-[36%] -translate-x-1/2 mix-blend-screen"
         style={{
-          background: `radial-gradient(ellipse 50% 50% at 50% 30%, rgba(255,252,238,1) 0%, rgba(${GOLD},0.82) 26%, rgba(${GOLD},0.34) 52%, transparent 76%)`,
+          background: `radial-gradient(ellipse 50% 50% at 50% 30%, rgba(255,255,255,1) 0%, rgba(${GOLD},0.96) 28%, rgba(${GOLD},0.46) 56%, transparent 76%)`,
           filter: "blur(16px)",
         }}
       />
@@ -83,7 +83,7 @@ export function HeroSpotlightBack() {
       <div
         className="animate-spotlight absolute left-1/2 top-[52%] h-[36%] w-[76%] -translate-x-1/2 mix-blend-screen"
         style={{
-          background: `radial-gradient(ellipse 50% 46% at 50% 50%, rgba(${GOLD},0.60) 0%, rgba(${GOLD},0.26) 44%, transparent 74%)`,
+          background: `radial-gradient(ellipse 50% 46% at 50% 50%, rgba(${GOLD},0.82) 0%, rgba(${GOLD},0.40) 44%, transparent 74%)`,
           filter: "blur(24px)",
         }}
       />
@@ -101,7 +101,7 @@ export function HeroSpotlightFront() {
       <div
         className="animate-beam-sway absolute inset-0 mix-blend-screen"
         style={{
-          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${GOLD},0) 0deg, rgba(${GOLD},0.13) 1.3deg, rgba(${GOLD},0.03) 2.6deg, rgba(${GOLD},0) 4deg)`,
+          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${GOLD},0) 0deg, rgba(${GOLD},0.21) 1.3deg, rgba(${GOLD},0.06) 2.6deg, rgba(${GOLD},0) 4deg)`,
           maskImage:
             "radial-gradient(ellipse 40% 70% at 50% 8%, #000 0%, rgba(0,0,0,0.55) 46%, transparent 86%)",
           WebkitMaskImage:
@@ -124,7 +124,7 @@ export function HeroSpotlightFront() {
               background: `rgb(${SNOW})`,
               animationDelay: `${m.delay}s`,
               animationDuration: `${m.duration}s`,
-              boxShadow: `0 0 ${m.size * 4}px ${m.size * 1.5}px rgba(${SNOW},0.75)`,
+              boxShadow: `0 0 ${m.size * 5}px ${m.size * 2}px rgba(${SNOW},0.95)`,
               ["--mote-drift" as string]: `${m.drift}px`,
             }}
           />

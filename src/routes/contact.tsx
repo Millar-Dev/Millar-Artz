@@ -167,7 +167,7 @@ function Contact() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-10 md:py-16">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           {/* Info column */}
           <aside className="md:col-span-4">

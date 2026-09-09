@@ -210,12 +210,14 @@
 @keyframes beam-sway {
   0%,
   100% {
-    opacity: 0.72;
-    transform: rotate(-0.5deg) scaleY(1);
+    opacity: 0.85;
+    rotate: -0.5deg;
+    scale: 1 1;
   }
   50% {
     opacity: 1;
-    transform: rotate(0.5deg) scaleY(1.03);
+    rotate: 0.5deg;
+    scale: 1 1.03;
   }
 }
 
@@ -224,12 +226,12 @@
 @keyframes spotlight-breathe {
   0%,
   100% {
-    opacity: 0.75;
-    transform: translateX(-50%) scaleX(1);
+    opacity: 0.88;
+    scale: 1 1;
   }
   50% {
     opacity: 1;
-    transform: translateX(-50%) scaleX(1.06);
+    scale: 1.06 1;
   }
 }
 
@@ -435,6 +437,10 @@
   html {
     scroll-behavior: smooth;
   }
+  html,
+  body {
+    overflow-x: clip;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -456,7 +462,7 @@
   body::before {
     content: "";
     position: fixed;
-    inset: -8%;
+    inset: 0;
     z-index: -2;
     pointer-events: none;
     background:

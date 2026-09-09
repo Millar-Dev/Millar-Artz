@@ -7,7 +7,7 @@ import {
 } from "@/components/site/HeroSpotlight";
 import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
-import { getSiteSettings } from "@/lib/data/site-settings";
+import { getSiteSettings, HERO_MOBILE_SLOTS } from "@/lib/data/site-settings";
 import { getSiteImage } from "@/lib/data/site-images";
 import artistPortraitFallback from "@/assets/me-portrait.jpg";
 import { artistGraph, canonical, jsonLd } from "@/lib/seo";
@@ -83,7 +83,8 @@ const marqueeIds = [
   "the-herd",
   "cartoon-study-penguin",
 ];
-const mobileSlideIds = [
+/** Used when the Studio hasn't chosen its own phone/tablet slides yet. */
+const DEFAULT_MOBILE_IDS = [
   "woman-of-the-savanna",
   "kindred-bee-eaters",
   "the-storyteller",
@@ -123,14 +124,27 @@ function Home() {
 
   // Studio-chosen hero pieces, falling back to the defaults (and skipping any
   // id that no longer exists, so deleting an artwork can't blank the hero).
-  const chosenIds = (settings.hero_collage_ids || "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const heroPieces = (chosenIds.length ? chosenIds : DEFAULT_HERO_IDS)
-    .map(byId)
-    .filter((a): a is Artwork => Boolean(a))
-    .slice(0, BOUQUET.length);
+  const resolve = (saved: string, fallback: string[], limit: number) => {
+    const ids = saved
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return (ids.length ? ids : fallback)
+      .map(byId)
+      .filter((a): a is Artwork => Boolean(a))
+      .slice(0, limit);
+  };
+  const heroPieces = resolve(
+    settings.hero_collage_ids || "",
+    DEFAULT_HERO_IDS,
+    BOUQUET.length,
+  );
+  // The phone hero is a different composition, so it gets its own picks.
+  const mobileSlides = resolve(
+    settings.hero_mobile_ids || "",
+    DEFAULT_MOBILE_IDS,
+    HERO_MOBILE_SLOTS,
+  );
 
   return (
     <Layout>
@@ -146,7 +160,7 @@ function Home() {
                 of thumbnails), and a grid item defaults to min-width:auto —
                 so without this the column grows to fit it and shoves the
                 headline and copy off the side of a phone screen. */}
-            <div className="min-w-0 lg:col-span-6">
+            <div className="min-w-0 lg:col-span-5">
               <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">
                 The Art of Imagination
               </span>
@@ -220,7 +234,7 @@ function Home() {
               </div>
             </div>
 
-            <div className="min-w-0 lg:col-span-6">
+            <div className="min-w-0 lg:col-span-7">
               {/* Desktop / large tablet — the pieces fan out of a single
                   point like flowers gathered in a bunch: tight and low in
                   the centre, opening wider and higher toward the edges.
@@ -229,8 +243,16 @@ function Home() {
                 {/* Sized off the column, not the viewport height. A 52vh cap
                     here shrank the artwork to fix a spacing problem and cost
                     the bouquet its presence — the fan reaching past the fold
-                    is intentional. */}
-                <div className="relative mx-auto aspect-[5/4] w-full max-w-[38rem]">
+                    is intentional.
+
+                    Left-aligned rather than centred, and 88% of a column that
+                    is now the wider half: rotating a petal about its bottom
+                    edge throws its top corner ~9.6% of the stage width past
+                    the stage, and centring it in a full-width column put that
+                    corner outside the viewport, where the section's
+                    overflow-hidden sheared it off. The slack is the swing
+                    clearance — the artwork itself is no smaller. */}
+                <div className="relative aspect-[5/4] w-[88%] max-w-[38rem]">
                   <HeroSpotlightBack />
 
                   {heroPieces.map((artwork, i) =>
@@ -252,7 +274,7 @@ function Home() {
 
               {/* Mobile / tablet — slides stacked in front of one another,
                   fading automatically to reveal the next. */}
-              <MobileHeroSlides artworks={artworks} className="lg:hidden" />
+              <MobileHeroSlides slides={mobileSlides} className="lg:hidden" />
             </div>
           </div>
 
@@ -315,7 +337,7 @@ function Home() {
       </section>
 
       {/* Category rows — Netflix-style horizontal scroll */}
-      <section className="bg-gallery py-20">
+      <section className="bg-gallery py-12 md:py-20">
         <div className="mx-auto max-w-7xl space-y-16 px-6">
           {rows.map((row) => {
             const items = artworks.filter((a) =>
@@ -373,7 +395,7 @@ function Home() {
       </section>
 
       {/* Custom Commission */}
-      <section className="bg-band py-24 text-band-foreground">
+      <section className="bg-band py-14 md:py-24 text-band-foreground">
         <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2 md:gap-20">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
@@ -435,7 +457,7 @@ function Home() {
       </section>
 
       {/* Beyond the Canvas teaser */}
-      <section className="bg-canvas py-24">
+      <section className="bg-canvas py-14 md:py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
@@ -480,7 +502,7 @@ function Home() {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="border-t border-ink/5 bg-paper py-24">
+      <section className="border-t border-ink/5 bg-paper py-14 md:py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Newsletter
@@ -505,15 +527,12 @@ function Home() {
 }
 
 function MobileHeroSlides({
-  artworks,
+  slides,
   className = "",
 }: {
-  artworks: Artwork[];
+  slides: Artwork[];
   className?: string;
 }) {
-  const slides = mobileSlideIds
-    .map((id) => artworks.find((a) => a.id === id))
-    .filter((a): a is Artwork => Boolean(a));
   const [active, setActive] = useState(0);
 
   useEffect(() => {

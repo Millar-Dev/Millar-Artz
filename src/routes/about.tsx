@@ -93,7 +93,7 @@ function About() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-10 md:py-16">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
@@ -148,7 +148,7 @@ function About() {
       </section>
 
       {/* Disciplines */}
-      <section className="border-y border-ink/5 bg-paper py-16">
+      <section className="border-y border-ink/5 bg-paper py-10 md:py-16">
         <div className="mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Disciplines
@@ -167,7 +167,7 @@ function About() {
       </section>
 
       {/* The studio itself — where the work actually gets made */}
-      <section className="grain relative overflow-hidden py-24">
+      <section className="grain relative overflow-hidden py-14 md:py-24">
         <div className="relative mx-auto max-w-7xl px-6">
           <div className="grid items-center gap-14 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-6">
@@ -280,7 +280,7 @@ function About() {
       </section>
 
       {/* Mission / Vision */}
-      <section className="bg-paper py-24">
+      <section className="bg-paper py-14 md:py-24">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-2">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
@@ -312,7 +312,7 @@ function About() {
       </section>
 
       {/* Values */}
-      <section className="py-24">
+      <section className="py-14 md:py-24">
         <div className="mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Core Values
@@ -339,7 +339,7 @@ function About() {
       </section>
 
       {/* Future / Awards */}
-      <section className="grain relative bg-band py-24 text-band-foreground">
+      <section className="grain relative bg-band py-14 md:py-24 text-band-foreground">
         <div className="relative mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-2">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
@@ -398,7 +398,7 @@ function About() {
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="font-display text-3xl italic text-ink md:text-4xl">
             Interested in a piece — or a commission?

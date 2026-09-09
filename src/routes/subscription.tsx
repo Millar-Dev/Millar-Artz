@@ -95,7 +95,7 @@ function Subscription() {
       </section>
 
       {/* Plans */}
-      <section className="py-16">
+      <section className="py-10 md:py-16">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 md:grid-cols-2">
           {plans.map((p) => (
             <div

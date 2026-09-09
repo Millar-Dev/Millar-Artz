@@ -153,7 +153,7 @@ function Gallery() {
       </section>
 
       {/* Grid */}
-      <section className="bg-gallery py-16">
+      <section className="bg-gallery py-10 md:py-16">
         <div className="mx-auto max-w-7xl px-6">
           {filtered.length === 0 ? (
             <div className="py-24 text-center text-ink/50">
@@ -238,7 +238,7 @@ function Gallery() {
       </section>
 
       {/* Beyond the Canvas */}
-      <section className="grain relative border-t border-white/5 bg-band py-24 text-band-foreground">
+      <section className="grain relative border-t border-white/5 bg-band py-14 md:py-24 text-band-foreground">
         <div className="relative mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Beyond the Canvas

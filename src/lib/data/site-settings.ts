@@ -14,6 +14,9 @@ export const SETTING_KEYS = [
   /** Comma-separated artwork ids shown in the home hero bouquet, in order
    *  from the left petal round to the right. */
   "hero_collage_ids",
+  /** Comma-separated artwork ids for the phone/tablet hero, which is a
+   *  cross-fading stack rather than a bouquet and so is chosen separately. */
+  "hero_mobile_ids",
 ] as const;
 
 export type SettingKey = (typeof SETTING_KEYS)[number];
@@ -30,10 +33,13 @@ export const SETTING_DEFAULTS: SiteSettings = {
   phone_secondary: "+255 754 300 543",
   location: "Tanzania — visits by appointment.",
   hero_collage_ids: "",
+  hero_mobile_ids: "",
 };
 
 /** How many pieces the hero bouquet holds. */
 export const HERO_COLLAGE_SLOTS = 5;
+/** How many slides the phone/tablet hero cycles through. */
+export const HERO_MOBILE_SLOTS = 5;
 
 export const getSiteSettings = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteSettings> => {

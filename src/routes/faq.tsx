@@ -103,7 +103,7 @@ function Faq() {
         </div>
       </section>
 
-      <section className="bg-gallery py-16">
+      <section className="bg-gallery py-10 md:py-16">
         <div className="mx-auto max-w-3xl space-y-14 px-6">
           {groups.map((group) => (
             <div key={group.heading}>
@@ -120,7 +120,7 @@ function Faq() {
         </div>
       </section>
 
-      <section className="bg-band py-20 text-band-foreground">
+      <section className="bg-band py-12 md:py-20 text-band-foreground">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h2 className="font-display text-3xl italic md:text-4xl">
             Still have a question?

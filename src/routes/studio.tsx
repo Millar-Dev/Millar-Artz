@@ -26,6 +26,7 @@ import {
   getSiteSettings,
   updateSiteSettings,
   HERO_COLLAGE_SLOTS,
+  HERO_MOBILE_SLOTS,
   type SiteSettings,
 } from "@/lib/data/site-settings";
 import {
@@ -322,7 +323,32 @@ function Dashboard({
         )}
       </div>
 
-      <HeroCollagePanel initial={initialSettings} artworks={artworks} />
+      <HeroPicker
+        initial={initialSettings}
+        artworks={artworks}
+        settingKey="hero_collage_ids"
+        slots={HERO_COLLAGE_SLOTS}
+        title="Home hero bouquet (desktop)"
+        blurb="The five pieces fanned out at the top of the home page, left to right. The centre one sits tallest and in front."
+        labels={[
+          "Left petal",
+          "Inner left",
+          "Centre (front)",
+          "Inner right",
+          "Right petal",
+        ]}
+        saveLabel="Save bouquet"
+      />
+      <HeroPicker
+        initial={initialSettings}
+        artworks={artworks}
+        settingKey="hero_mobile_ids"
+        slots={HERO_MOBILE_SLOTS}
+        title="Home hero slides (phone & tablet)"
+        blurb="Narrow screens can't hold the fan, so they show these pieces one at a time, cross-fading in this order. Chosen separately from the bouquet."
+        labels={["Slide 1", "Slide 2", "Slide 3", "Slide 4", "Slide 5"]}
+        saveLabel="Save slides"
+      />
       <InquiriesPanel initial={initialInquiries} />
       <SubscribersPanel initial={initialSubscribers} />
       <SettingsPanel initial={initialSettings} />
@@ -342,14 +368,28 @@ function Dashboard({
   );
 }
 
-/** Which pieces fill the fanned bouquet on the home page, and in what order.
- *  Slot 3 is the centre stem — the one that stands tallest and in front. */
-function HeroCollagePanel({
+/** Ordered artwork picker behind either home hero. The desktop bouquet and the
+ *  phone slideshow are different compositions — a piece that carries the centre
+ *  stem is not necessarily the one to open a slideshow — so each keeps its own
+ *  selection rather than sharing one list. */
+function HeroPicker({
   initial,
   artworks,
+  settingKey,
+  slots: slotCount,
+  title,
+  blurb,
+  labels,
+  saveLabel,
 }: {
   initial: SiteSettings;
   artworks: Artwork[];
+  settingKey: "hero_collage_ids" | "hero_mobile_ids";
+  slots: number;
+  title: string;
+  blurb: string;
+  labels: string[];
+  saveLabel: string;
 }) {
   const parse = (v: string) =>
     v
@@ -358,9 +398,9 @@ function HeroCollagePanel({
       .filter(Boolean);
 
   const [slots, setSlots] = useState<string[]>(() => {
-    const saved = parse(initial.hero_collage_ids || "");
+    const saved = parse(initial[settingKey] || "");
     return Array.from(
-      { length: HERO_COLLAGE_SLOTS },
+      { length: slotCount },
       (_, i) => saved[i] ?? artworks[i]?.id ?? "",
     );
   });
@@ -376,7 +416,7 @@ function HeroCollagePanel({
     setBusy(true);
     try {
       await updateSiteSettings({
-        data: { hero_collage_ids: slots.filter(Boolean).join(",") },
+        data: { [settingKey]: slots.filter(Boolean).join(",") },
       });
       setSaved(true);
     } finally {
@@ -384,21 +424,10 @@ function HeroCollagePanel({
     }
   }
 
-  const positions = [
-    "Left petal",
-    "Inner left",
-    "Centre (front)",
-    "Inner right",
-    "Right petal",
-  ];
-
   return (
     <section className="mt-16 border-t border-ink/10 pt-10">
-      <h2 className="font-display text-2xl italic text-ink">Home hero bouquet</h2>
-      <p className="mt-1 text-xs text-ink/50">
-        The five pieces fanned out at the top of the home page, left to right.
-        The centre one sits tallest and in front.
-      </p>
+      <h2 className="font-display text-2xl italic text-ink">{title}</h2>
+      <p className="mt-1 text-xs text-ink/50">{blurb}</p>
 
       <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {slots.map((id, i) => {
@@ -406,7 +435,7 @@ function HeroCollagePanel({
           return (
             <div key={i} className="border border-ink/10 bg-paper p-4">
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
-                {positions[i]}
+                {labels[i] ?? `Slot ${i + 1}`}
               </p>
               <div className="mt-3 flex items-center gap-3">
                 <div className="h-20 w-16 shrink-0 overflow-hidden rounded-sm bg-ink/10">
@@ -442,7 +471,7 @@ function HeroCollagePanel({
           disabled={busy}
           className="inline-flex items-center gap-2 rounded-sm bg-gold px-6 py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-band disabled:opacity-50"
         >
-          {busy && <Loader2 size={14} className="animate-spin" />} Save bouquet
+          {busy && <Loader2 size={14} className="animate-spin" />} {saveLabel}
         </button>
         {saved && <span className="text-sm italic text-gold">Saved.</span>}
       </div>
