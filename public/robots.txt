@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://millerpix.vercel.app/sitemap.xml
+Sitemap: https://artesque.vercel.app/sitemap.xml

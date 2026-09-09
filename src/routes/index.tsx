@@ -5,14 +5,15 @@ import {
   HeroSpotlightBack,
   HeroSpotlightFront,
 } from "@/components/site/HeroSpotlight";
+import { DisciplineMark, Rings } from "@/components/site/BrandLogo";
 import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { getSiteSettings, HERO_MOBILE_SLOTS } from "@/lib/data/site-settings";
 import { getSiteImage } from "@/lib/data/site-images";
 import artistPortraitFallback from "@/assets/me-portrait.jpg";
 import { artistGraph, canonical, jsonLd } from "@/lib/seo";
-import { Music, PersonStanding, Sparkles, Box } from "lucide-react";
-import type { Artwork, ArtworkCategory, Discipline } from "@/lib/gallery-data";
+import { Paintbrush, Mic, Footprints, Hammer } from "lucide-react";
+import type { Artwork, ArtworkCategory, DisciplineId } from "@/lib/gallery-data";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -28,21 +29,21 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Millerpix — Hyperrealism, Wildlife & Custom Art Commissions",
+        title: "Artesque — The Threshold to What's Possible",
       },
       {
         name: "description",
         content:
-          "Millerpix is a Tanzania-based studio working across hyperrealism, wildlife, portraits, traditional, abstract, mural and cartoon art. Where imagination meets creativity.",
+          "Artesque is a Tanzania-based studio across five disciplines — painting, music, dance, sculpture and acrobatics. Bringing people through struggle into light, one open doorway at a time.",
       },
       {
         property: "og:title",
-        content: "Millerpix — Where Imagination Meets Creativity",
+        content: "Artesque — The Threshold to What’s Possible",
       },
       {
         property: "og:description",
         content:
-          "Original hyperrealistic drawings, wildlife paintings, murals and bespoke commissions from Millerpix.",
+          "Original painting, music, dance, sculpture and acrobatics work, and bespoke commissions, from the Artesque studio.",
       },
     ],
     links: [canonical("/")],
@@ -51,11 +52,15 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const disciplineIcons: Record<Discipline["icon"], typeof Music> = {
-  music: Music,
-  dance: PersonStanding,
-  digital: Sparkles,
-  sculpture: Box,
+/** The object that stands in each department's doorway. Four are everyday
+ *  objects; acrobatics gets plain interlocking-circle geometry, since no icon
+ *  set draws a pair of hanging rings well at this size. */
+const disciplineIcons: Record<DisciplineId, typeof Paintbrush | typeof Rings> = {
+  painting: Paintbrush,
+  music: Mic,
+  dance: Footprints,
+  sculpture: Hammer,
+  acrobatics: Rings,
 };
 
 const rows: { title: string; categories: ArtworkCategory[] }[] = [
@@ -69,7 +74,7 @@ const rows: { title: string; categories: ArtworkCategory[] }[] = [
   },
 ];
 
-const heroWords = ["Where", "stories", "take", "shape."];
+const heroWords = ["From", "struggle", "into", "light."];
 const quickCategories = categories.filter((c) =>
   ["wildlife", "hyperrealism", "traditional", "abstract"].includes(c.value),
 );
@@ -161,10 +166,10 @@ function Home() {
                 so without this the column grows to fit it and shoves the
                 headline and copy off the side of a phone screen. */}
             <div className="min-w-0 lg:col-span-5">
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">
-                The Art of Imagination
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-gold">
+                The threshold to what's possible
               </span>
-              <h1 className="mt-6 font-display text-5xl leading-[1.05] text-ink md:text-7xl">
+              <h1 className="mt-6 font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
                 {heroWords.map((word, i) => (
                   <span
                     key={word}
@@ -172,7 +177,7 @@ function Home() {
                     style={{ animationDelay: `${i * 0.1}s` }}
                   >
                     {word === "stories" ? (
-                      <span className="italic">{word}</span>
+                      <span className="">{word}</span>
                     ) : (
                       word
                     )}
@@ -181,9 +186,9 @@ function Home() {
                 ))}
               </h1>
               <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-ink/70">
-                A Tanzania-based studio working by hand across nine disciplines
-                — hyperrealistic portraits, wildlife in oil and acrylic, murals,
-                and whatever you bring us next.
+                A Tanzania-based studio across five disciplines — painting,
+                music, dance, sculpture and acrobatics. One threshold, and
+                whatever you bring us next.
               </p>
 
               {/* Scrolling ribbon of the collection, sitting under the intro
@@ -291,7 +296,7 @@ function Home() {
                 />
                 <img
                   src={artistPortrait}
-                  alt="Miller S.K., founder of Millerpix"
+                  alt="Miller S.K., founder of Artesque"
                   loading="lazy"
                   className="relative h-16 w-16 rounded-full object-cover ring-1 ring-gold/40 sm:h-[4.5rem] sm:w-[4.5rem]"
                 />
@@ -302,10 +307,10 @@ function Home() {
                   Miller S.K.
                 </p>
                 <p className="mt-3 text-base font-light leading-relaxed text-ink/75">
-                  I'm Miller S.K. — the hand behind Millerpix. What started as
-                  graphite portraits and wildlife studies has grown into a
-                  studio working across nine disciplines, based here in Tanzania
-                  and built one commission at a time.
+                  I'm Miller S.K. — founder and creative director of Artesque.
+                  What started as graphite portraits and wildlife studies has
+                  grown into a studio across five disciplines, based here in
+                  Tanzania and built one commission at a time.
                 </p>
                 <Link
                   to="/about"
@@ -347,7 +352,7 @@ function Home() {
             return (
               <div key={row.title}>
                 <div className="mb-6 flex items-end justify-between gap-4">
-                  <h2 className="font-display text-2xl italic text-ink md:text-3xl">
+                  <h2 className="font-display font-bold text-2xl text-ink md:text-3xl">
                     {row.title}
                   </h2>
                   <Link
@@ -377,7 +382,7 @@ function Home() {
                           className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         <div className="glass absolute inset-x-0 bottom-0 translate-y-full p-4 transition-transform duration-300 group-hover:translate-y-0">
-                          <h3 className="truncate font-display text-lg italic text-band-foreground">
+                          <h3 className="truncate font-display font-bold text-lg text-band-foreground">
                             {a.title}
                           </h3>
                           <p className="mt-1 text-[10px] uppercase tracking-widest text-band-foreground/60">
@@ -401,8 +406,8 @@ function Home() {
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
               Bespoke Commissions
             </span>
-            <h2 className="mt-6 font-display text-5xl leading-tight">
-              Your Vision, <span className="italic">Our Brush</span>.
+            <h2 className="mt-6 font-display font-bold text-5xl leading-tight">
+              Your Vision, <span className="">Our Brush</span>.
             </h2>
             <p className="mt-8 text-lg font-light leading-relaxed text-band-foreground/70">
               Whether it's a cherished family portrait, a wildlife piece, a
@@ -439,11 +444,11 @@ function Home() {
                 key={s.step}
                 className="flex gap-5 rounded-lg border border-white/10 bg-white/[0.03] p-6"
               >
-                <span className="font-display text-3xl italic text-gold">
+                <span className="font-display font-bold text-3xl text-gold">
                   {s.step}
                 </span>
                 <div>
-                  <h3 className="font-display text-xl italic text-band-foreground">
+                  <h3 className="font-display font-bold text-xl text-band-foreground">
                     {s.title}
                   </h3>
                   <p className="mt-2 text-sm font-light leading-relaxed text-band-foreground/70">
@@ -456,16 +461,16 @@ function Home() {
         </div>
       </section>
 
-      {/* Beyond the Canvas teaser */}
+      {/* The five departments */}
       <section className="bg-canvas py-14 md:py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-                Beyond the Canvas
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+                The Departments
               </span>
-              <h2 className="mt-4 font-display text-4xl italic text-ink md:text-5xl">
-                New disciplines, open now.
+              <h2 className="mt-4 font-display font-bold text-4xl text-ink md:text-5xl">
+                One threshold, five disciplines.
               </h2>
             </div>
             <Link
@@ -475,28 +480,30 @@ function Home() {
               See the full studio scope →
             </Link>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {disciplines.map((d) => {
-              const Icon = disciplineIcons[d.icon];
-              return (
-                <Link
-                  key={d.id}
-                  to="/contact"
-                  search={{ type: d.label }}
-                  className="group flex flex-col justify-between rounded-lg border border-ink/10 bg-paper p-6 transition-all hover:-translate-y-1 hover:border-gold/40"
-                >
-                  <Icon size={22} className="text-gold" strokeWidth={1.75} />
-                  <div className="mt-8">
-                    <h3 className="font-display text-xl italic text-ink">
-                      {d.label}
-                    </h3>
-                    <p className="mt-2 text-xs leading-relaxed text-ink/60">
-                      {d.blurb}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            {disciplines.map((d) => (
+              <Link
+                key={d.id}
+                to="/contact"
+                search={{ type: d.label }}
+                className="group flex flex-col justify-between rounded-lg border border-ink/10 bg-paper p-6 transition-all hover:-translate-y-1 hover:border-ink/25"
+              >
+                <DisciplineMark
+                  icon={disciplineIcons[d.id]}
+                  accent={d.accent}
+                  className="h-16 w-auto text-ink/85 transition-colors group-hover:text-ink"
+                  title=""
+                />
+                <div className="mt-8">
+                  <h3 className="font-display text-xl font-bold text-ink">
+                    {d.label}
+                  </h3>
+                  <p className="mt-2 text-xs leading-relaxed text-ink/60">
+                    {d.blurb}
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -507,7 +514,7 @@ function Home() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Newsletter
           </span>
-          <h2 className="mt-6 font-display text-4xl italic text-ink md:text-5xl">
+          <h2 className="mt-6 font-display font-bold text-4xl text-ink md:text-5xl">
             Join the Collector's Circle
           </h2>
           <p className="mt-6 text-ink/60">
@@ -559,7 +566,7 @@ function MobileHeroSlides({
             className="h-full w-full rounded-[14px] object-cover"
           />
           <div className="absolute inset-x-1 bottom-1 rounded-b-[14px] bg-gradient-to-t from-black/80 to-transparent p-4 pt-10">
-            <p className="font-display text-lg italic text-white">{a.title}</p>
+            <p className="font-display font-bold text-lg text-white">{a.title}</p>
           </div>
         </div>
       ))}
@@ -601,7 +608,7 @@ function HeroCard({
         className="aspect-[3/4] w-full object-cover"
       />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <p className="truncate font-display text-sm italic text-white">
+        <p className="truncate font-display font-bold text-sm text-white">
           {artwork.title}
         </p>
       </div>

@@ -28,7 +28,7 @@ export const SETTING_DEFAULTS: SiteSettings = {
   instagram_url: "",
   facebook_url: "",
   whatsapp_number: "255616110100",
-  email: "studio@millerpix.com",
+  email: "hello@artesque.co",
   phone_primary: "+255 616 110 100",
   phone_secondary: "+255 754 300 543",
   location: "Tanzania — visits by appointment.",

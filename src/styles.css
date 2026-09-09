@@ -10,8 +10,11 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
-  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  /* Display carries the wordmark, headlines, and anywhere the brand needs
+     presence. Supporting carries taglines, labels, navigation and small
+     body copy, always with wide tracking. */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
 
   --color-canvas: var(--canvas);
   --color-ink: var(--ink);
@@ -45,8 +48,8 @@
   /* Fixed contrast band — deliberately-dark sections (footer, commission
      CTA, lightbox) that stay this color regardless of the light/dark
      toggle, so the site never loses its deepest, richest note. */
-  --color-band: oklch(0.14 0.035 40);
-  --color-band-foreground: oklch(0.97 0.008 85);
+  --color-band: #2E1620;
+  --color-band-foreground: #F7F3EA;
 
   /* Gallery surface — where actual artwork is displayed. Deliberately the
      calmest, most neutral surface on the site and nearly opaque, so the
@@ -58,36 +61,55 @@
   --color-grad-vermilion: var(--grad-vermilion);
   --color-grad-sienna: var(--grad-sienna);
   --color-grad-burnt: var(--grad-burnt);
+
+  /* Brand constants, straight from the guidelines. These never move. */
+  --color-plum-ink: #2e1620;
+  --color-deep-plum: #4a1a2a;
+  --color-berry: #8a3350;
+  --color-berry-light: #d98ba8;
+  --color-warm-ivory: #f7f3ea;
+  --color-brand-accent: var(--brand-accent);
+
+  /* One threshold, five disciplines. Each department keeps the arch and
+     takes its own accent. */
+  --color-disc-painting: #c9913a;
+  --color-disc-music: #6b2140;
+  --color-disc-dance: #2f6259;
+  --color-disc-sculpture: #a85c32;
+  --color-disc-acrobatics: #3a4a66;
 }
 
 :root {
   --radius: 0.375rem;
 
-  /* Studio palette for the site-wide backdrop and gradient-stroke frames —
-     fixed regardless of light/dark toggle, it's the brand's paint, not a UI
-     token. 30% cream / 40% vermilion / 20% raw sienna / 10% dark burnt sienna. */
-  --grad-cream: #f4e3c8;
-  --grad-vermilion: #e1432b;
-  --grad-sienna: #c1702e;
-  --grad-burnt: #4a2216;
+  /* The four brand colours, fixed regardless of the light/dark toggle —
+     these are the brand's paint, not UI tokens. They drive the site-wide
+     backdrop and the gradient-stroke frames. */
+  --grad-cream: #f7f3ea;      /* Warm Ivory  */
+  --grad-vermilion: #8a3350;  /* Berry       */
+  --grad-sienna: #4a1a2a;     /* Deep Plum   */
+  --grad-burnt: #2e1620;      /* Plum Ink    */
 
-  /* Logo accent. The mark's red has to hold up on cream *and* on the
-     near-black band, so it is retuned per surface rather than fixed. */
-  --brand-accent: #c4122b;
+  /* Accent. Berry holds up on warm ivory; on the plum-ink band it goes to
+     the lighter rose the brand uses for ART on its own dark cover. */
+  --brand-accent: #8a3350;
+  --brand-ground: #f7f3ea;
 
-  /* Gallery Noir palette — light mode (opt-in via the theme toggle) */
-  --canvas: oklch(0.972 0.007 85 / 88%);
-  --ink: oklch(0.19 0.005 60);
-  --paper: oklch(1 0 0 / 92%);
-  --gallery-surface: oklch(0.965 0.004 80 / 97%);
-  /* Light mode needs a much heavier veil over the vermilion backdrop —
-     without it the gradient reads as hot pink and body text loses contrast. */
-  --backdrop-veil: 68%;
-  --gold: oklch(0.6 0.055 65);
-  --gold-soft: oklch(0.78 0.04 75);
-  --teal: oklch(0.52 0.1 195);
-  --coral: oklch(0.56 0.18 35);
-  --violet: oklch(0.5 0.14 320);
+  /* Light mode — the brand's primary state: warm ivory ground, plum ink type. */
+  --canvas: #f7f3eae0;
+  --ink: #2e1620;
+  --paper: #fdfbf6eb;
+  --gallery-surface: #f7f3eaf7;
+  /* Warm ivory is the brand's primary background, so the veil sits high: the
+     berry and plum beneath are a drift of colour under the cream, not a wash
+     over it. Below about 85% the ground reads mauve-grey instead of ivory. */
+  --backdrop-veil: 88%;
+  --veil-ground: #f7f3ea;
+  --gold: #8a3350;
+  --gold-soft: #a8455f;
+  --teal: #2f6259;
+  --coral: #a85c32;
+  --violet: #3a4a66;
 
   --background: var(--canvas);
   --foreground: var(--ink);
@@ -111,24 +133,24 @@
 }
 
 .dark {
-  /* Gallery-at-night — the default theme. Tuned as a warm terracotta-dark
-     (drawn from the burnt-sienna end of the studio gradient) rather than a
-     neutral near-black, so the wavy backdrop reads as one warm room instead
-     of two palettes fighting each other. Accents still pull from the work
-     itself: gold gallery light, the teal of the bee-eater paintings, the
-     coral of the savanna sunset and the raised-fist piece, a violet thread
-     from the zebra/prism pieces. */
-  --canvas: oklch(0.24 0.045 40 / 62%);
-  --ink: oklch(0.96 0.01 85);
-  --paper: oklch(0.3 0.05 40 / 78%);
-  --gallery-surface: oklch(0.175 0.012 45 / 97%);
-  --backdrop-veil: 22%;
-  --brand-accent: #ef3b52;
-  --gold: oklch(0.78 0.12 75);
-  --gold-soft: oklch(0.85 0.08 78);
-  --teal: oklch(0.75 0.11 195);
-  --coral: oklch(0.7 0.17 38);
-  --violet: oklch(0.68 0.14 322);
+  /* Night mode — plum ink rather than a neutral near-black, so the doorway
+     field reads as one room instead of two palettes fighting each other.
+     Berry lifts to the lighter rose the brand uses for ART on its own dark
+     cover, and the discipline accents lift with it so they still carry on a
+     dark ground. */
+  --canvas: #4a1a2a9e;
+  --ink: #f7f3ea;
+  --paper: #5a2334c7;
+  --gallery-surface: #2e1620f7;
+  --backdrop-veil: 26%;
+  --veil-ground: #2e1620;
+  --brand-accent: #d98ba8;
+  --brand-ground: #2e1620;
+  --gold: #d98ba8;
+  --gold-soft: #e9b3c4;
+  --teal: #6aa79a;
+  --coral: #d08b5e;
+  --violet: #8091b5;
 
   --background: var(--canvas);
   --foreground: var(--ink);
@@ -441,6 +463,16 @@
   body {
     overflow-x: clip;
   }
+  /* The band is plum ink in both themes, so accents sitting on it always take
+     the lighter rose — otherwise berry-on-plum loses its contrast in light
+     mode. Scoped by the class that paints the band. */
+  .bg-band,
+  .text-band-foreground {
+    --gold: #d98ba8;
+    --gold-soft: #e9b3c4;
+    --brand-accent: #d98ba8;
+    --brand-ground: #2e1620;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -449,11 +481,11 @@
     -webkit-font-smoothing: antialiased;
     position: relative;
   }
-  /* Studio backdrop — a living colour field rather than a still image.
-     Four oversized radial gradients (cream, vermilion, raw sienna, burnt
-     sienna) drift across each other on their own offsets, so the colour
-     under the page is always slowly recombining. The wavy SVG still sits
-     underneath for the painted wave edges.
+  /* Brand backdrop — a living colour field rather than a still image.
+     Four oversized radial gradients (warm ivory, berry, deep plum, plum
+     ink) drift across each other on their own offsets, so the colour
+     under the page is always slowly recombining. The field of open doorways
+     tiles underneath it all — felt more than seen.
 
      Everything lives on ONE fixed layer: stacking several independently
      animating fixed layers is what produced a stale gray compositing
@@ -466,10 +498,13 @@
     z-index: -2;
     pointer-events: none;
     background:
-      /* Legibility veil, always on top of the colour. */
+      /* Legibility veil, always on top of the colour. Mixed against a solid
+         ground, not the translucent canvas token, or the percentage here gets
+         multiplied by the canvas alpha and the berry beneath reads through as
+         a mauve wash. */
       linear-gradient(
-        color-mix(in oklab, var(--color-canvas) var(--backdrop-veil), transparent),
-        color-mix(in oklab, var(--color-canvas) var(--backdrop-veil), transparent)
+        color-mix(in oklab, var(--veil-ground) var(--backdrop-veil), transparent),
+        color-mix(in oklab, var(--veil-ground) var(--backdrop-veil), transparent)
       ),
       radial-gradient(
         circle at 20% 25%,
@@ -491,15 +526,16 @@
         color-mix(in oklab, var(--grad-burnt) 40%, transparent) 0%,
         transparent 55%
       ),
-      url("/wavy-bg.svg") center / cover no-repeat;
+      url("/arch-field.svg") 0 0 / 200px 220px repeat;
     background-size:
       100% 100%,
       170% 170%,
       190% 190%,
       180% 180%,
       200% 200%,
-      cover;
-    background-repeat: no-repeat;
+      200px 220px;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+      repeat;
     animation: backdrop-flow 26s ease-in-out infinite alternate;
   }
   @media (prefers-reduced-motion: reduce) {

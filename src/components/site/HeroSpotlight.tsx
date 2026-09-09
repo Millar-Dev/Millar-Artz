@@ -8,13 +8,14 @@
  * behind the work reads as a background gradient, because in reality light
  * scatters in the air *in front of* what it illuminates too.
  *
- * Colour is deliberately not the background's warm brown: the light is a
- * saturated gold-yellow and the snow is pure white, so both separate from
- * the terracotta ground instead of blending into it.
+ * Colour is deliberately not the background's plum: the beam is the brand's
+ * warm ivory and the snow is pure white, so both separate from the plum
+ * ground instead of sinking into it.
  */
 
-/** Saturated gold — distinctly yellower than the hero's brown. */
-const GOLD = "255,205,70";
+/** Warm ivory — the brand's own light. Kept slightly warm so the beam reads
+ *  as a lit stage rather than a grey wash on the plum ground. */
+const LIGHT = "252,246,232";
 /** Snow is exactly #ffffff — no warm tint, or it sinks into the ground. */
 const SNOW = "255,255,255";
 
@@ -52,7 +53,7 @@ export function HeroSpotlightBack() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 54% 48% at 50% 60%, rgba(20,6,2,0.82) 0%, rgba(20,6,2,0.48) 46%, transparent 78%)",
+            "radial-gradient(ellipse 54% 48% at 50% 60%, rgba(21,10,15,0.82) 0%, rgba(21,10,15,0.48) 46%, transparent 78%)",
         }}
       />
 
@@ -61,7 +62,7 @@ export function HeroSpotlightBack() {
       <div
         className="animate-beam-sway absolute inset-0 mix-blend-screen"
         style={{
-          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${GOLD},0) 0deg, rgba(${GOLD},0.46) 1.1deg, rgba(${GOLD},0.13) 2.2deg, rgba(${GOLD},0) 3.6deg)`,
+          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${LIGHT},0) 0deg, rgba(${LIGHT},0.46) 1.1deg, rgba(${LIGHT},0.13) 2.2deg, rgba(${LIGHT},0) 3.6deg)`,
           maskImage:
             "radial-gradient(ellipse 42% 64% at 50% 6%, #000 0%, rgba(0,0,0,0.74) 42%, transparent 84%)",
           WebkitMaskImage:
@@ -74,7 +75,7 @@ export function HeroSpotlightBack() {
       <div
         className="animate-spotlight absolute left-1/2 top-[1%] h-[28%] w-[36%] -translate-x-1/2 mix-blend-screen"
         style={{
-          background: `radial-gradient(ellipse 50% 50% at 50% 30%, rgba(255,255,255,1) 0%, rgba(${GOLD},0.96) 28%, rgba(${GOLD},0.46) 56%, transparent 76%)`,
+          background: `radial-gradient(ellipse 50% 50% at 50% 30%, rgba(255,255,255,1) 0%, rgba(${LIGHT},0.96) 28%, rgba(${LIGHT},0.46) 56%, transparent 76%)`,
           filter: "blur(16px)",
         }}
       />
@@ -83,7 +84,7 @@ export function HeroSpotlightBack() {
       <div
         className="animate-spotlight absolute left-1/2 top-[52%] h-[36%] w-[76%] -translate-x-1/2 mix-blend-screen"
         style={{
-          background: `radial-gradient(ellipse 50% 46% at 50% 50%, rgba(${GOLD},0.82) 0%, rgba(${GOLD},0.40) 44%, transparent 74%)`,
+          background: `radial-gradient(ellipse 50% 46% at 50% 50%, rgba(${LIGHT},0.82) 0%, rgba(${LIGHT},0.40) 44%, transparent 74%)`,
           filter: "blur(24px)",
         }}
       />
@@ -101,7 +102,7 @@ export function HeroSpotlightFront() {
       <div
         className="animate-beam-sway absolute inset-0 mix-blend-screen"
         style={{
-          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${GOLD},0) 0deg, rgba(${GOLD},0.21) 1.3deg, rgba(${GOLD},0.06) 2.6deg, rgba(${GOLD},0) 4deg)`,
+          background: `repeating-conic-gradient(from 168deg at 50% 4%, rgba(${LIGHT},0) 0deg, rgba(${LIGHT},0.21) 1.3deg, rgba(${LIGHT},0.06) 2.6deg, rgba(${LIGHT},0) 4deg)`,
           maskImage:
             "radial-gradient(ellipse 40% 70% at 50% 8%, #000 0%, rgba(0,0,0,0.55) 46%, transparent 86%)",
           WebkitMaskImage:

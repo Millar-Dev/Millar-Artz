@@ -94,7 +94,7 @@ async function main() {
   const { error: portraitError } = await supabase.from("site_images").upsert({
     id: "about_portrait",
     image_path: portraitUrl,
-    caption: "Miller S.K. — Founder, Millerpix",
+    caption: "Miller S.K. — Founder, Artesque",
   });
   if (portraitError) throw new Error(`About portrait insert failed: ${portraitError.message}`);
   console.log("  ✓ About portrait");

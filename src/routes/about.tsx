@@ -18,7 +18,7 @@ export const Route = createFileRoute("/about")({
       portrait: portrait ?? {
         id: "about_portrait",
         image_path: fallbackPortrait,
-        caption: "Miller S.K. — Founder, Millerpix",
+        caption: "Miller S.K. — Founder, Artesque",
       },
       // Null until a studio photo is uploaded — the section renders without
       // an image rather than showing a stock placeholder.
@@ -28,16 +28,16 @@ export const Route = createFileRoute("/about")({
   },
   head: () => ({
     meta: [
-      { title: "About — Millerpix" },
+      { title: "About — Artesque" },
       {
         name: "description",
         content:
-          "Millerpix is a Tanzania-based studio working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, murals, and more.",
+          "Artesque is a Tanzania-based studio working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, murals, and more.",
       },
-      { property: "og:title", content: "About Millerpix" },
+      { property: "og:title", content: "About Artesque" },
       {
         property: "og:description",
-        content: "The story, mission and vision behind Millerpix.",
+        content: "The story, mission and vision behind Artesque.",
       },
     ],
     links: [canonical("/about")],
@@ -87,8 +87,8 @@ function About() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             About
           </span>
-          <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.05] text-ink md:text-7xl">
-            About <span className="italic">Millerpix</span>
+          <h1 className="mt-6 max-w-4xl font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
+            About <span className="">Artesque</span>
           </h1>
         </div>
       </section>
@@ -97,7 +97,7 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
-              Millerpix is a Tanzania-based studio built around one artist's
+              Artesque is a Tanzania-based studio built around one artist's
               hand: hyperrealistic graphite and charcoal work developed over
               hundreds of hours of observation, acrylic and oil wildlife
               painting rooted in East Africa, and commissioned portraits and
@@ -120,20 +120,20 @@ function About() {
               it.
             </p>
             <p>
-              Drawing and painting remain the foundation, but Millerpix is
+              Drawing and painting remain the foundation, but Artesque is
               designed with a wider horizon in mind — the studio is already
               opening conversations around music, dance and performance, digital
               art, and sculpture, for collectors and collaborators who want to
               build something new together.
             </p>
-            <p className="font-display text-2xl italic text-ink">
-              At Millerpix, every masterpiece begins with imagination.
+            <p className="font-display font-bold text-2xl text-ink">
+              At Artesque, every masterpiece begins with imagination.
             </p>
           </div>
           <div className="md:col-span-5">
             <img
               src={portrait.image_path}
-              alt="Miller S.K., founding artist of Millerpix"
+              alt="Miller S.K., founding artist of Artesque"
               loading="lazy"
               className="aspect-[4/5] w-full rounded-sm object-cover shadow-2xl"
             />
@@ -174,7 +174,7 @@ function About() {
               <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
                 The Studio
               </span>
-              <h2 className="mt-5 font-display text-4xl italic text-ink md:text-5xl">
+              <h2 className="mt-5 font-display font-bold text-4xl text-ink md:text-5xl">
                 Where the work happens.
               </h2>
               <div className="mt-6 space-y-4 text-base font-light leading-relaxed text-ink/70">
@@ -255,7 +255,7 @@ function About() {
                   <div className="gradient-stroke overflow-hidden rounded-lg p-px shadow-2xl">
                     <img
                       src={studio.image_path}
-                      alt={studio.caption || "Inside the Millerpix studio"}
+                      alt={studio.caption || "Inside the Artesque studio"}
                       loading="lazy"
                       className="aspect-[4/3] w-full rounded-lg object-cover"
                     />
@@ -286,7 +286,7 @@ function About() {
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
               Mission
             </span>
-            <h2 className="mt-6 font-display text-3xl italic text-ink md:text-4xl">
+            <h2 className="mt-6 font-display font-bold text-3xl text-ink md:text-4xl">
               To translate feeling into form.
             </h2>
             <p className="mt-6 text-ink/70">
@@ -299,11 +299,11 @@ function About() {
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
               Vision
             </span>
-            <h2 className="mt-6 font-display text-3xl italic text-ink md:text-4xl">
+            <h2 className="mt-6 font-display font-bold text-3xl text-ink md:text-4xl">
               An African art house with a global voice.
             </h2>
             <p className="mt-6 text-ink/70">
-              To grow Millerpix into a multidisciplinary studio — expanding
+              To grow Artesque into a multidisciplinary studio — expanding
               into new mediums, exhibitions, and communities while never letting
               go of the discipline of the hand.
             </p>
@@ -317,7 +317,7 @@ function About() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Core Values
           </span>
-          <h2 className="mt-6 font-display text-4xl italic text-ink md:text-5xl">
+          <h2 className="mt-6 font-display font-bold text-4xl text-ink md:text-5xl">
             What guides the work.
           </h2>
           <div className="mt-16 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
@@ -326,7 +326,7 @@ function About() {
                 <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold">
                   0{i + 1}
                 </p>
-                <h3 className="mt-4 font-display text-2xl italic text-ink">
+                <h3 className="mt-4 font-display font-bold text-2xl text-ink">
                   {v.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-ink/60">
@@ -345,12 +345,12 @@ function About() {
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
               Future Projects
             </span>
-            <h2 className="mt-6 font-display text-4xl italic md:text-5xl">
+            <h2 className="mt-6 font-display font-bold text-4xl md:text-5xl">
               The years ahead.
             </h2>
             <ul className="mt-10 space-y-6 text-band-foreground/80">
               <li>
-                <p className="font-display text-xl italic">
+                <p className="font-display font-bold text-xl">
                   Wildlife Series II
                 </p>
                 <p className="mt-1 text-sm font-light">
@@ -359,7 +359,7 @@ function About() {
                 </p>
               </li>
               <li>
-                <p className="font-display text-xl italic">
+                <p className="font-display font-bold text-xl">
                   The Portrait Archive
                 </p>
                 <p className="mt-1 text-sm font-light">
@@ -368,7 +368,7 @@ function About() {
                 </p>
               </li>
               <li>
-                <p className="font-display text-xl italic">Beyond the Canvas</p>
+                <p className="font-display font-bold text-xl">Beyond the Canvas</p>
                 <p className="mt-1 text-sm font-light">
                   First collaborations in music, dance and sculpture — early
                   conversations welcome.
@@ -380,7 +380,7 @@ function About() {
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
               Community &amp; Commissions
             </span>
-            <h2 className="mt-6 font-display text-4xl italic md:text-5xl">
+            <h2 className="mt-6 font-display font-bold text-4xl md:text-5xl">
               A quiet record, growing.
             </h2>
             <p className="mt-8 text-band-foreground/70">
@@ -390,7 +390,7 @@ function About() {
               here.
             </p>
             <div className="mt-10 border-t border-band-foreground/10 pt-6 text-sm text-band-foreground/60">
-              <p className="italic">
+              <p className="">
                 Featured spaces &amp; press listings — coming soon.
               </p>
             </div>
@@ -400,7 +400,7 @@ function About() {
 
       <section className="py-12 md:py-20">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 className="font-display text-3xl italic text-ink md:text-4xl">
+          <h2 className="font-display font-bold text-3xl text-ink md:text-4xl">
             Interested in a piece — or a commission?
           </h2>
           <div className="mt-8 flex flex-wrap justify-center gap-4">

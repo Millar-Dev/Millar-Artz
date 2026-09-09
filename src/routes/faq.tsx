@@ -7,17 +7,17 @@ import { canonical, faqGraph, jsonLd } from "@/lib/seo";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ — Millerpix" },
+      { title: "FAQ — Artesque" },
       {
         name: "description",
         content:
-          "Commission process, pricing, timelines, delivery and payment — common questions about ordering original artwork from Millerpix.",
+          "Commission process, pricing, timelines, delivery and payment — common questions about ordering original artwork from Artesque.",
       },
-      { property: "og:title", content: "FAQ — Millerpix" },
+      { property: "og:title", content: "FAQ — Artesque" },
       {
         property: "og:description",
         content:
-          "How commissions work at Millerpix: process, pricing, timelines, delivery and payment.",
+          "How commissions work at Artesque: process, pricing, timelines, delivery and payment.",
       },
     ],
     links: [canonical("/faq")],
@@ -37,7 +37,7 @@ const groups: { heading: string; items: { q: string; a: string }[] }[] = [
       },
       {
         q: "What can be commissioned?",
-        a: "Anything across the nine disciplines in the gallery — hyperrealistic portraits, wildlife, traditional and cultural pieces, abstract, illusional, modern, cartoons, and murals. If you have an idea that doesn't fit those, ask anyway; the studio is actively opening up new disciplines.",
+        a: "Anything across the five disciplines — painting, music, dance, sculpture and acrobatics. Within painting that covers hyperrealistic portraits, wildlife, traditional and cultural pieces, abstract, illusional, modern, cartoons, and murals. If you have an idea that doesn't sit neatly in one of them, ask anyway.",
       },
       {
         q: "What makes a good reference photo?",
@@ -93,8 +93,8 @@ function Faq() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Questions
           </span>
-          <h1 className="mt-6 font-display text-5xl leading-[1.05] text-ink md:text-6xl">
-            Before you <span className="italic">commission</span>.
+          <h1 className="mt-6 font-display font-bold text-5xl leading-[1.05] text-ink md:text-6xl">
+            Before you <span className="">commission</span>.
           </h1>
           <p className="mt-6 text-lg font-light text-ink/70">
             The things most people ask before ordering a piece. If your question
@@ -107,7 +107,7 @@ function Faq() {
         <div className="mx-auto max-w-3xl space-y-14 px-6">
           {groups.map((group) => (
             <div key={group.heading}>
-              <h2 className="font-display text-2xl italic text-ink">
+              <h2 className="font-display font-bold text-2xl text-ink">
                 {group.heading}
               </h2>
               <div className="mt-5 divide-y divide-ink/10 border-y border-ink/10">
@@ -122,7 +122,7 @@ function Faq() {
 
       <section className="bg-band py-12 md:py-20 text-band-foreground">
         <div className="mx-auto max-w-2xl px-6 text-center">
-          <h2 className="font-display text-3xl italic md:text-4xl">
+          <h2 className="font-display font-bold text-3xl md:text-4xl">
             Still have a question?
           </h2>
           <p className="mt-4 text-band-foreground/70">

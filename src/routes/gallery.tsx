@@ -1,16 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { z } from "zod";
-import {
-  Search,
-  X,
-  ZoomIn,
-  Music,
-  PersonStanding,
-  Sparkles,
-  Box,
-} from "lucide-react";
+import { Search, X, ZoomIn, Paintbrush, Mic, Footprints, Hammer } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
+import { DisciplineMark, Rings } from "@/components/site/BrandLogo";
 import {
   categories,
   disciplines,
@@ -18,7 +11,7 @@ import {
   fromArtworkRow,
   type ArtworkCategory,
   type Artwork,
-  type Discipline,
+  type DisciplineId,
 } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { artworkListGraph, canonical, jsonLd } from "@/lib/seo";
@@ -48,17 +41,17 @@ export const Route = createFileRoute("/gallery")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: "Gallery — Millerpix" },
+      { title: "Gallery — Artesque" },
       {
         name: "description",
         content:
-          "Browse hyperrealism, wildlife, portraits, traditional, abstract, mural, modern and cartoon works by Millerpix.",
+          "Browse hyperrealism, wildlife, portraits, traditional, abstract, mural, modern and cartoon works by Artesque.",
       },
-      { property: "og:title", content: "Gallery — Millerpix" },
+      { property: "og:title", content: "Gallery — Artesque" },
       {
         property: "og:description",
         content:
-          "The Millerpix collection across nine disciplines, plus custom commissions.",
+          "The Artesque collection across painting, wildlife, portraiture and more, plus custom commissions.",
       },
     ],
     links: [canonical("/gallery")],
@@ -69,11 +62,13 @@ export const Route = createFileRoute("/gallery")({
   component: Gallery,
 });
 
-const disciplineIcons: Record<Discipline["icon"], typeof Music> = {
-  music: Music,
-  dance: PersonStanding,
-  digital: Sparkles,
-  sculpture: Box,
+/** Same five objects as the home page — the department marks are one system. */
+const disciplineIcons: Record<DisciplineId, typeof Paintbrush | typeof Rings> = {
+  painting: Paintbrush,
+  music: Mic,
+  dance: Footprints,
+  sculpture: Hammer,
+  acrobatics: Rings,
 };
 
 function Gallery() {
@@ -108,12 +103,12 @@ function Gallery() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             The Collection
           </span>
-          <h1 className="mt-6 font-display text-5xl leading-[1.05] text-ink md:text-7xl">
-            The <span className="italic">Gallery</span>.
+          <h1 className="mt-6 font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
+            The <span className="">Gallery</span>.
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-light text-ink/70">
             {activeCategory?.value === "all"
-              ? "A living archive across nine disciplines — filter by category or search a title, medium or subject."
+              ? "The painting department's living archive — filter by category or search a title, medium or subject."
               : activeCategory?.blurb}
           </p>
         </div>
@@ -157,7 +152,7 @@ function Gallery() {
         <div className="mx-auto max-w-7xl px-6">
           {filtered.length === 0 ? (
             <div className="py-24 text-center text-ink/50">
-              <p className="font-display text-2xl italic">
+              <p className="font-display font-bold text-2xl">
                 {query
                   ? "No works match your search."
                   : "New pieces in this category are coming soon."}
@@ -215,7 +210,7 @@ function Gallery() {
                   </div>
                   <figcaption className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h3 className="truncate font-display text-xl italic text-ink">
+                      <h3 className="truncate font-display font-bold text-xl text-ink">
                         {a.title}
                       </h3>
                       <p className="mt-1 text-xs uppercase tracking-tighter text-ink/50">
@@ -223,7 +218,7 @@ function Gallery() {
                         {a.dimensions ? ` · ${a.dimensions}` : ""}
                       </p>
                       {a.status !== "sold" && formatPrice(a) && (
-                        <p className="mt-1 font-display text-base italic text-gold">
+                        <p className="mt-1 font-display font-bold text-base text-gold">
                           {formatPrice(a)}
                         </p>
                       )}
@@ -243,27 +238,33 @@ function Gallery() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Beyond the Canvas
           </span>
-          <h2 className="mt-6 max-w-2xl font-display text-4xl italic md:text-5xl">
-            Other disciplines, open for commission.
+          <h2 className="mt-6 max-w-2xl font-display font-bold text-4xl md:text-5xl">
+            One threshold, five disciplines.
           </h2>
           <p className="mt-6 max-w-2xl text-band-foreground/70">
-            Millerpix is building toward a multidisciplinary studio. These
-            practices don't have a gallery yet — but the conversation can start
+            One threshold, five disciplines. Painting has a gallery here; the
+            other four are open for commission and the conversation can start
             now.
           </p>
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
             {disciplines.map((d) => {
-              const Icon = disciplineIcons[d.icon];
+              const Icon = disciplineIcons[d.id];
               return (
                 <Link
                   key={d.id}
                   to="/contact"
                   search={{ type: d.label }}
-                  className="group flex flex-col justify-between rounded-lg border border-white/10 bg-white/[0.03] p-6 transition-all hover:-translate-y-1 hover:border-gold/40"
+                  className="group flex flex-col justify-between rounded-lg border border-white/10 bg-white/[0.03] p-6 transition-all hover:-translate-y-1 hover:border-white/25"
                 >
-                  <Icon size={22} className="text-gold" strokeWidth={1.75} />
+                  <DisciplineMark
+                    icon={Icon}
+                    accent={d.accent}
+                    ground="#2E1620"
+                    className="h-16 w-auto text-band-foreground/90"
+                    title=""
+                  />
                   <div className="mt-8">
-                    <h3 className="font-display text-xl italic">{d.label}</h3>
+                    <h3 className="font-display text-xl font-bold">{d.label}</h3>
                     <p className="mt-2 text-xs leading-relaxed text-band-foreground/60">
                       {d.blurb}
                     </p>
@@ -287,7 +288,7 @@ function Gallery() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Custom Orders
           </span>
-          <h2 className="mt-6 font-display text-4xl italic text-ink md:text-5xl">
+          <h2 className="mt-6 font-display font-bold text-4xl text-ink md:text-5xl">
             Commission a piece.
           </h2>
           <p className="mt-6 text-ink/70">
@@ -345,7 +346,7 @@ function Lightbox({
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold">
             {artwork.categoryLabel}
           </p>
-          <h3 className="mt-4 font-display text-4xl italic">{artwork.title}</h3>
+          <h3 className="mt-4 font-display font-bold text-4xl">{artwork.title}</h3>
           <p className="mt-6 text-sm font-light leading-relaxed text-band-foreground/80">
             {artwork.description}
           </p>
@@ -380,7 +381,7 @@ function Lightbox({
               <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
                 Price
               </dt>
-              <dd className="font-display text-lg italic text-gold">
+              <dd className="font-display font-bold text-lg text-gold">
                 {artwork.status === "sold"
                   ? "Sold"
                   : (formatPrice(artwork) ?? "On request")}

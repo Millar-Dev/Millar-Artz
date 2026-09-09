@@ -8,17 +8,17 @@ import { canonical } from "@/lib/seo";
 export const Route = createFileRoute("/subscription")({
   head: () => ({
     meta: [
-      { title: "Subscription — Millerpix" },
+      { title: "Subscription — Artesque" },
       {
         name: "description",
         content:
-          "Join the Millerpix Collector's Circle for early access to new collections, exclusive previews, and studio updates.",
+          "Join the Artesque Collector's Circle for early access to new collections, exclusive previews, and studio updates.",
       },
-      { property: "og:title", content: "Millerpix Subscription" },
+      { property: "og:title", content: "Artesque Subscription" },
       {
         property: "og:description",
         content:
-          "Free and premium memberships for early access to Millerpix collections and exclusive previews.",
+          "Free and premium memberships for early access to Artesque collections and exclusive previews.",
       },
     ],
     links: [canonical("/subscription")],
@@ -83,12 +83,12 @@ function Subscription() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             The Collector's Circle
           </span>
-          <h1 className="mx-auto mt-6 max-w-3xl font-display text-5xl leading-[1.05] text-ink md:text-7xl">
-            Be the first to <span className="italic">see</span> what's next.
+          <h1 className="mx-auto mt-6 max-w-3xl font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
+            Be the first to <span className="">see</span> what's next.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg font-light text-ink/70">
             Subscribe to receive newsletters, artwork drops, and previews from
-            Millerpix. Two ways to follow the work — pick the one that suits
+            Artesque. Two ways to follow the work — pick the one that suits
             you.
           </p>
         </div>
@@ -109,11 +109,11 @@ function Subscription() {
               <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
                 {p.tag}
               </span>
-              <h2 className="mt-6 font-display text-3xl italic md:text-4xl">
+              <h2 className="mt-6 font-display font-bold text-3xl md:text-4xl">
                 {p.name}
               </h2>
               <p
-                className={`mt-4 font-display text-2xl italic ${
+                className={`mt-4 font-display text-2xl font-bold ${
                   p.highlight ? "text-band-foreground/80" : "text-ink/60"
                 }`}
               >
@@ -150,7 +150,7 @@ function Subscription() {
       >
         <div className="mx-auto max-w-2xl px-6">
           <div className="text-center">
-            <h2 className="font-display text-4xl italic text-ink md:text-5xl">
+            <h2 className="font-display font-bold text-4xl text-ink md:text-5xl">
               Join the list
             </h2>
             <p className="mt-4 text-ink/60">
@@ -204,7 +204,7 @@ function Subscription() {
             {error && <p className="text-center text-sm text-red-400">{error}</p>}
 
             {status === "sent" && (
-              <p className="text-center text-sm italic text-gold">
+              <p className="text-center text-sm text-gold">
                 {tier === "free"
                   ? "You're on the list — thank you."
                   : "Thank you — we'll be in touch about the Collector's Circle."}

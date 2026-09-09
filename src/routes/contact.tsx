@@ -24,16 +24,16 @@ export const Route = createFileRoute("/contact")({
   validateSearch: contactSearchSchema,
   head: () => ({
     meta: [
-      { title: "Contact — Millerpix" },
+      { title: "Contact — Artesque" },
       {
         name: "description",
         content:
-          "Request a commission or get in touch with Millerpix. Phone, WhatsApp and email — a quotation follows within days.",
+          "Request a commission or get in touch with Artesque. Phone, WhatsApp and email — a quotation follows within days.",
       },
-      { property: "og:title", content: "Contact Millerpix" },
+      { property: "og:title", content: "Contact Artesque" },
       {
         property: "og:description",
-        content: "Reach the Millerpix studio for commissions and inquiries.",
+        content: "Reach the Artesque studio for commissions and inquiries.",
       },
     ],
     links: [canonical("/contact")],
@@ -137,7 +137,7 @@ function Contact() {
   function openWhatsApp() {
     const details = composeDetails();
     const text = encodeURIComponent(
-      `Hello Millerpix,\n\nMy name is ${form.fullName || "..."} and I'd like to inquire about: ${
+      `Hello Artesque,\n\nMy name is ${form.fullName || "..."} and I'd like to inquire about: ${
         form.subject || "an artwork"
       }.\n${details ? `\n${details}\n` : ""}\n${form.message}`,
     );
@@ -156,8 +156,8 @@ function Contact() {
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
             Contact
           </span>
-          <h1 className="mt-6 max-w-3xl font-display text-5xl leading-[1.05] text-ink md:text-7xl">
-            Let's <span className="italic">talk</span>.
+          <h1 className="mt-6 max-w-3xl font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
+            Let's <span className="">talk</span>.
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-light text-ink/70">
             Whether it's a commission, a question about a piece, or an idea for
@@ -171,7 +171,7 @@ function Contact() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           {/* Info column */}
           <aside className="md:col-span-4">
-            <h2 className="font-display text-2xl italic text-ink">Studio</h2>
+            <h2 className="font-display font-bold text-2xl text-ink">Studio</h2>
             <div className="mt-8 space-y-6 text-sm text-ink/70">
               <div className="flex items-start gap-3">
                 <Phone size={16} className="mt-0.5 shrink-0 text-gold" />
@@ -260,7 +260,7 @@ function Contact() {
             </div>
 
             <div className="mt-10 border border-dashed border-ink/15 bg-paper p-5 text-xs text-ink/50">
-              <p className="font-display text-sm italic text-ink">
+              <p className="font-display font-bold text-sm text-ink">
                 Map preview
               </p>
               <p className="mt-2">
@@ -386,7 +386,7 @@ function Contact() {
                   Send via WhatsApp
                 </button>
                 {status === "sent" && (
-                  <p className="text-sm italic text-gold">
+                  <p className="text-sm text-gold">
                     Received — your message is with the studio. Your email app
                     should also be opening with a copy.
                   </p>

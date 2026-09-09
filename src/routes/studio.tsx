@@ -63,7 +63,7 @@ export const Route = createFileRoute("/studio")({
       settings,
     };
   },
-  head: () => ({ meta: [{ title: "Studio — Millerpix" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Studio — Artesque" }, { name: "robots", content: "noindex" }] }),
   component: Studio,
 });
 
@@ -120,7 +120,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
   return (
     <section className="flex min-h-[70vh] items-center justify-center px-6 py-20">
       <form onSubmit={submit} className="w-full max-w-sm border border-ink/10 bg-paper p-8">
-        <h1 className="font-display text-2xl italic text-ink">Studio</h1>
+        <h1 className="font-display font-bold text-2xl text-ink">Studio</h1>
         <p className="mt-2 text-sm text-ink/60">Private — for Miller only.</p>
         <label className="mt-8 block">
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/60">Password</span>
@@ -206,7 +206,7 @@ function Dashboard({
     <section className="mx-auto max-w-6xl px-6 py-16">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink/10 pb-6">
         <div>
-          <h1 className="font-display text-3xl italic text-ink">Studio</h1>
+          <h1 className="font-display font-bold text-3xl text-ink">Studio</h1>
           <p className="mt-1 text-sm text-ink/60">
             Changes here go live on the Home and Gallery pages immediately.
           </p>
@@ -295,7 +295,7 @@ function Dashboard({
             </div>
             <img src={a.image} alt="" className="h-16 w-14 rounded-sm object-cover" />
             <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-lg italic text-ink">{a.title}</p>
+              <p className="truncate font-display font-bold text-lg text-ink">{a.title}</p>
               <p className="text-xs uppercase tracking-widest text-ink/50">
                 {a.categoryLabel} · {a.medium} · {a.status}
               </p>
@@ -426,7 +426,7 @@ function HeroPicker({
 
   return (
     <section className="mt-16 border-t border-ink/10 pt-10">
-      <h2 className="font-display text-2xl italic text-ink">{title}</h2>
+      <h2 className="font-display font-bold text-2xl text-ink">{title}</h2>
       <p className="mt-1 text-xs text-ink/50">{blurb}</p>
 
       <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -473,7 +473,7 @@ function HeroPicker({
         >
           {busy && <Loader2 size={14} className="animate-spin" />} {saveLabel}
         </button>
-        {saved && <span className="text-sm italic text-gold">Saved.</span>}
+        {saved && <span className="text-sm text-gold">Saved.</span>}
       </div>
     </section>
   );
@@ -502,10 +502,10 @@ function InquiriesPanel({ initial }: { initial: InquiryRow[] }) {
   return (
     <section className="mt-16 border-t border-ink/10 pt-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-2xl italic text-ink">
+        <h2 className="font-display font-bold text-2xl text-ink">
           Enquiries{" "}
           {openCount > 0 && (
-            <span className="ml-1 rounded-full bg-gold px-2 py-0.5 align-middle font-sans text-[11px] font-bold not-italic text-band">
+            <span className="ml-1 rounded-full bg-gold px-2 py-0.5 align-middle font-sans text-[11px] font-bold not- text-band">
               {openCount} new
             </span>
           )}
@@ -528,7 +528,7 @@ function InquiriesPanel({ initial }: { initial: InquiryRow[] }) {
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="font-display text-lg italic text-ink">
+                <p className="font-display font-bold text-lg text-ink">
                   {r.subject || "Enquiry"}
                 </p>
                 <p className="mt-1 text-xs text-ink/60">
@@ -603,9 +603,9 @@ function SubscribersPanel({ initial }: { initial: SubscriberRow[] }) {
   return (
     <section className="mt-16 border-t border-ink/10 pt-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-2xl italic text-ink">
+        <h2 className="font-display font-bold text-2xl text-ink">
           Collector&rsquo;s Circle{" "}
-          <span className="text-base not-italic text-ink/50">
+          <span className="text-base not- text-ink/50">
             ({rows.length})
           </span>
         </h2>
@@ -671,7 +671,7 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
 
   return (
     <section className="mt-16 border-t border-ink/10 pt-10">
-      <h2 className="font-display text-2xl italic text-ink">Contact &amp; social</h2>
+      <h2 className="font-display font-bold text-2xl text-ink">Contact &amp; social</h2>
       <p className="mt-1 text-xs text-ink/50">
         Shown in the footer and on the Contact page. Social icons stay hidden
         until you add a real profile link.
@@ -683,7 +683,7 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
             ["instagram_url", "Instagram URL", "https://instagram.com/yourhandle"],
             ["facebook_url", "Facebook URL", "https://facebook.com/yourpage"],
             ["whatsapp_number", "WhatsApp number", "255616110100"],
-            ["email", "Email", "studio@millerpix.com"],
+            ["email", "Email", "hello@artesque.co"],
             ["phone_primary", "Phone (primary)", "+255 616 110 100"],
             ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
             ["location", "Location", "Tanzania — visits by appointment."],
@@ -708,7 +708,7 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
         >
           {busy && <Loader2 size={14} className="animate-spin" />} Save details
         </button>
-        {saved && <span className="text-sm italic text-gold">Saved.</span>}
+        {saved && <span className="text-sm text-gold">Saved.</span>}
       </div>
     </section>
   );
@@ -869,7 +869,7 @@ function ArtworkEditor({
         className="max-h-[90vh] w-full max-w-2xl overflow-auto border border-white/10 bg-paper p-8"
       >
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl italic text-ink">
+          <h2 className="font-display font-bold text-2xl text-ink">
             {draft.id ? "Edit artwork" : "New artwork"}
           </h2>
           <button type="button" onClick={onClose} className="text-ink/50 hover:text-ink">

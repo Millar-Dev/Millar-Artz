@@ -133,37 +133,58 @@ export const categories: {
 ];
 
 /** Disciplines the studio is building toward beyond the canvas — no artwork yet, open for commission conversations. */
+/** One of the five departments. Each keeps the arch and takes its own accent
+ *  colour and its own object in the doorway — never just a colour swap. */
 export interface Discipline {
-  id: string;
+  id: DisciplineId;
   label: string;
   blurb: string;
-  icon: "music" | "dance" | "digital" | "sculpture";
+  /** The department accent, straight from the brand's colour system. */
+  accent: string;
 }
+
+export type DisciplineId =
+  | "painting"
+  | "music"
+  | "dance"
+  | "sculpture"
+  | "acrobatics";
 
 export const disciplines: Discipline[] = [
   {
+    id: "painting",
+    label: "Painting",
+    blurb:
+      "Brush and pigment — portraiture, wildlife and hyperrealist work, made by hand and made to last.",
+    accent: "#c9913a",
+  },
+  {
     id: "music",
     label: "Music",
-    blurb: "Composition and sound work — a new discipline Millerpix is opening up for collaboration.",
-    icon: "music",
+    blurb:
+      "Composition, recording and sound work, written for the room it will be heard in.",
+    accent: "#6b2140",
   },
   {
-    id: "dance-performance",
-    label: "Dance & Performance",
-    blurb: "Choreographed and live performance pieces, staged for events and commissions.",
-    icon: "dance",
-  },
-  {
-    id: "digital-art",
-    label: "Digital Art",
-    blurb: "Illustration and concept work built natively for screens, prints and digital collectors.",
-    icon: "digital",
+    id: "dance",
+    label: "Dance",
+    blurb:
+      "Choreography and live performance — movement staged for events, film and commissions.",
+    accent: "#2f6259",
   },
   {
     id: "sculpture",
-    label: "Sculpture & 3D",
-    blurb: "Three-dimensional form — carved, cast or built by hand.",
-    icon: "sculpture",
+    label: "Sculpture",
+    blurb:
+      "Three-dimensional form, carved, cast or built — work you can walk around.",
+    accent: "#a85c32",
+  },
+  {
+    id: "acrobatics",
+    label: "Acrobatics",
+    blurb:
+      "Trained physical performance: strength, balance and aerial work, taught and staged.",
+    accent: "#3a4a66",
   },
 ];
 

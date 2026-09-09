@@ -6,7 +6,7 @@
  * when the page is served from a preview deployment. Change this one value
  * when a custom domain is connected.
  */
-export const SITE_URL = "https://millerpix.vercel.app";
+export const SITE_URL = "https://artesque.vercel.app";
 
 export const absoluteUrl = (path: string) =>
   `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
@@ -23,7 +23,8 @@ export const jsonLd = (data: unknown) => ({
   children: JSON.stringify(data),
 });
 
-const STUDIO_NAME = "Millerpix";
+const STUDIO_NAME = "Artesque";
+const TAGLINE = "The threshold to what's possible";
 
 /** The artist and the studio, described once and reused across pages. */
 export function artistGraph() {
@@ -36,16 +37,19 @@ export function artistGraph() {
         name: "Miller S.K.",
         alternateName: STUDIO_NAME,
         url: SITE_URL,
-        jobTitle: "Visual Artist",
+        jobTitle: "Founder & Creative Director",
         description:
-          "Tanzania-based visual artist working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, abstract, mural, modern and cartoon art.",
+          "Founder of Artesque, a Tanzania-based studio working across five disciplines: painting, music, dance, sculpture and acrobatics.",
         knowsAbout: [
+          "Painting",
+          "Music",
+          "Dance",
+          "Sculpture",
+          "Acrobatics",
           "Hyperrealism",
           "Portraiture",
           "Wildlife painting",
-          "Traditional and cultural art",
           "Mural painting",
-          "Abstract art",
         ],
         address: {
           "@type": "PostalAddress",
@@ -57,6 +61,8 @@ export function artistGraph() {
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
         name: STUDIO_NAME,
+        alternateName: `${STUDIO_NAME} — ${TAGLINE}`,
+        description: TAGLINE,
         inLanguage: "en",
         publisher: { "@id": `${SITE_URL}/#artist` },
       },

@@ -16,13 +16,13 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       {/* Without this the browser tab is blank on any mistyped link. */}
-      <title>Page not found — Millerpix</title>
+      <title>Page not found — Artesque</title>
       <div className="max-w-md text-center">
         <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-          Millerpix
+          Artesque
         </p>
-        <h1 className="mt-6 font-display text-7xl text-ink">404</h1>
-        <h2 className="mt-4 font-display text-2xl italic text-ink">
+        <h1 className="mt-6 font-display font-bold text-7xl text-ink">404</h1>
+        <h2 className="mt-4 font-display font-bold text-2xl text-ink">
           Page not found
         </h2>
         <p className="mt-3 text-sm text-ink/60">
@@ -49,7 +49,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-2xl text-ink">
+        <h1 className="font-display font-bold text-2xl text-ink">
           This page didn't load
         </h1>
         <p className="mt-2 text-sm text-ink/60">
@@ -83,10 +83,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "author", content: "Millerpix" },
-        { name: "theme-color", content: "#0d0906" },
+        { name: "author", content: "Artesque" },
+        { name: "theme-color", content: "#2E1620" },
         { property: "og:type", content: "website" },
-        { property: "og:site_name", content: "Millerpix" },
+        { property: "og:site_name", content: "Artesque" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [
@@ -112,7 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap",
+          href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap",
         },
       ],
     }),
@@ -126,13 +126,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   },
 );
 
-// Dark is the default theme; this inline script runs before first paint so a
-// saved "light" preference never causes a flash of the dark theme.
-const themeBootScript = `try{if(localStorage.getItem("theme")==="light")document.documentElement.classList.remove("dark")}catch(e){}`;
+// Warm ivory is the brand's primary background, so light is the default state
+// and the plum-ink night mode is opt-in. This runs before first paint so a
+// saved "dark" preference never flashes the light theme first.
+const themeBootScript = `try{if(localStorage.getItem("theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`;
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <HeadContent />
