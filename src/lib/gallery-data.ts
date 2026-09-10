@@ -156,8 +156,18 @@ export interface Discipline {
   /** "live" has work to show; "open" is taking commissions but has no
    *  archive on the site yet. */
   status: "live" | "open";
-  /** The department accent, straight from the brand's colour system. */
+  /** The department accent, straight from the brand's colour system. Used for
+   *  the mark's keystone, buttons and rules. */
   accent: string;
+  /** The accent's OKLCH hue angle.
+   *
+   *  The page ground is built from this rather than by tinting cream with the
+   *  accent: mixing a dark, half-saturated colour into warm ivory cancels its
+   *  chroma — dance came out grey-green and acrobatics came out plain grey.
+   *  Holding the hue and moving only lightness keeps every department
+   *  recognisable, and lets the theme toggle take the light out of a colour
+   *  instead of replacing it. */
+  hue: number;
 }
 
 export type DisciplineId =
@@ -187,6 +197,7 @@ export const disciplines: Discipline[] = [
     ],
     status: "live",
     accent: "#c9913a",
+    hue: 74.9,
   },
   {
     id: "music",
@@ -207,6 +218,7 @@ export const disciplines: Discipline[] = [
     ],
     status: "open",
     accent: "#6b2140",
+    hue: 358.0,
   },
   {
     id: "dance",
@@ -227,6 +239,7 @@ export const disciplines: Discipline[] = [
     ],
     status: "open",
     accent: "#2f6259",
+    hue: 180.7,
   },
   {
     id: "sculpture",
@@ -247,6 +260,7 @@ export const disciplines: Discipline[] = [
     ],
     status: "open",
     accent: "#a85c32",
+    hue: 47.9,
   },
   {
     id: "acrobatics",
@@ -267,6 +281,7 @@ export const disciplines: Discipline[] = [
     ],
     status: "open",
     accent: "#3a4a66",
+    hue: 261.3,
   },
 ];
 

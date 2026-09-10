@@ -29,8 +29,8 @@ export function DepartmentPage({
   const others = disciplines.filter((d) => d.id !== discipline.id);
 
   return (
-    <Layout>
-      <div style={{ ["--dept" as string]: discipline.accent }}>
+    <Layout dept={{ accent: discipline.accent, hue: discipline.hue }}>
+      <>
         {/* ── Department hero ─────────────────────────────────────────── */}
         <section className="grain relative overflow-hidden pb-16 pt-14 md:pb-24 md:pt-20">
           <div
@@ -52,7 +52,7 @@ export function DepartmentPage({
                 </Link>
                 <span
                   className="ml-3 text-[11px] font-bold uppercase tracking-[0.3em]"
-                  style={{ color: "var(--dept)" }}
+                  style={{ color: "var(--dept-on)" }}
                 >
                   {discipline.label}
                 </span>
@@ -116,7 +116,7 @@ export function DepartmentPage({
                   <Check
                     size={16}
                     className="mt-1 shrink-0"
-                    style={{ color: "var(--dept)" }}
+                    style={{ color: "var(--dept-on)" }}
                   />
                   <span className="font-light">{item}</span>
                 </li>
@@ -169,7 +169,7 @@ export function DepartmentPage({
             </div>
           </div>
         </section>
-      </div>
+      </>
     </Layout>
   );
 }
@@ -182,7 +182,7 @@ function NotYetArchived({ discipline }: { discipline: Discipline }) {
       <div className="mx-auto max-w-3xl px-6 text-center">
         <p
           className="text-[11px] font-bold uppercase tracking-[0.3em]"
-          style={{ color: "var(--dept)" }}
+          style={{ color: "var(--dept-bright)" }}
         >
           Open for commission
         </p>

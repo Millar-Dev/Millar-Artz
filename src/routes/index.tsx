@@ -78,7 +78,7 @@ function Home() {
       <section className="relative isolate overflow-hidden bg-band text-band-foreground">
         <div
           aria-hidden="true"
-          className="pattern-field pointer-events-none absolute inset-0 opacity-70"
+          className="pattern-field pointer-events-none absolute inset-0"
         />
         {/* Holds the type legible over the field without flattening it. */}
         <div
@@ -86,7 +86,7 @@ function Home() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 70% 62% at 50% 45%, rgba(46,22,32,0.94) 0%, rgba(46,22,32,0.72) 55%, rgba(46,22,32,0.5) 100%)",
+              "radial-gradient(ellipse 66% 58% at 50% 45%, rgba(46,22,32,0.86) 0%, rgba(46,22,32,0.55) 58%, rgba(46,22,32,0.28) 100%)",
           }}
         />
 
@@ -186,8 +186,11 @@ function Home() {
                 <Link
                   key={d.id}
                   to={d.slug}
-                  style={{ ["--dept" as string]: d.accent }}
-                  className="group relative flex flex-col overflow-hidden border border-ink/10 bg-paper/70 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--dept)]"
+                  style={{
+                    ["--dept" as string]: d.accent,
+                    ["--dept-h" as string]: d.hue,
+                  }}
+                  className="dept-scope group relative flex flex-col overflow-hidden border border-ink/10 bg-paper/70 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--dept-on)]"
                 >
                   {/* The department's colour washing in from its own corner. */}
                   <span
@@ -206,14 +209,14 @@ function Home() {
                   </h3>
                   <p
                     className="relative mt-1 text-[11px] font-bold uppercase tracking-[0.18em]"
-                    style={{ color: "var(--dept)" }}
+                    style={{ color: "var(--dept-on)" }}
                   >
                     {d.tagline}
                   </p>
                   <p className="relative mt-4 grow text-sm font-light leading-relaxed text-ink/65">
                     {d.blurb}
                   </p>
-                  <span className="relative mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-ink/70 transition-colors group-hover:text-[var(--dept)]">
+                  <span className="relative mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-ink/70 transition-colors group-hover:text-[var(--dept-on)]">
                     {d.status === "live"
                       ? "Browse the work"
                       : "Open for commission"}

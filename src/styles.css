@@ -95,6 +95,28 @@
   --brand-accent: #8a3350;
   --brand-ground: #f7f3ea;
 
+  /* Department tint. Every page carries the colour of what it is about; the
+     five departments override --dept, everything else keeps the house berry.
+     The theme toggle changes only how much light is in the colour — the mix
+     ratios below differ between light and dark, the hue never does, so a
+     department reads as the same colour warmed up or cooled down rather than
+     becoming a different one. */
+  --dept: #8a3350;
+  --dept-h: 358;
+  /* Lightness and chroma of the page ground, per theme. The hue comes from
+     the department; only these two move when the theme flips, which is what
+     makes a department read as the same colour with the light taken out of
+     it rather than as a different colour. */
+  --dept-ground-l: 93.5%;
+  --dept-ground-c: 0.04;
+  --dept-paper-l: 96.8%;
+  --dept-paper-c: 0.026;
+  /* The accent as *text* on that ground. The raw accent is sized for a solid
+     fill; on a ground of its own hue it has to move to the far side of the
+     lightness range or it sinks into it. */
+  --dept-on-l: 45%;
+  --dept-on-c: 0.13;
+
   /* Light mode — the brand's primary state: warm ivory ground, plum ink type. */
   --canvas: #f7f3eae0;
   --ink: #2e1620;
@@ -146,6 +168,16 @@
   --veil-ground: #2e1620;
   --brand-accent: #d98ba8;
   --brand-ground: #2e1620;
+
+  /* Same hue, the light taken out of it rather than swapped for plum.
+     Chroma stays modest so deep values don't clip out of sRGB and skew. */
+  --dept-ground-l: 22.5%;
+  --dept-ground-c: 0.036;
+  --dept-paper-l: 28.5%;
+  --dept-paper-c: 0.042;
+  --dept-on-l: 80%;
+  --dept-on-c: 0.1;
+
   --gold: #d98ba8;
   --gold-soft: #e9b3c4;
   --teal: #6aa79a;
@@ -377,6 +409,34 @@
 @utility animate-mote {
   animation: mote-fall 9s linear infinite;
 }
+/* Paints a page in its department's colour.
+   The wash is a fixed layer rather than a background on the wrapper, so the
+   colour covers the viewport however far the page scrolls, and it sits above
+   the site backdrop (z-index -2) but below every bit of content. Surface
+   tokens are redefined on the wrapper too, so cards and bands inside pick up
+   the same hue instead of floating on the house cream. */
+/* A department's derived colours without repainting the page — for places
+   carrying a department identity inside an untinted page, such as the cards
+   on the home directory. */
+@utility dept-scope {
+  --dept-on: oklch(var(--dept-on-l) var(--dept-on-c) var(--dept-h));
+  --dept-bright: oklch(80% 0.1 var(--dept-h));
+}
+
+@utility dept-tinted {
+  --dept-on: oklch(var(--dept-on-l) var(--dept-on-c) var(--dept-h));
+  /* For the band, which stays plum ink in both themes. */
+  --dept-bright: oklch(80% 0.1 var(--dept-h));
+  --dept-ground: oklch(var(--dept-ground-l) var(--dept-ground-c) var(--dept-h));
+  --dept-paper: oklch(var(--dept-paper-l) var(--dept-paper-c) var(--dept-h));
+  /* Left a little translucent so the drifting brand backdrop still reads
+     underneath rather than being replaced outright. */
+  --canvas: color-mix(in oklab, var(--dept-ground) 94%, transparent);
+  --paper: color-mix(in oklab, var(--dept-paper) 94%, transparent);
+  --gallery-surface: var(--dept-ground);
+  --veil-ground: var(--dept-ground);
+}
+
 @utility pattern-field {
   background-image: url("/arch-pattern.svg");
   background-repeat: repeat;

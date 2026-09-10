@@ -8,6 +8,9 @@ import {
 import { DisciplineMark } from "@/components/site/BrandLogo";
 import { disciplineIcons } from "@/components/site/discipline-icons";
 import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
+
+/** This page is the painting department, so it takes painting's colour. */
+const painting = disciplines.find((d) => d.id === "painting")!;
 import { listArtworks } from "@/lib/data/artworks";
 import { getSiteSettings, HERO_MOBILE_SLOTS } from "@/lib/data/site-settings";
 import { getSiteImage } from "@/lib/data/site-images";
@@ -135,8 +138,11 @@ function Paintings() {
     HERO_MOBILE_SLOTS,
   );
 
+  // The painting department carries its own colour, the same way the other
+  // four do.
   return (
-    <Layout>
+    <Layout dept={{ accent: painting.accent, hue: painting.hue }}>
+      <>
       {/* Hero — a scattered gallery wall, not a slideshow. Every piece invites a hover. */}
       <section className="grain relative overflow-hidden pb-28 pt-14 md:pb-36 md:pt-20">
         <div className="glow-gold pointer-events-none absolute -left-40 -top-20 h-[520px] w-[520px] rounded-full opacity-[0.22] blur-3xl" />
@@ -513,6 +519,7 @@ function Paintings() {
           </Link>
         </div>
       </section>
+      </>
     </Layout>
   );
 }
