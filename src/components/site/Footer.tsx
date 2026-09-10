@@ -1,4 +1,5 @@
 import { Link, useLoaderData } from "@tanstack/react-router";
+import { disciplines } from "@/lib/gallery-data";
 import { Instagram, MessageCircle, Facebook, Mail } from "lucide-react";
 import { BrandLockup } from "./BrandLogo";
 import { SETTING_DEFAULTS } from "@/lib/data/site-settings";
@@ -13,15 +14,15 @@ export function Footer() {
   return (
     <footer className="grain relative border-t border-white/5 bg-band py-20 text-band-foreground">
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="mb-16 grid gap-12 md:grid-cols-4">
+        <div className="mb-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-5">
           <div>
             <BrandLockup
               className="mb-6 text-[15px] text-band-foreground"
               markClassName="h-10 w-auto"
             />
             <p className="text-sm leading-relaxed text-band-foreground/50">
-              Bringing people through struggle into light, one open doorway at a
-              time — across painting, music, dance, sculpture and acrobatics.
+              One threshold, five disciplines — painting, music, dance,
+              sculpture and acrobatics, under one roof in Tanzania.
             </p>
           </div>
           <div>
@@ -58,11 +59,23 @@ export function Footer() {
           </div>
           <div>
             <h4 className="mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-band-foreground">
+              Departments
+            </h4>
+            <div className="space-y-3 text-sm text-band-foreground/70">
+              {disciplines.map((d) => (
+                <Link key={d.id} to={d.slug} className="block hover:text-gold">
+                  {d.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h4 className="mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-band-foreground">
               Explore
             </h4>
             <div className="space-y-3 text-sm text-band-foreground/70">
               <Link to="/gallery" className="block hover:text-gold">
-                Gallery
+                Full archive
               </Link>
               <Link to="/about" className="block hover:text-gold">
                 About Us

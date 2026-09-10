@@ -11,9 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AcrobaticsRouteImport } from './routes/acrobatics'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DanceRouteImport } from './routes/dance'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as MusicRouteImport } from './routes/music'
+import { Route as PaintingsRouteImport } from './routes/paintings'
+import { Route as SculptingRouteImport } from './routes/sculpting'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
@@ -28,9 +33,19 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcrobaticsRoute = AcrobaticsRouteImport.update({
+  id: '/acrobatics',
+  path: '/acrobatics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DanceRoute = DanceRouteImport.update({
+  id: '/dance',
+  path: '/dance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -41,6 +56,21 @@ const FaqRoute = FaqRouteImport.update({
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MusicRoute = MusicRouteImport.update({
+  id: '/music',
+  path: '/music',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaintingsRoute = PaintingsRouteImport.update({
+  id: '/paintings',
+  path: '/paintings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SculptingRoute = SculptingRouteImport.update({
+  id: '/sculpting',
+  path: '/sculpting',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -62,9 +92,14 @@ const SubscriptionRoute = SubscriptionRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/acrobatics': typeof AcrobaticsRoute
   '/contact': typeof ContactRoute
+  '/dance': typeof DanceRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/music': typeof MusicRoute
+  '/paintings': typeof PaintingsRoute
+  '/sculpting': typeof SculptingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/subscription': typeof SubscriptionRoute
@@ -72,9 +107,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/acrobatics': typeof AcrobaticsRoute
   '/contact': typeof ContactRoute
+  '/dance': typeof DanceRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/music': typeof MusicRoute
+  '/paintings': typeof PaintingsRoute
+  '/sculpting': typeof SculptingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/subscription': typeof SubscriptionRoute
@@ -83,9 +123,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/acrobatics': typeof AcrobaticsRoute
   '/contact': typeof ContactRoute
+  '/dance': typeof DanceRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/music': typeof MusicRoute
+  '/paintings': typeof PaintingsRoute
+  '/sculpting': typeof SculptingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/subscription': typeof SubscriptionRoute
@@ -95,9 +140,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/acrobatics'
     | '/contact'
+    | '/dance'
     | '/faq'
     | '/gallery'
+    | '/music'
+    | '/paintings'
+    | '/sculpting'
     | '/sitemap.xml'
     | '/studio'
     | '/subscription'
@@ -105,9 +155,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/acrobatics'
     | '/contact'
+    | '/dance'
     | '/faq'
     | '/gallery'
+    | '/music'
+    | '/paintings'
+    | '/sculpting'
     | '/sitemap.xml'
     | '/studio'
     | '/subscription'
@@ -115,9 +170,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/acrobatics'
     | '/contact'
+    | '/dance'
     | '/faq'
     | '/gallery'
+    | '/music'
+    | '/paintings'
+    | '/sculpting'
     | '/sitemap.xml'
     | '/studio'
     | '/subscription'
@@ -126,9 +186,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AcrobaticsRoute: typeof AcrobaticsRoute
   ContactRoute: typeof ContactRoute
+  DanceRoute: typeof DanceRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
+  MusicRoute: typeof MusicRoute
+  PaintingsRoute: typeof PaintingsRoute
+  SculptingRoute: typeof SculptingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioRoute: typeof StudioRoute
   SubscriptionRoute: typeof SubscriptionRoute
@@ -150,11 +215,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/acrobatics': {
+      id: '/acrobatics'
+      path: '/acrobatics'
+      fullPath: '/acrobatics'
+      preLoaderRoute: typeof AcrobaticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dance': {
+      id: '/dance'
+      path: '/dance'
+      fullPath: '/dance'
+      preLoaderRoute: typeof DanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -169,6 +248,27 @@ declare module '@tanstack/react-router' {
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/music': {
+      id: '/music'
+      path: '/music'
+      fullPath: '/music'
+      preLoaderRoute: typeof MusicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/paintings': {
+      id: '/paintings'
+      path: '/paintings'
+      fullPath: '/paintings'
+      preLoaderRoute: typeof PaintingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sculpting': {
+      id: '/sculpting'
+      path: '/sculpting'
+      fullPath: '/sculpting'
+      preLoaderRoute: typeof SculptingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -198,9 +298,14 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AcrobaticsRoute: AcrobaticsRoute,
   ContactRoute: ContactRoute,
+  DanceRoute: DanceRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
+  MusicRoute: MusicRoute,
+  PaintingsRoute: PaintingsRoute,
+  SculptingRoute: SculptingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioRoute: StudioRoute,
   SubscriptionRoute: SubscriptionRoute,

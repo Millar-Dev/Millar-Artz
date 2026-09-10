@@ -229,6 +229,36 @@
 /* The shafts drift and shimmer, the way real beams do as dust moves through
    them. Kept to a fraction of a degree — any more and it reads as a rotating
    graphic rather than light. */
+/* The brand pattern drifting sideways behind the home hero. Built as a tiled
+   background rather than a video file: a loop long enough not to be noticed
+   repeating would be several megabytes as MP4, and a background-position
+   animation composites on the GPU, costs about 3KB, and stays crisp at any
+   viewport. Travel is a whole number of tiles, so the field never appears to
+   snap back at the turn. */
+@keyframes pattern-drift {
+  0%,
+  100% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: -672px 0;
+  }
+}
+
+/* Name, tagline and copy rising into place as the page settles. */
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
 @keyframes beam-sway {
   0%,
   100% {
@@ -347,6 +377,16 @@
 @utility animate-mote {
   animation: mote-fall 9s linear infinite;
 }
+@utility pattern-field {
+  background-image: url("/arch-pattern.svg");
+  background-repeat: repeat;
+  background-size: 168px 200px;
+  animation: pattern-drift 48s ease-in-out infinite;
+}
+@utility animate-float-in {
+  animation: float-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @utility animate-beam-sway {
   animation: beam-sway 11s ease-in-out infinite;
 }
@@ -539,8 +579,12 @@
     animation: backdrop-flow 26s ease-in-out infinite alternate;
   }
   @media (prefers-reduced-motion: reduce) {
-    body::before {
+    body::before,
+    .pattern-field {
       animation: none;
+    }
+    .animate-float-in {
+      animation-duration: 1ms;
     }
   }
   ::selection {

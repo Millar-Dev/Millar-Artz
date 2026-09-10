@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { z } from "zod";
-import { Search, X, ZoomIn, Paintbrush, Mic, Footprints, Hammer } from "lucide-react";
+import { Search, X, ZoomIn } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
-import { DisciplineMark, Rings } from "@/components/site/BrandLogo";
+import { DisciplineMark } from "@/components/site/BrandLogo";
+import { disciplineIcons } from "@/components/site/discipline-icons";
 import {
   categories,
   disciplines,
@@ -61,15 +62,6 @@ export const Route = createFileRoute("/gallery")({
   }),
   component: Gallery,
 });
-
-/** Same five objects as the home page — the department marks are one system. */
-const disciplineIcons: Record<DisciplineId, typeof Paintbrush | typeof Rings> = {
-  painting: Paintbrush,
-  music: Mic,
-  dance: Footprints,
-  sculpture: Hammer,
-  acrobatics: Rings,
-};
 
 function Gallery() {
   const search = Route.useSearch();

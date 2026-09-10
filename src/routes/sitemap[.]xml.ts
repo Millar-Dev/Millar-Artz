@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { disciplines } from "@/lib/gallery-data";
 
 /** Sitemaps require fully-qualified absolute URLs — relative <loc> values are
  *  rejected by search engines. Derived from the request so it stays correct
@@ -26,7 +27,12 @@ export const Route = createFileRoute("/sitemap.xml")({
         const BASE_URL = baseUrlFrom(request);
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/gallery", changefreq: "weekly", priority: "0.9" },
+          ...disciplines.map((d) => ({
+            path: d.slug,
+            changefreq: "weekly" as const,
+            priority: d.status === "live" ? "0.9" : "0.8",
+          })),
+          { path: "/gallery", changefreq: "weekly", priority: "0.8" },
           { path: "/about", changefreq: "monthly", priority: "0.7" },
           { path: "/contact", changefreq: "monthly", priority: "0.7" },
           { path: "/faq", changefreq: "monthly", priority: "0.6" },

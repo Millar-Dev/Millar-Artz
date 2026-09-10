@@ -123,3 +123,34 @@ export function artworkListGraph(artworks: ArtworkLike[]) {
     },
   };
 }
+
+/** A department, as its own service offered by the studio. Lets each
+ *  discipline surface on its own terms in search rather than every page
+ *  competing as "Artesque". */
+export function departmentGraph(d: {
+  label: string;
+  slug: string;
+  tagline: string;
+  intro: string;
+  offerings: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${SITE_URL}${d.slug}#service`,
+    name: `${d.label} — ${STUDIO_NAME}`,
+    serviceType: d.label,
+    description: d.intro,
+    url: absoluteUrl(d.slug),
+    provider: { "@id": `${SITE_URL}/#artist` },
+    areaServed: { "@type": "Country", name: "Tanzania" },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `${d.label} commissions`,
+      itemListElement: d.offerings.map((o) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: o },
+      })),
+    },
+  };
+}

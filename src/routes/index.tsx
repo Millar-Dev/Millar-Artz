@@ -1,49 +1,42 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, type CSSProperties } from "react";
 import { Layout } from "@/components/site/Layout";
-import {
-  HeroSpotlightBack,
-  HeroSpotlightFront,
-} from "@/components/site/HeroSpotlight";
-import { DisciplineMark, Rings } from "@/components/site/BrandLogo";
-import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
+import { BrandMark, DisciplineMark } from "@/components/site/BrandLogo";
+import { disciplineIcons } from "@/components/site/discipline-icons";
+import { disciplines, fromArtworkRow } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
-import { getSiteSettings, HERO_MOBILE_SLOTS } from "@/lib/data/site-settings";
-import { getSiteImage } from "@/lib/data/site-images";
-import artistPortraitFallback from "@/assets/me-portrait.jpg";
 import { artistGraph, canonical, jsonLd } from "@/lib/seo";
-import { Paintbrush, Mic, Footprints, Hammer } from "lucide-react";
-import type { Artwork, ArtworkCategory, DisciplineId } from "@/lib/gallery-data";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import type { Artwork } from "@/lib/gallery-data";
 
+/**
+ * The directory.
+ *
+ * Artesque is five disciplines, not a painting studio with hobbies, so the
+ * first thing a visitor meets is the threshold itself and five doorways off
+ * it — not a wall of paintings. The painting department's own page carries
+ * what used to live here.
+ */
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [rows, settings, portrait] = await Promise.all([
-      listArtworks(),
-      getSiteSettings(),
-      // Same record the About page uses, so replacing the portrait in the
-      // Studio updates the artist message here too.
-      getSiteImage({ data: "about_portrait" }),
-    ]);
-    return { artworks: rows.map(fromArtworkRow), settings, portrait };
+    const rows = await listArtworks();
+    return { artworks: rows.map(fromArtworkRow) };
   },
   head: () => ({
     meta: [
-      {
-        title: "Artesque — The Threshold to What's Possible",
-      },
+      { title: "Artesque — The threshold to what's possible" },
       {
         name: "description",
         content:
-          "Artesque is a Tanzania-based studio across five disciplines — painting, music, dance, sculpture and acrobatics. Bringing people through struggle into light, one open doorway at a time.",
+          "Artesque is a Tanzania-based studio across five disciplines — painting, music, dance, sculpture and acrobatics. One threshold, and whatever you bring us next.",
       },
       {
         property: "og:title",
-        content: "Artesque — The Threshold to What’s Possible",
+        content: "Artesque — The threshold to what's possible",
       },
       {
         property: "og:description",
         content:
-          "Original painting, music, dance, sculpture and acrobatics work, and bespoke commissions, from the Artesque studio.",
+          "Five disciplines under one roof: painting, music, dance, sculpture and acrobatics. Commissions open.",
       },
     ],
     links: [canonical("/")],
@@ -52,566 +45,303 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-/** The object that stands in each department's doorway. Four are everyday
- *  objects; acrobatics gets plain interlocking-circle geometry, since no icon
- *  set draws a pair of hanging rings well at this size. */
-const disciplineIcons: Record<DisciplineId, typeof Paintbrush | typeof Rings> = {
-  painting: Paintbrush,
-  music: Mic,
-  dance: Footprints,
-  sculpture: Hammer,
-  acrobatics: Rings,
-};
+/** Rises one word at a time as the page settles. */
+const heroWords = ["Where", "stories", "take", "shape."];
 
-const rows: { title: string; categories: ArtworkCategory[] }[] = [
-  { title: "Wildlife", categories: ["wildlife"] },
-  { title: "Hyperrealism", categories: ["hyperrealism"] },
-  { title: "Portraits", categories: ["portraits"] },
-  { title: "Traditional & Cultural", categories: ["traditional"] },
+/** What the studio is for, said three ways. Kept short — the departments
+ *  below carry the detail. */
+const promises = [
   {
-    title: "Beyond the Expected",
-    categories: ["abstract", "illusional", "mural", "modern", "cartoons"],
+    title: "One conversation, five disciplines",
+    body: "A brief that needs a mural, a score and a troupe doesn't need three studios. It needs one threshold.",
+  },
+  {
+    title: "Made by hand, in Tanzania",
+    body: "Every discipline is practised, not outsourced — work made here, by people you can talk to directly.",
+  },
+  {
+    title: "Commissioned, not catalogued",
+    body: "Nothing here is mass-produced. Each piece begins as a conversation about what you actually need.",
   },
 ];
 
-const heroWords = ["From", "struggle", "into", "light."];
-const quickCategories = categories.filter((c) =>
-  ["wildlife", "hyperrealism", "traditional", "abstract"].includes(c.value),
-);
-const marqueeIds = [
-  "bee-eaters-in-flight",
-  "giraffe-nocturne",
-  "one-love-tribute",
-  "technicolor-zebra",
-  "break-through",
-  "twilight-dancer",
-  "the-herd",
-  "cartoon-study-penguin",
-];
-/** Used when the Studio hasn't chosen its own phone/tablet slides yet. */
-const DEFAULT_MOBILE_IDS = [
-  "woman-of-the-savanna",
-  "kindred-bee-eaters",
-  "the-storyteller",
-  "uprising",
-  "prism-dancer",
-];
-
-/** Used when the Studio hasn't chosen a hero selection yet. */
-const DEFAULT_HERO_IDS = [
-  "uprising",
-  "kindred-bee-eaters",
-  "woman-of-the-savanna",
-  "the-storyteller",
-  "prism-dancer",
-];
-
-/** The bouquet: five stems fanning out of one point low-centre. Outer petals
- *  sit higher and lean further out; the centre stem stands tallest and in
- *  front, the way a gathered bunch reads. Index order runs left → right.
- *
- *  The outer pair are inset from the stage edges rather than pinned to 0:
- *  rotating a card about its bottom edge swings its top corner outward, so
- *  a petal flush to the edge gets its corner shaved off by the hero's
- *  overflow-hidden on narrower desktops. The inset is the swing clearance. */
-const BOUQUET = [
-  { className: "bottom-[7%] left-[4%] w-[32%] origin-bottom rotate-[-20deg]", z: 10 },
-  { className: "bottom-[2%] left-[19%] w-[34%] origin-bottom rotate-[-10deg]", z: 20 },
-  { className: "bottom-0 left-1/2 w-[36%] -translate-x-1/2 origin-bottom rotate-0", z: 40 },
-  { className: "bottom-[2%] right-[19%] w-[34%] origin-bottom rotate-[10deg]", z: 20 },
-  { className: "bottom-[7%] right-[4%] w-[32%] origin-bottom rotate-[20deg]", z: 10 },
-];
-
 function Home() {
-  const { artworks, settings, portrait } = Route.useLoaderData();
-  const byId = (id: string) => artworks.find((a) => a.id === id);
-  const artistPortrait = portrait?.image_path || artistPortraitFallback;
-
-  // Studio-chosen hero pieces, falling back to the defaults (and skipping any
-  // id that no longer exists, so deleting an artwork can't blank the hero).
-  const resolve = (saved: string, fallback: string[], limit: number) => {
-    const ids = saved
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    return (ids.length ? ids : fallback)
-      .map(byId)
-      .filter((a): a is Artwork => Boolean(a))
-      .slice(0, limit);
-  };
-  const heroPieces = resolve(
-    settings.hero_collage_ids || "",
-    DEFAULT_HERO_IDS,
-    BOUQUET.length,
-  );
-  // The phone hero is a different composition, so it gets its own picks.
-  const mobileSlides = resolve(
-    settings.hero_mobile_ids || "",
-    DEFAULT_MOBILE_IDS,
-    HERO_MOBILE_SLOTS,
-  );
+  const { artworks } = Route.useLoaderData();
+  // Real pieces, so the directory opens onto actual work rather than stock.
+  const featured = artworks.slice(0, 6);
 
   return (
     <Layout>
-      {/* Hero — a scattered gallery wall, not a slideshow. Every piece invites a hover. */}
-      <section className="grain relative overflow-hidden pb-28 pt-14 md:pb-36 md:pt-20">
-        <div className="glow-gold pointer-events-none absolute -left-40 -top-20 h-[520px] w-[520px] rounded-full opacity-[0.22] blur-3xl" />
-        <div className="glow-teal pointer-events-none absolute -right-32 top-32 h-[420px] w-[420px] rounded-full opacity-[0.18] blur-3xl" />
-        <div className="glow-coral pointer-events-none absolute bottom-0 left-1/3 h-[360px] w-[360px] rounded-full opacity-[0.14] blur-3xl" />
-
-        <div className="relative mx-auto max-w-7xl px-6">
-          <div className="grid items-center gap-16 lg:grid-cols-12">
-            {/* min-w-0 is load-bearing: the marquee inside is w-max (~1170px
-                of thumbnails), and a grid item defaults to min-width:auto —
-                so without this the column grows to fit it and shoves the
-                headline and copy off the side of a phone screen. */}
-            <div className="min-w-0 lg:col-span-5">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-gold">
-                The threshold to what's possible
-              </span>
-              <h1 className="mt-6 font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
-                {heroWords.map((word, i) => (
-                  <span
-                    key={word}
-                    className="animate-reveal inline-block"
-                    style={{ animationDelay: `${i * 0.1}s` }}
-                  >
-                    {word === "stories" ? (
-                      <span className="">{word}</span>
-                    ) : (
-                      word
-                    )}
-                    {i < heroWords.length - 1 ? " " : ""}
-                  </span>
-                ))}
-              </h1>
-              <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-ink/70">
-                A Tanzania-based studio across five disciplines — painting,
-                music, dance, sculpture and acrobatics. One threshold, and
-                whatever you bring us next.
-              </p>
-
-              {/* Scrolling ribbon of the collection, sitting under the intro
-                  where it has room to breathe. */}
-              <div className="glass mt-8 max-w-md overflow-hidden rounded-full py-3 shadow-xl">
-                <div className="animate-marquee flex w-max gap-4 px-4">
-                  {[...marqueeIds, ...marqueeIds]
-                    .map((id) => byId(id))
-                    .filter((a): a is Artwork => Boolean(a))
-                    .map((a, i) => (
-                      <img
-                        key={`${a.id}-${i}`}
-                        src={a.image}
-                        alt=""
-                        className="h-14 w-14 shrink-0 rounded-full object-cover opacity-95 ring-2 ring-white/25"
-                      />
-                    ))}
-                </div>
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-2">
-                {quickCategories.map((c) => (
-                  <Link
-                    key={c.value}
-                    to="/gallery"
-                    search={{ category: c.value }}
-                    className="glass rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-band-foreground/85 transition-colors hover:text-gold"
-                  >
-                    {c.label}
-                  </Link>
-                ))}
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  to="/gallery"
-                  className="rounded-sm bg-gold px-8 py-4 text-sm font-medium text-band transition-transform hover:-translate-y-0.5"
-                >
-                  View Gallery
-                </Link>
-                <Link
-                  to="/contact"
-                  search={{ type: "commission" }}
-                  className="glass rounded-sm px-8 py-4 text-sm font-medium text-band-foreground transition-colors hover:text-gold"
-                >
-                  Custom Orders
-                </Link>
-              </div>
-            </div>
-
-            <div className="min-w-0 lg:col-span-7">
-              {/* Desktop / large tablet — the pieces fan out of a single
-                  point like flowers gathered in a bunch: tight and low in
-                  the centre, opening wider and higher toward the edges.
-                  Hover any piece to bring it upright and forward. */}
-              <div className="relative hidden lg:block">
-                {/* Sized off the column, not the viewport height. A 52vh cap
-                    here shrank the artwork to fix a spacing problem and cost
-                    the bouquet its presence — the fan reaching past the fold
-                    is intentional.
-
-                    Left-aligned rather than centred, and 88% of a column that
-                    is now the wider half: rotating a petal about its bottom
-                    edge throws its top corner ~9.6% of the stage width past
-                    the stage, and centring it in a full-width column put that
-                    corner outside the viewport, where the section's
-                    overflow-hidden sheared it off. The slack is the swing
-                    clearance — the artwork itself is no smaller. */}
-                <div className="relative aspect-[5/4] w-[88%] max-w-[38rem]">
-                  <HeroSpotlightBack />
-
-                  {heroPieces.map((artwork, i) =>
-                    artwork ? (
-                      <HeroCard
-                        key={artwork.id}
-                        artwork={artwork}
-                        className={BOUQUET[i].className}
-                        z={BOUQUET[i].z}
-                      />
-                    ) : null,
-                  )}
-
-                  {/* Haze and snow sit in front of the work — light scatters
-                      in the air between the viewer and what it lights. */}
-                  <HeroSpotlightFront />
-                </div>
-              </div>
-
-              {/* Mobile / tablet — slides stacked in front of one another,
-                  fading automatically to reveal the next. */}
-              <MobileHeroSlides slides={mobileSlides} className="lg:hidden" />
-            </div>
-          </div>
-
-          {/* The artist speaking directly to the visitor — portrait beside the
-              note on desktop, stacked on mobile. Deliberately restrained: a
-              hairline, a soft ground and one warm accent edge, so it reads as
-              a gallery placard rather than a chat app. */}
-          <div className="mt-16 max-w-2xl border-t border-ink/10 pt-10 lg:mt-24">
-            <figure className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
-              <div className="relative shrink-0">
-                <span
-                  aria-hidden="true"
-                  className="absolute -inset-1 rounded-full bg-gold/25 blur-md"
-                />
-                <img
-                  src={artistPortrait}
-                  alt="Miller S.K., founder of Artesque"
-                  loading="lazy"
-                  className="relative h-16 w-16 rounded-full object-cover ring-1 ring-gold/40 sm:h-[4.5rem] sm:w-[4.5rem]"
-                />
-              </div>
-
-              <figcaption className="min-w-0 rounded-2xl rounded-tl-sm border border-ink/10 bg-paper/45 px-6 py-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">
-                  Miller S.K.
-                </p>
-                <p className="mt-3 text-base font-light leading-relaxed text-ink/75">
-                  I'm Miller S.K. — founder and creative director of Artesque.
-                  What started as graphite portraits and wildlife studies has
-                  grown into a studio across five disciplines, based here in
-                  Tanzania and built one commission at a time.
-                </p>
-                <Link
-                  to="/about"
-                  className="mt-4 inline-flex items-center gap-2 border-b border-gold/40 pb-1 text-sm font-medium text-gold transition-colors hover:border-gold"
-                >
-                  More about me →
-                </Link>
-              </figcaption>
-            </figure>
-          </div>
-        </div>
-        {/* Torn edge pinned to the very bottom of the section — the hero's
-            pb- clears it, so it never rides up over the intro copy. */}
-        {/* Inline positioning deliberately: the .frayed-bottom utility sets
-            position:relative itself, which beat the absolute class and left
-            the torn edge sitting on top of the intro copy. */}
+      {/* ── The threshold ───────────────────────────────────────────────
+          A field of arches drifting sideways behind the name, with the whole
+          lockup floating up as the page settles. */}
+      <section className="relative isolate overflow-hidden bg-band text-band-foreground">
         <div
-          className="frayed-bottom"
-          style={
-            {
-              position: "absolute",
-              left: 0,
-              right: 0,
-              bottom: 0,
-              "--frayed-color": "var(--color-gallery)",
-            } as CSSProperties
-          }
+          aria-hidden="true"
+          className="pattern-field pointer-events-none absolute inset-0 opacity-70"
         />
-      </section>
+        {/* Holds the type legible over the field without flattening it. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 62% at 50% 45%, rgba(46,22,32,0.94) 0%, rgba(46,22,32,0.72) 55%, rgba(46,22,32,0.5) 100%)",
+          }}
+        />
 
-      {/* Category rows — Netflix-style horizontal scroll */}
-      <section className="bg-gallery py-12 md:py-20">
-        <div className="mx-auto max-w-7xl space-y-16 px-6">
-          {rows.map((row) => {
-            const items = artworks.filter((a) =>
-              row.categories.includes(a.category),
-            );
-            if (items.length === 0) return null;
-            return (
-              <div key={row.title}>
-                <div className="mb-6 flex items-end justify-between gap-4">
-                  <h2 className="font-display font-bold text-2xl text-ink md:text-3xl">
-                    {row.title}
-                  </h2>
-                  <Link
-                    to="/gallery"
-                    search={{
-                      category:
-                        row.categories.length === 1 ? row.categories[0] : "all",
-                    }}
-                    className="shrink-0 border-b border-ink/20 pb-1 text-xs uppercase tracking-[0.15em] text-ink/60 transition-colors hover:border-ink hover:text-ink"
-                  >
-                    See all →
-                  </Link>
-                </div>
-                <div className="no-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
-                  {items.map((a) => (
-                    <Link
-                      key={a.id}
-                      to="/gallery"
-                      search={{ category: a.category }}
-                      className="gradient-stroke group relative w-[220px] shrink-0 overflow-hidden rounded-sm p-px shadow-lg shadow-black/25 sm:w-[260px]"
-                    >
-                      <div className="relative overflow-hidden rounded-[1px]">
-                        <img
-                          src={a.image}
-                          alt={a.title}
-                          loading="lazy"
-                          className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                        <div className="glass absolute inset-x-0 bottom-0 translate-y-full p-4 transition-transform duration-300 group-hover:translate-y-0">
-                          <h3 className="truncate font-display font-bold text-lg text-band-foreground">
-                            {a.title}
-                          </h3>
-                          <p className="mt-1 text-[10px] uppercase tracking-widest text-band-foreground/60">
-                            {a.medium}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+        <div className="relative mx-auto flex min-h-[calc(100svh-6rem)] max-w-5xl flex-col items-center justify-center px-6 py-24 text-center">
+          {/* The mark lands first, then the name letter by letter, then the
+              rest — hence the staggered delays throughout. */}
+          <BrandMark
+            className="animate-float-in h-20 w-auto text-band-foreground md:h-24"
+            ground="#2E1620"
+            title=""
+          />
 
-      {/* Custom Commission */}
-      <section className="bg-band py-14 md:py-24 text-band-foreground">
-        <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2 md:gap-20">
-          <div>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-              Bespoke Commissions
-            </span>
-            <h2 className="mt-6 font-display font-bold text-5xl leading-tight">
-              Your Vision, <span className="">Our Brush</span>.
-            </h2>
-            <p className="mt-8 text-lg font-light leading-relaxed text-band-foreground/70">
-              Whether it's a cherished family portrait, a wildlife piece, a
-              mural for a wall that needs one, or something outside the usual —
-              we specialise in commissions built around what you actually want.
-            </p>
-            <ul className="mt-10 space-y-4">
-              {[
-                "Hyperrealistic portraiture from reference photos",
-                "Custom sizes ranging from A4 to full exterior murals",
-                "Nine disciplines to choose from, plus room for new ideas",
-              ].map((item) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-4 text-sm font-light"
-                >
-                  <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/contact"
-              search={{ type: "commission" }}
-              className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
-            >
-              Request a Quotation
-            </Link>
-          </div>
-
-          <div className="space-y-6">
-            {commissionSteps.map((s) => (
-              <div
-                key={s.step}
-                className="flex gap-5 rounded-lg border border-white/10 bg-white/[0.03] p-6"
+          <h1 className="mt-8 font-display text-5xl font-bold uppercase leading-none tracking-[-0.01em] md:text-7xl">
+            {"ARTESQUE".split("").map((ch, i) => (
+              <span
+                key={i}
+                className="animate-float-in inline-block"
+                style={{ animationDelay: `${0.18 + i * 0.045}s` }}
               >
-                <span className="font-display font-bold text-3xl text-gold">
-                  {s.step}
+                <span className={i < 3 ? "text-brand-accent" : undefined}>
+                  {ch}
                 </span>
-                <div>
-                  <h3 className="font-display font-bold text-xl text-band-foreground">
-                    {s.title}
-                  </h3>
-                  <p className="mt-2 text-sm font-light leading-relaxed text-band-foreground/70">
-                    {s.body}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* The five departments */}
-      <section className="bg-canvas py-14 md:py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-                The Departments
               </span>
-              <h2 className="mt-4 font-display font-bold text-4xl text-ink md:text-5xl">
-                One threshold, five disciplines.
-              </h2>
-            </div>
-            <Link
-              to="/gallery"
-              className="border-b border-ink/20 pb-1 text-sm text-ink transition-colors hover:border-ink"
-            >
-              See the full studio scope →
-            </Link>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            ))}
+          </h1>
+
+          <p
+            className="animate-float-in mt-5 text-[11px] font-bold uppercase tracking-[0.42em] text-band-foreground/70 md:text-xs"
+            style={{ animationDelay: "0.62s" }}
+          >
+            The threshold to what's possible
+          </p>
+
+          <h2 className="mt-10 font-display text-3xl italic leading-tight md:text-5xl">
+            {heroWords.map((word, i) => (
+              <span
+                key={word}
+                className="animate-float-in inline-block"
+                style={{ animationDelay: `${0.78 + i * 0.11}s` }}
+              >
+                {word}
+                {i < heroWords.length - 1 ? " " : ""}
+              </span>
+            ))}
+          </h2>
+
+          <p
+            className="animate-float-in mt-6 max-w-xl text-base font-light leading-relaxed text-band-foreground/75 md:text-lg"
+            style={{ animationDelay: "1.24s" }}
+          >
+            A Tanzania-based studio across five disciplines — painting, music,
+            dance, sculpture and acrobatics. Step through whichever doorway you
+            came for.
+          </p>
+
+          <div
+            className="animate-float-in mt-10 flex flex-wrap justify-center gap-3"
+            style={{ animationDelay: "1.4s" }}
+          >
             {disciplines.map((d) => (
               <Link
                 key={d.id}
-                to="/contact"
-                search={{ type: d.label }}
-                className="group flex flex-col justify-between rounded-lg border border-ink/10 bg-paper p-6 transition-all hover:-translate-y-1 hover:border-ink/25"
+                to={d.slug}
+                className="rounded-full border border-white/15 px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.15em] text-band-foreground/85 transition-colors hover:border-white/40 hover:text-band-foreground"
               >
-                <DisciplineMark
-                  icon={disciplineIcons[d.id]}
-                  accent={d.accent}
-                  className="h-16 w-auto text-ink/85 transition-colors group-hover:text-ink"
-                  title=""
-                />
-                <div className="mt-8">
-                  <h3 className="font-display text-xl font-bold text-ink">
-                    {d.label}
-                  </h3>
-                  <p className="mt-2 text-xs leading-relaxed text-ink/60">
-                    {d.blurb}
-                  </p>
-                </div>
+                {d.label}
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Newsletter CTA */}
-      <section className="border-t border-ink/5 bg-paper py-14 md:py-24">
+      {/* ── The directory ───────────────────────────────────────────────
+          The five departments, each carrying its own mark and colour. This is
+          the point of the home page. */}
+      <section className="py-14 md:py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold">
+                The departments
+              </span>
+              <h2 className="mt-4 font-display text-4xl italic text-ink md:text-5xl">
+                One threshold, five disciplines
+              </h2>
+            </div>
+            <p className="max-w-sm text-sm font-light leading-relaxed text-ink/60">
+              Each keeps the arch and takes its own colour and its own object in
+              the doorway. Step through any of them.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {disciplines.map((d) => {
+              const Icon = disciplineIcons[d.id];
+              return (
+                <Link
+                  key={d.id}
+                  to={d.slug}
+                  style={{ ["--dept" as string]: d.accent }}
+                  className="group relative flex flex-col overflow-hidden border border-ink/10 bg-paper/70 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--dept)]"
+                >
+                  {/* The department's colour washing in from its own corner. */}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-300 group-hover:opacity-40"
+                    style={{ backgroundColor: "var(--dept)" }}
+                  />
+                  <DisciplineMark
+                    icon={Icon}
+                    accent={d.accent}
+                    className="relative h-16 w-auto text-ink/85"
+                    title=""
+                  />
+                  <h3 className="relative mt-6 font-display text-2xl text-ink">
+                    {d.label}
+                  </h3>
+                  <p
+                    className="relative mt-1 text-[11px] font-bold uppercase tracking-[0.18em]"
+                    style={{ color: "var(--dept)" }}
+                  >
+                    {d.tagline}
+                  </p>
+                  <p className="relative mt-4 grow text-sm font-light leading-relaxed text-ink/65">
+                    {d.blurb}
+                  </p>
+                  <span className="relative mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-ink/70 transition-colors group-hover:text-[var(--dept)]">
+                    {d.status === "live"
+                      ? "Browse the work"
+                      : "Open for commission"}
+                    <ArrowRight
+                      size={14}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  </span>
+                </Link>
+              );
+            })}
+
+            {/* Sixth cell, so the grid closes on a note rather than a gap. */}
+            <div className="flex flex-col justify-between border border-dashed border-ink/15 p-7">
+              <div>
+                <h3 className="font-display text-2xl italic text-ink">
+                  Something else entirely?
+                </h3>
+                <p className="mt-4 text-sm font-light leading-relaxed text-ink/65">
+                  The five departments are where the studio works today, not a
+                  fence around it. If your brief crosses them — or falls outside
+                  all of them — say so, and we'll tell you honestly whether
+                  we're the right hands for it.
+                </p>
+              </div>
+              <Link
+                to="/contact"
+                search={{ type: "general" }}
+                className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-gold"
+              >
+                Ask us
+                <ArrowUpRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Why one studio ──────────────────────────────────────────── */}
+      <section className="border-y border-ink/5 bg-paper py-14 md:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-3">
+          {promises.map((p) => (
+            <div key={p.title}>
+              <h3 className="font-display text-xl text-ink">{p.title}</h3>
+              <p className="mt-3 text-sm font-light leading-relaxed text-ink/65">
+                {p.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── A look at the work ──────────────────────────────────────── */}
+      {featured.length > 0 && (
+        <section className="py-14 md:py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <h2 className="font-display text-4xl italic text-ink">
+                A look at the work
+              </h2>
+              <Link
+                to="/paintings"
+                className="inline-flex items-center gap-2 border-b border-gold/40 pb-1 text-sm font-medium text-gold transition-colors hover:border-gold"
+              >
+                Into the painting department
+                <ArrowRight size={15} />
+              </Link>
+            </div>
+
+            <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+              {featured.map((a: Artwork) => (
+                <Link
+                  key={a.id}
+                  to="/gallery"
+                  search={{ category: a.category }}
+                  className="group relative aspect-[3/4] overflow-hidden rounded-sm ring-1 ring-ink/10"
+                >
+                  <img
+                    src={a.image}
+                    alt={a.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-8 opacity-0 transition-opacity group-hover:opacity-100">
+                    <span className="block truncate font-display text-sm italic text-white">
+                      {a.title}
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Step through ────────────────────────────────────────────── */}
+      <section className="grain relative bg-band py-14 text-band-foreground md:py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            Newsletter
-          </span>
-          <h2 className="mt-6 font-display font-bold text-4xl text-ink md:text-5xl">
-            Join the Collector's Circle
+          <BrandMark
+            className="mx-auto h-14 w-auto text-band-foreground"
+            ground="#2E1620"
+            title=""
+          />
+          <h2 className="mt-8 font-display text-3xl italic md:text-4xl">
+            Bring us what you have in mind
           </h2>
-          <p className="mt-6 text-ink/60">
-            Early access to new collections, studio notes, and exclusive artwork
-            previews — delivered when there's something worth sharing.
+          <p className="mx-auto mt-5 max-w-xl font-light leading-relaxed text-band-foreground/70">
+            A commission starts as a conversation — what it's for, where it will
+            live, and what it needs to do. A quotation follows within a few
+            days.
           </p>
-          <Link
-            to="/subscription"
-            className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
-          >
-            Subscribe now
-          </Link>
+          <div className="mt-9 flex flex-wrap justify-center gap-4">
+            <Link
+              to="/contact"
+              search={{ type: "commission" }}
+              className="rounded-sm bg-gold px-8 py-4 text-sm font-medium text-band transition-transform hover:-translate-y-0.5"
+            >
+              Start a commission
+            </Link>
+            <Link
+              to="/about"
+              className="glass rounded-sm px-8 py-4 text-sm font-medium text-band-foreground transition-colors hover:text-gold"
+            >
+              About the studio
+            </Link>
+          </div>
         </div>
       </section>
     </Layout>
-  );
-}
-
-function MobileHeroSlides({
-  slides,
-  className = "",
-}: {
-  slides: Artwork[];
-  className?: string;
-}) {
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    if (slides.length === 0) return;
-    const id = setInterval(() => setActive((v) => (v + 1) % slides.length), 3200);
-    return () => clearInterval(id);
-  }, [slides.length]);
-
-  if (slides.length === 0) return null;
-
-  return (
-    <div className={`relative mx-auto aspect-[4/5] max-w-sm ${className}`}>
-      {slides.map((a, i) => (
-        <div
-          key={a.id}
-          className={`gradient-stroke absolute inset-0 rounded-2xl p-1 shadow-2xl transition-opacity duration-1000 ease-in-out ${
-            i === active ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <img
-            src={a.image}
-            alt={a.title}
-            loading={i === 0 ? "eager" : "lazy"}
-            className="h-full w-full rounded-[14px] object-cover"
-          />
-          <div className="absolute inset-x-1 bottom-1 rounded-b-[14px] bg-gradient-to-t from-black/80 to-transparent p-4 pt-10">
-            <p className="font-display font-bold text-lg text-white">{a.title}</p>
-          </div>
-        </div>
-      ))}
-      <div className="absolute -bottom-6 left-1/2 flex -translate-x-1/2 gap-1.5">
-        {slides.map((a, i) => (
-          <span
-            key={a.id}
-            className={`h-1 rounded-full transition-all ${
-              i === active ? "w-6 bg-gold" : "w-1.5 bg-ink/25"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function HeroCard({
-  artwork,
-  className,
-  z,
-}: {
-  artwork: Artwork | undefined;
-  className: string;
-  z: number;
-}) {
-  if (!artwork) return null;
-  return (
-    <Link
-      to="/gallery"
-      search={{ category: artwork.category }}
-      className={`group absolute overflow-hidden rounded-lg shadow-2xl ring-1 ring-white/10 transition-all duration-500 ease-out hover:z-50 hover:rotate-0 hover:scale-110 ${className}`}
-      style={{ zIndex: z }}
-    >
-      <img
-        src={artwork.image}
-        alt={artwork.title}
-        loading="eager"
-        className="aspect-[3/4] w-full object-cover"
-      />
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <p className="truncate font-display font-bold text-sm text-white">
-          {artwork.title}
-        </p>
-      </div>
-    </Link>
   );
 }
