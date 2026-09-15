@@ -8,10 +8,10 @@ const discipline = disciplines.find((d) => d.id === "dance")!;
 export const Route = createFileRoute("/dance")({
   head: () => ({
     meta: [
-      { title: "Dance — Artesque" },
-      { name: "description", content: "Choreography and staged movement from the Artesque dance department — for stage, film, events and campaigns, plus workshops and training." },
-      { property: "og:title", content: "Dance — Artesque" },
-      { property: "og:description", content: "Choreography and staged movement from the Artesque dance department — for stage, film, events and campaigns, plus workshops and training." },
+      { title: "Dance — MillerArtz" },
+      { name: "description", content: "Choreography and staged movement from the MillerArtz dance department — for stage, film, events and campaigns, plus workshops and training." },
+      { property: "og:title", content: "Dance — MillerArtz" },
+      { property: "og:description", content: "Choreography and staged movement from the MillerArtz dance department — for stage, film, events and campaigns, plus workshops and training." },
     ],
     links: [canonical("/dance")],
     scripts: [jsonLd(departmentGraph(discipline))],

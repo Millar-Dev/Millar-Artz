@@ -11,7 +11,7 @@ import type { Artwork } from "@/lib/gallery-data";
 /**
  * The directory.
  *
- * Artesque is five disciplines, not a painting studio with hobbies, so the
+ * MillerArtz is five disciplines, not a painting studio with hobbies, so the
  * first thing a visitor meets is the threshold itself and five doorways off
  * it — not a wall of paintings. The painting department's own page carries
  * what used to live here.
@@ -23,15 +23,15 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "Artesque — The threshold to what's possible" },
+      { title: "MillerArtz — The threshold to what's possible" },
       {
         name: "description",
         content:
-          "Artesque is a Tanzania-based studio across five disciplines — painting, music, dance, sculpture and acrobatics. One threshold, and whatever you bring us next.",
+          "MillerArtz is a Tanzania-based studio across five disciplines — painting, music, dance, sculpture and acrobatics. One threshold, and whatever you bring us next.",
       },
       {
         property: "og:title",
-        content: "Artesque — The threshold to what's possible",
+        content: "MillerArtz — The threshold to what's possible",
       },
       {
         property: "og:description",
@@ -99,14 +99,17 @@ function Home() {
             title=""
           />
 
-          <h1 className="mt-8 font-display text-5xl font-bold uppercase leading-none tracking-[-0.01em] md:text-7xl">
-            {"ARTESQUE".split("").map((ch, i) => (
+          <h1 className="mt-8 font-display text-[2.6rem] font-bold uppercase leading-none tracking-[-0.01em] sm:text-5xl md:text-7xl">
+            {/* Ten letters rather than eight, so the phone size steps down a
+                notch to keep the name on one line at 360px. ARTZ, the last
+                four, carries the accent. */}
+            {"MILLERARTZ".split("").map((ch, i) => (
               <span
                 key={i}
                 className="animate-float-in inline-block"
-                style={{ animationDelay: `${0.18 + i * 0.045}s` }}
+                style={{ animationDelay: `${0.18 + i * 0.04}s` }}
               >
-                <span className={i < 3 ? "text-brand-accent" : undefined}>
+                <span className={i >= 6 ? "text-brand-accent" : undefined}>
                   {ch}
                 </span>
               </span>

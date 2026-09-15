@@ -23,7 +23,7 @@ export const jsonLd = (data: unknown) => ({
   children: JSON.stringify(data),
 });
 
-const STUDIO_NAME = "Artesque";
+const STUDIO_NAME = "MillerArtz";
 const TAGLINE = "The threshold to what's possible";
 
 /** The artist and the studio, described once and reused across pages. */
@@ -39,7 +39,7 @@ export function artistGraph() {
         url: SITE_URL,
         jobTitle: "Founder & Creative Director",
         description:
-          "Founder of Artesque, a Tanzania-based studio working across five disciplines: painting, music, dance, sculpture and acrobatics.",
+          "Founder of MillerArtz, a Tanzania-based studio working across five disciplines: painting, music, dance, sculpture and acrobatics.",
         knowsAbout: [
           "Painting",
           "Music",
@@ -126,7 +126,7 @@ export function artworkListGraph(artworks: ArtworkLike[]) {
 
 /** A department, as its own service offered by the studio. Lets each
  *  discipline surface on its own terms in search rather than every page
- *  competing as "Artesque". */
+ *  competing as "MillerArtz". */
 export function departmentGraph(d: {
   label: string;
   slug: string;

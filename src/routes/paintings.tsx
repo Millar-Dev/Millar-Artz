@@ -8,15 +8,15 @@ import {
 import { DisciplineMark } from "@/components/site/BrandLogo";
 import { disciplineIcons } from "@/components/site/discipline-icons";
 import { categories, commissionSteps, disciplines, fromArtworkRow } from "@/lib/gallery-data";
-
-/** This page is the painting department, so it takes painting's colour. */
-const painting = disciplines.find((d) => d.id === "painting")!;
 import { listArtworks } from "@/lib/data/artworks";
 import { getSiteSettings, HERO_MOBILE_SLOTS } from "@/lib/data/site-settings";
 import { getSiteImage } from "@/lib/data/site-images";
 import artistPortraitFallback from "@/assets/me-portrait.jpg";
 import { artistGraph, canonical, jsonLd } from "@/lib/seo";
 import type { Artwork, ArtworkCategory, DisciplineId } from "@/lib/gallery-data";
+
+/** This page is the painting department, so it takes painting's colour. */
+const painting = disciplines.find((d) => d.id === "painting")!;
 
 export const Route = createFileRoute("/paintings")({
   loader: async () => {
@@ -31,17 +31,17 @@ export const Route = createFileRoute("/paintings")({
   },
   head: () => ({
     meta: [
-      { title: "Paintings — Artesque" },
+      { title: "Paintings — MillerArtz" },
       {
         name: "description",
         content:
-          "The Artesque painting department: hyperrealism, wildlife, portraits, traditional and cultural work, murals, abstract, modern and cartoon art, plus commissions.",
+          "The MillerArtz painting department: hyperrealism, wildlife, portraits, traditional and cultural work, murals, abstract, modern and cartoon art, plus commissions.",
       },
-      { property: "og:title", content: "Paintings — Artesque" },
+      { property: "og:title", content: "Paintings — MillerArtz" },
       {
         property: "og:description",
         content:
-          "Hyperrealistic drawings, wildlife paintings, murals and bespoke commissions from the Artesque painting department.",
+          "Hyperrealistic drawings, wildlife paintings, murals and bespoke commissions from the MillerArtz painting department.",
       },
     ],
     links: [canonical("/paintings")],
@@ -157,7 +157,7 @@ function Paintings() {
                 headline and copy off the side of a phone screen. */}
             <div className="min-w-0 lg:col-span-5">
               <span className="text-xs font-bold uppercase tracking-[0.3em] text-gold">
-                Artesque — Paintings
+                MillerArtz — Paintings
               </span>
               <h1 className="mt-6 font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
                 {heroWords.map((word, i) => (
@@ -286,7 +286,7 @@ function Paintings() {
                 />
                 <img
                   src={artistPortrait}
-                  alt="Miller S.K., founder of Artesque"
+                  alt="Miller S.K., founder of MillerArtz"
                   loading="lazy"
                   className="relative h-16 w-16 rounded-full object-cover ring-1 ring-gold/40 sm:h-[4.5rem] sm:w-[4.5rem]"
                 />
@@ -297,7 +297,7 @@ function Paintings() {
                   Miller S.K.
                 </p>
                 <p className="mt-3 text-base font-light leading-relaxed text-ink/75">
-                  I'm Miller S.K. — founder and creative director of Artesque.
+                  I'm Miller S.K. — founder and creative director of MillerArtz.
                   What started as graphite portraits and wildlife studies has
                   grown into a studio across five disciplines, based here in
                   Tanzania and built one commission at a time.

@@ -155,7 +155,7 @@ export function Footer() {
         </div>
         <div className="flex flex-col items-start justify-between gap-4 border-t border-band-foreground/5 pt-8 text-[10px] font-semibold uppercase tracking-[0.2em] text-band-foreground/30 sm:flex-row sm:items-center">
           <p>
-            © {new Date().getFullYear()} Artesque Studio. All rights
+            © {new Date().getFullYear()} MillerArtz Studio. All rights
             reserved.
           </p>
           <p>Where imagination meets creativity.</p>

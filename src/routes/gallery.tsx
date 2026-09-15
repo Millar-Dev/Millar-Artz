@@ -42,17 +42,17 @@ export const Route = createFileRoute("/gallery")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: "Gallery — Artesque" },
+      { title: "Gallery — MillerArtz" },
       {
         name: "description",
         content:
-          "Browse hyperrealism, wildlife, portraits, traditional, abstract, mural, modern and cartoon works by Artesque.",
+          "Browse hyperrealism, wildlife, portraits, traditional, abstract, mural, modern and cartoon works by MillerArtz.",
       },
-      { property: "og:title", content: "Gallery — Artesque" },
+      { property: "og:title", content: "Gallery — MillerArtz" },
       {
         property: "og:description",
         content:
-          "The Artesque collection across painting, wildlife, portraiture and more, plus custom commissions.",
+          "The MillerArtz collection across painting, wildlife, portraiture and more, plus custom commissions.",
       },
     ],
     links: [canonical("/gallery")],

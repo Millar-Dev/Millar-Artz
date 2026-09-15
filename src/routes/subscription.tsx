@@ -8,17 +8,17 @@ import { canonical } from "@/lib/seo";
 export const Route = createFileRoute("/subscription")({
   head: () => ({
     meta: [
-      { title: "Subscription — Artesque" },
+      { title: "Subscription — MillerArtz" },
       {
         name: "description",
         content:
-          "Join the Artesque Collector's Circle for early access to new collections, exclusive previews, and studio updates.",
+          "Join the MillerArtz Collector's Circle for early access to new collections, exclusive previews, and studio updates.",
       },
-      { property: "og:title", content: "Artesque Subscription" },
+      { property: "og:title", content: "MillerArtz Subscription" },
       {
         property: "og:description",
         content:
-          "Free and premium memberships for early access to Artesque collections and exclusive previews.",
+          "Free and premium memberships for early access to MillerArtz collections and exclusive previews.",
       },
     ],
     links: [canonical("/subscription")],
@@ -88,7 +88,7 @@ function Subscription() {
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg font-light text-ink/70">
             Subscribe to receive newsletters, artwork drops, and previews from
-            Artesque. Two ways to follow the work — pick the one that suits
+            MillerArtz. Two ways to follow the work — pick the one that suits
             you.
           </p>
         </div>

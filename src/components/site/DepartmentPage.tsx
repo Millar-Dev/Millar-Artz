@@ -48,7 +48,7 @@ export function DepartmentPage({
                   to="/"
                   className="text-[11px] font-bold uppercase tracking-[0.3em] text-ink/45 transition-colors hover:text-ink/80"
                 >
-                  Artesque
+                  MillerArtz
                 </Link>
                 <span
                   className="ml-3 text-[11px] font-bold uppercase tracking-[0.3em]"
@@ -93,7 +93,7 @@ export function DepartmentPage({
                     icon={Icon}
                     accent={discipline.accent}
                     className="h-auto w-full text-ink/90"
-                    title={`${discipline.label} — Artesque`}
+                    title={`${discipline.label} — MillerArtz`}
                   />
                 </div>
               </div>

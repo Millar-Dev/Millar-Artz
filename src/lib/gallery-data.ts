@@ -186,7 +186,7 @@ export const disciplines: Discipline[] = [
     blurb:
       "Hyperrealism, wildlife, portraiture, murals and more — the department with an archive you can browse today.",
     intro:
-      "Painting is where Artesque began, and it is still the department with the deepest archive. Hyperrealistic graphite and charcoal built over hundreds of hours of observation, wildlife in acrylic and oil rooted in East Africa, commissioned portraits, traditional and cultural scenes, murals at architectural scale, and work that refuses to sit in any of those boxes.",
+      "Painting is where MillerArtz began, and it is still the department with the deepest archive. Hyperrealistic graphite and charcoal built over hundreds of hours of observation, wildlife in acrylic and oil rooted in East Africa, commissioned portraits, traditional and cultural scenes, murals at architectural scale, and work that refuses to sit in any of those boxes.",
     offerings: [
       "Hyperrealism & graphite",
       "Portrait commissions",
@@ -207,7 +207,7 @@ export const disciplines: Discipline[] = [
     blurb:
       "Original composition, recording and sound design — written for the room it will be heard in.",
     intro:
-      "Music at Artesque is written for a purpose and a place: a score for a film, a track for a campaign, a piece for a room and the people who will be standing in it. Composition, arrangement, recording and mixing, with session players brought in where the work asks for them.",
+      "Music at MillerArtz is written for a purpose and a place: a score for a film, a track for a campaign, a piece for a room and the people who will be standing in it. Composition, arrangement, recording and mixing, with session players brought in where the work asks for them.",
     offerings: [
       "Original composition",
       "Scoring for film & video",

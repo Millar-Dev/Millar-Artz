@@ -8,10 +8,10 @@ const discipline = disciplines.find((d) => d.id === "acrobatics")!;
 export const Route = createFileRoute("/acrobatics")({
   head: () => ({
     meta: [
-      { title: "Acrobatics — Artesque" },
-      { name: "description", content: "Trained physical performance from the Artesque acrobatics department — floor, balance and aerial work for stage and events, and coaching." },
-      { property: "og:title", content: "Acrobatics — Artesque" },
-      { property: "og:description", content: "Trained physical performance from the Artesque acrobatics department — floor, balance and aerial work for stage and events, and coaching." },
+      { title: "Acrobatics — MillerArtz" },
+      { name: "description", content: "Trained physical performance from the MillerArtz acrobatics department — floor, balance and aerial work for stage and events, and coaching." },
+      { property: "og:title", content: "Acrobatics — MillerArtz" },
+      { property: "og:description", content: "Trained physical performance from the MillerArtz acrobatics department — floor, balance and aerial work for stage and events, and coaching." },
     ],
     links: [canonical("/acrobatics")],
     scripts: [jsonLd(departmentGraph(discipline))],

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/about")({
       portrait: portrait ?? {
         id: "about_portrait",
         image_path: fallbackPortrait,
-        caption: "Miller S.K. — Founder, Artesque",
+        caption: "Miller S.K. — Founder, MillerArtz",
       },
       // Null until a studio photo is uploaded — the section renders without
       // an image rather than showing a stock placeholder.
@@ -28,16 +28,16 @@ export const Route = createFileRoute("/about")({
   },
   head: () => ({
     meta: [
-      { title: "About — Artesque" },
+      { title: "About — MillerArtz" },
       {
         name: "description",
         content:
-          "Artesque is a Tanzania-based studio working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, murals, and more.",
+          "MillerArtz is a Tanzania-based studio working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, murals, and more.",
       },
-      { property: "og:title", content: "About Artesque" },
+      { property: "og:title", content: "About MillerArtz" },
       {
         property: "og:description",
-        content: "The story, mission and vision behind Artesque.",
+        content: "The story, mission and vision behind MillerArtz.",
       },
     ],
     links: [canonical("/about")],
@@ -88,7 +88,7 @@ function About() {
             About
           </span>
           <h1 className="mt-6 max-w-4xl font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
-            About <span className="">Artesque</span>
+            About <span className="">MillerArtz</span>
           </h1>
         </div>
       </section>
@@ -97,7 +97,7 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
-              Artesque is a Tanzania-based studio built around one artist's
+              MillerArtz is a Tanzania-based studio built around one artist's
               hand: hyperrealistic graphite and charcoal work developed over
               hundreds of hours of observation, acrylic and oil wildlife
               painting rooted in East Africa, and commissioned portraits and
@@ -120,20 +120,20 @@ function About() {
               it.
             </p>
             <p>
-              Drawing and painting remain the foundation, but Artesque is
+              Drawing and painting remain the foundation, but MillerArtz is
               designed with a wider horizon in mind — the studio is already
               opening conversations around music, dance and performance, digital
               art, and sculpture, for collectors and collaborators who want to
               build something new together.
             </p>
             <p className="font-display font-bold text-2xl text-ink">
-              At Artesque, every masterpiece begins with imagination.
+              At MillerArtz, every masterpiece begins with imagination.
             </p>
           </div>
           <div className="md:col-span-5">
             <img
               src={portrait.image_path}
-              alt="Miller S.K., founding artist of Artesque"
+              alt="Miller S.K., founding artist of MillerArtz"
               loading="lazy"
               className="aspect-[4/5] w-full rounded-sm object-cover shadow-2xl"
             />
@@ -255,7 +255,7 @@ function About() {
                   <div className="gradient-stroke overflow-hidden rounded-lg p-px shadow-2xl">
                     <img
                       src={studio.image_path}
-                      alt={studio.caption || "Inside the Artesque studio"}
+                      alt={studio.caption || "Inside the MillerArtz studio"}
                       loading="lazy"
                       className="aspect-[4/3] w-full rounded-lg object-cover"
                     />
@@ -303,7 +303,7 @@ function About() {
               An African art house with a global voice.
             </h2>
             <p className="mt-6 text-ink/70">
-              To grow Artesque into a multidisciplinary studio — expanding
+              To grow MillerArtz into a multidisciplinary studio — expanding
               into new mediums, exhibitions, and communities while never letting
               go of the discipline of the hand.
             </p>

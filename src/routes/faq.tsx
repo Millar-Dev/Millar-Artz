@@ -7,17 +7,17 @@ import { canonical, faqGraph, jsonLd } from "@/lib/seo";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ — Artesque" },
+      { title: "FAQ — MillerArtz" },
       {
         name: "description",
         content:
-          "Commission process, pricing, timelines, delivery and payment — common questions about ordering original artwork from Artesque.",
+          "Commission process, pricing, timelines, delivery and payment — common questions about ordering original artwork from MillerArtz.",
       },
-      { property: "og:title", content: "FAQ — Artesque" },
+      { property: "og:title", content: "FAQ — MillerArtz" },
       {
         property: "og:description",
         content:
-          "How commissions work at Artesque: process, pricing, timelines, delivery and payment.",
+          "How commissions work at MillerArtz: process, pricing, timelines, delivery and payment.",
       },
     ],
     links: [canonical("/faq")],

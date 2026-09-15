@@ -1,5 +1,5 @@
 /**
- * The Artesque mark, wordmark and department marks.
+ * The MillerArtz mark, wordmark and department marks.
  *
  * THE MARK is an archway — a threshold, the point of passing from one place
  * into another. Its geometry is reconstructed from the brand artwork rather
@@ -13,8 +13,8 @@
  * accent always reads as a distinct dot. The block is wide enough that the
  * accent never straddles the arch's edge onto whatever the mark is placed on.
  *
- * THE WORDMARK is set type, not a logotype — Space Grotesk Bold, with ART in
- * berry at the front of the word — so it is composed here in HTML rather than
+ * THE WORDMARK is set type, not a logotype — Space Grotesk Bold, with ARTZ in
+ * berry at the end of the word — so it is composed here in HTML rather than
  * traced, and always matches the loaded webfont.
  */
 
@@ -48,7 +48,7 @@ export function BrandMark({
   className,
   accent = "var(--brand-accent, #8A3350)",
   ground = "var(--brand-ground, #F7F3EA)",
-  title = "Artesque",
+  title = "MillerArtz",
   children,
 }: MarkProps) {
   return (
@@ -141,9 +141,8 @@ export type DisciplineIcon = (props: {
 }) => ReactNode;
 
 /**
- * Mark plus name plus tagline. The wordmark is Space Grotesk Bold with ART set
- * in the accent, so the name announces its subject before it has finished
- * being read.
+ * Mark plus name plus tagline. The wordmark is Space Grotesk Bold with ARTZ
+ * set in the accent: the artist's name, then what the studio makes.
  */
 export function BrandLockup({
   className = "",
@@ -161,7 +160,7 @@ export function BrandLockup({
       <BrandMark className={markClassName} title="" />
       <span className="flex flex-col leading-none">
         <span className="font-display text-[1.35em] font-bold uppercase leading-none tracking-[-0.01em]">
-          <span className={accentClassName}>ART</span>ESQUE
+          MILLER<span className={accentClassName}>ARTZ</span>
         </span>
         {showTagline && (
           <span className="mt-1.5 font-sans text-[0.42em] font-bold uppercase leading-none tracking-[0.28em] opacity-80">

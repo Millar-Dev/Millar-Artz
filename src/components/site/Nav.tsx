@@ -60,10 +60,10 @@ export function Nav() {
           <Link
             to="/"
             className="shrink-0 text-band-foreground"
-            aria-label="Artesque — home"
+            aria-label="MillerArtz — home"
           >
             {/* The band scopes --brand-accent to the light rose itself, so the
-                mark and the ART lettering both inherit the right one here. */}
+                mark and the ARTZ lettering both inherit the right one here. */}
             <BrandLockup
               className="text-[13px] md:text-[15px]"
               markClassName="h-7 w-auto md:h-8"
