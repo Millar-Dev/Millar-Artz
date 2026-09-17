@@ -46,7 +46,9 @@ export function StudioMap({
   if (compact) return <div className={className}>{actions}</div>;
 
   return (
-    <div id="map" className={`overflow-hidden border border-ink/10 bg-paper ${className}`}>
+    // Raised above the decorative paint splashes, which are drawn after the
+    // page content and would otherwise wash colour over the map itself.
+    <div id="map" className={`relative z-10 overflow-hidden border border-ink/10 bg-paper ${className}`}>
       <div className="relative aspect-[4/3] w-full bg-ink/5">
         <iframe
           src={mapEmbedUrl(coords)}
