@@ -1,4 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { sized } from "@/lib/images";
 import { useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/site/Layout";
 import { AnalyticsPanel } from "@/components/studio/AnalyticsPanel";
@@ -302,7 +303,7 @@ function Dashboard({
                 <ChevronDown size={16} />
               </button>
             </div>
-            <img src={a.image} alt="" className="h-16 w-14 rounded-sm object-cover" />
+            <img src={sized(a.image, 120)} alt="" className="h-16 w-14 rounded-sm object-cover" />
             <div className="min-w-0 flex-1">
               <p className="truncate font-display font-bold text-lg text-ink">{a.title}</p>
               <p className="text-xs uppercase tracking-widest text-ink/50">
@@ -451,7 +452,7 @@ function HeroPicker({
                 <div className="h-20 w-16 shrink-0 overflow-hidden rounded-sm bg-ink/10">
                   {chosen && (
                     <img
-                      src={chosen.image}
+                      src={sized(chosen.image, 160)}
                       alt=""
                       className="h-full w-full object-cover"
                     />

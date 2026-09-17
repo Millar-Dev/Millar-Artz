@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { sized, srcSetFor } from "@/lib/images";
 import { Layout } from "@/components/site/Layout";
 import { BrandMark, DisciplineMark } from "@/components/site/BrandLogo";
 import { disciplineIcons } from "@/components/site/discipline-icons";
@@ -285,7 +286,9 @@ function Home() {
                   className="group relative aspect-[3/4] overflow-hidden rounded-sm ring-1 ring-ink/10"
                 >
                   <img
-                    src={a.image}
+                    src={sized(a.image, 480)}
+                    srcSet={srcSetFor(a.image, [320, 480, 640])}
+                    sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 50vw"
                     alt={a.title}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

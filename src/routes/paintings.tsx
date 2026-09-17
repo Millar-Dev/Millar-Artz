@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { sized, srcSetFor } from "@/lib/images";
 import { useEffect, useState, type CSSProperties } from "react";
 import { Layout } from "@/components/site/Layout";
 import {
@@ -181,7 +182,7 @@ function Paintings() {
                     .map((a, i) => (
                       <img
                         key={`${a.id}-${i}`}
-                        src={a.image}
+                        src={sized(a.image, 120)}
                         alt=""
                         className="h-14 w-14 shrink-0 rounded-full object-cover opacity-95 ring-2 ring-white/25"
                       />
@@ -275,7 +276,7 @@ function Paintings() {
                   className="absolute -inset-1 rounded-full bg-gold/25 blur-md"
                 />
                 <img
-                  src={artistPortrait}
+                  src={sized(artistPortrait, 160)}
                   alt="Miller S.K., founder of MillerArtz"
                   loading="lazy"
                   className="relative h-16 w-16 rounded-full object-cover ring-1 ring-gold/40 sm:h-[4.5rem] sm:w-[4.5rem]"
@@ -357,7 +358,9 @@ function Paintings() {
                     >
                       <div className="relative overflow-hidden rounded-[1px]">
                         <img
-                          src={a.image}
+                          src={sized(a.image, 520)}
+                          srcSet={srcSetFor(a.image, [320, 520, 780])}
+                          sizes="(min-width: 640px) 260px, 220px"
                           alt={a.title}
                           loading="lazy"
                           className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -542,7 +545,9 @@ function MobileHeroSlides({
           }`}
         >
           <img
-            src={a.image}
+            src={sized(a.image, 720)}
+            srcSet={srcSetFor(a.image, [480, 720, 960])}
+            sizes="(min-width: 640px) 384px, 90vw"
             alt={a.title}
             loading={i === 0 ? "eager" : "lazy"}
             className="h-full w-full rounded-[14px] object-cover"
@@ -584,7 +589,9 @@ function HeroCard({
       style={{ zIndex: z }}
     >
       <img
-        src={artwork.image}
+        src={sized(artwork.image, 480)}
+        srcSet={srcSetFor(artwork.image, [320, 480, 640])}
+        sizes="(min-width: 1280px) 220px, 18vw"
         alt={artwork.title}
         loading="eager"
         className="aspect-[3/4] w-full object-cover"

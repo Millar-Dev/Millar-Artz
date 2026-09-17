@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { sized, srcSetFor } from "@/lib/images";
 import { Layout } from "@/components/site/Layout";
 import fallbackPortrait from "@/assets/me-portrait.jpg";
 import { BrandMark } from "@/components/site/BrandLogo";
@@ -126,7 +127,9 @@ function About() {
           </div>
           <div className="md:col-span-5">
             <img
-              src={portrait.image_path}
+              src={sized(portrait.image_path, 720)}
+              srcSet={srcSetFor(portrait.image_path, [480, 720, 960])}
+              sizes="(min-width: 768px) 40vw, 100vw"
               alt="Miller S.K., founding artist of MillerArtz"
               loading="lazy"
               className="aspect-[4/5] w-full rounded-sm object-cover shadow-2xl"
@@ -249,7 +252,9 @@ function About() {
                 <figure>
                   <div className="gradient-stroke overflow-hidden rounded-lg p-px shadow-2xl">
                     <img
-                      src={studio.image_path}
+                      src={sized(studio.image_path, 960)}
+                      srcSet={srcSetFor(studio.image_path, [480, 720, 960, 1280])}
+                      sizes="(min-width: 1024px) 50vw, 100vw"
                       alt={studio.caption || "Inside the MillerArtz studio"}
                       loading="lazy"
                       className="aspect-[4/3] w-full rounded-lg object-cover"

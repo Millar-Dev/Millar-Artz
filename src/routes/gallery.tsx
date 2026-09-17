@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { sized, srcSetFor } from "@/lib/images";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Search, X, ZoomIn } from "lucide-react";
@@ -186,7 +187,9 @@ function Gallery() {
                   >
                     <div className="relative overflow-hidden rounded-[1px] bg-paper">
                       <img
-                        src={a.image}
+                        src={sized(a.image, 640)}
+                        srcSet={srcSetFor(a.image)}
+                        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
                         alt={a.title}
                         loading="lazy"
                         className="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -341,6 +344,8 @@ function Lightbox({
       >
         <img
           src={artwork.image}
+          srcSet={srcSetFor(artwork.image, [720, 960, 1280, 1600], 82)}
+          sizes="(min-width: 768px) 70vw, 100vw"
           alt={artwork.title}
           className="max-h-[92vh] w-full rounded-sm object-contain"
         />
