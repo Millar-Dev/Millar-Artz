@@ -39,6 +39,8 @@ const INTERACTION_LABELS: Record<string, string> = {
   commission_click: "“Commission” button",
   instagram_click: "Instagram taps",
   facebook_click: "Facebook taps",
+  tiktok_click: "TikTok taps",
+  youtube_click: "YouTube taps",
   subscribed: "New subscribers",
 };
 
@@ -51,6 +53,8 @@ const INTERACTION_VERBS: Record<string, string> = {
   commission_click: "clicked Commission",
   instagram_click: "opened Instagram",
   facebook_click: "opened Facebook",
+  tiktok_click: "opened TikTok",
+  youtube_click: "opened YouTube",
   subscribed: "subscribed",
 };
 
@@ -196,7 +200,7 @@ function Report({ report }: { report: AnalyticsReport }) {
           value={totals.interactions}
           prev={previous.interactions}
           days={days}
-          hint="Taps on WhatsApp, call, email, social and Commission."
+          hint="Taps on WhatsApp, call, email, Instagram, Facebook, TikTok, YouTube and Commission."
         />
         <Stat label="Enquiries sent" value={totals.enquiries} prev={previous.enquiries} days={days} />
       </div>

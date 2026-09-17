@@ -1,6 +1,8 @@
 import { Link, useLoaderData } from "@tanstack/react-router";
 import { disciplines } from "@/lib/gallery-data";
-import { Instagram, MessageCircle, Facebook, Mail } from "lucide-react";
+import { MessageCircle, Mail } from "lucide-react";
+import { savedProfiles } from "@/lib/social";
+import { SocialIcon } from "./SocialIcon";
 import { BrandLockup } from "./BrandLogo";
 import { SETTING_DEFAULTS } from "@/lib/data/site-settings";
 
@@ -108,28 +110,18 @@ export function Footer() {
             <div className="mt-6 flex gap-4">
               {/* Only rendered once a real profile URL is saved in the Studio —
                   an icon linking to instagram.com's homepage is worse than none. */}
-              {settings.instagram_url && (
+              {savedProfiles(settings).map((p) => (
                 <a
-                  href={settings.instagram_url}
+                  key={p.key}
+                  href={p.href}
                   target="_blank"
                   rel="noopener"
-                  aria-label="Instagram"
+                  aria-label={p.label}
                   className="text-band-foreground/60 hover:text-gold"
                 >
-                  <Instagram size={18} />
+                  <SocialIcon platform={p.key} size={18} />
                 </a>
-              )}
-              {settings.facebook_url && (
-                <a
-                  href={settings.facebook_url}
-                  target="_blank"
-                  rel="noopener"
-                  aria-label="Facebook"
-                  className="text-band-foreground/60 hover:text-gold"
-                >
-                  <Facebook size={18} />
-                </a>
-              )}
+              ))}
               {settings.whatsapp_number && (
                 <a
                   href={`https://wa.me/${settings.whatsapp_number}`}

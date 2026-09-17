@@ -1,3 +1,5 @@
+import { savedProfiles } from "./social";
+
 /**
  * Canonical URL + structured-data helpers.
  *
@@ -95,6 +97,8 @@ export function seoMeta(title: string, description: string, path: string) {
 interface SiteContact {
   instagram_url?: string;
   facebook_url?: string;
+  tiktok_url?: string;
+  youtube_url?: string;
   email?: string;
   phone_primary?: string;
 }
@@ -105,14 +109,12 @@ interface SiteContact {
  * Three linked entities: the artist, the studio he founded, and the website.
  * This is what lets a search engine understand that "MillerArtz", "Miller
  * Artz" and "Miller S.K." all point at the same place, and it is what Google
- * draws on for a knowledge panel. `sameAs` ties the site to the Instagram and
- * Facebook profiles saved in the Studio — the strongest signal that they are
+ * draws on for a knowledge panel. `sameAs` ties the site to the Instagram,
+ * Facebook, TikTok and YouTube profiles saved in the Studio — the strongest signal that they are
  * all one identity — so it is built from live settings, not hard-coded.
  */
 export function siteGraph(contact?: SiteContact) {
-  const sameAs = [contact?.instagram_url, contact?.facebook_url].filter(
-    (u): u is string => Boolean(u && u.trim()),
-  );
+  const sameAs = savedProfiles(contact).map((p) => p.href);
   const country = { "@type": "Country", name: "Tanzania" };
   // City-level only — deliberately no street address or coordinates.
   const arusha = {

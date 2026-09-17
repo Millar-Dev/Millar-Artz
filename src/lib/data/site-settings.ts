@@ -6,6 +6,8 @@ import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";
 export const SETTING_KEYS = [
   "instagram_url",
   "facebook_url",
+  "tiktok_url",
+  "youtube_url",
   "whatsapp_number",
   "email",
   "phone_primary",
@@ -27,6 +29,8 @@ export type SiteSettings = Record<SettingKey, string>;
 export const SETTING_DEFAULTS: SiteSettings = {
   instagram_url: "",
   facebook_url: "",
+  tiktok_url: "",
+  youtube_url: "",
   whatsapp_number: "255616110100",
   email: "millarkitumi04@gmail.com",
   phone_primary: "+255 616 110 100",

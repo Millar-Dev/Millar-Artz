@@ -13,7 +13,7 @@ import { trackEvent } from "@/lib/data/analytics";
  *
  * Interactions are caught with one delegated listener that reads the link's
  * address, rather than wiring every button: any WhatsApp, phone, email,
- * Instagram or Facebook link anywhere on the site — including ones added
+ * Instagram, Facebook, TikTok or YouTube link anywhere on the site — including ones added
  * later in the Studio — is counted without touching the component it's in.
  */
 export function VisitTracker() {
@@ -64,6 +64,8 @@ function interactionFor(href: string) {
   if (/wa\.me|whatsapp\.com|^whatsapp:/.test(h)) return "whatsapp_click";
   if (h.includes("instagram.com")) return "instagram_click";
   if (/facebook\.com|fb\.com|fb\.me/.test(h)) return "facebook_click";
+  if (h.includes("tiktok.com")) return "tiktok_click";
+  if (/youtube\.com|youtu\.be/.test(h)) return "youtube_click";
   if (h.includes("/contact") && h.includes("commission")) return "commission_click";
   return null;
 }

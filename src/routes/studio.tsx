@@ -2,6 +2,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Layout } from "@/components/site/Layout";
 import { AnalyticsPanel } from "@/components/studio/AnalyticsPanel";
+import { SOCIAL_PROFILES } from "@/lib/social";
 import { categories, fromArtworkRow, type Artwork, type ArtworkStatus } from "@/lib/gallery-data";
 import { adminLogin, adminLogout, checkAdminSession } from "@/lib/data/admin-auth";
 import {
@@ -684,8 +685,9 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
         {(
           [
-            ["instagram_url", "Instagram URL", "https://instagram.com/yourhandle"],
-            ["facebook_url", "Facebook URL", "https://facebook.com/yourpage"],
+            ...SOCIAL_PROFILES.map(
+              (p) => [p.key, `${p.label} URL`, p.placeholder] as const,
+            ),
             ["whatsapp_number", "WhatsApp number", "255616110100"],
             ["email", "Email", "millarkitumi04@gmail.com"],
             ["phone_primary", "Phone (primary)", "+255 616 110 100"],

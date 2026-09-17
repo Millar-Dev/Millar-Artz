@@ -18,6 +18,8 @@ export const INTERACTIONS = [
   "email_click",
   "instagram_click",
   "facebook_click",
+  "tiktok_click",
+  "youtube_click",
   "commission_click",
   "enquiry_sent",
   "subscribed",
@@ -41,6 +43,7 @@ function deviceOf(ua: string) {
 function browserOf(ua: string) {
   if (/Instagram/i.test(ua)) return "Instagram app";
   if (/FBAN|FBAV|FB_IAB/i.test(ua)) return "Facebook app";
+  if (/musical_ly|BytedanceWebview|TikTok/i.test(ua)) return "TikTok app";
   if (/Edg\//i.test(ua)) return "Edge";
   if (/OPR\/|Opera/i.test(ua)) return "Opera";
   if (/SamsungBrowser/i.test(ua)) return "Samsung Internet";
@@ -76,6 +79,7 @@ function sourceOf(referrerHost: string, utmSource: string, ua: string) {
   if (h && !/millerartz\.com$/.test(h)) return h;
   if (/Instagram/i.test(ua)) return "instagram";
   if (/FBAN|FBAV|FB_IAB/i.test(ua)) return "facebook";
+  if (/musical_ly|BytedanceWebview|TikTok/i.test(ua)) return "tiktok";
   return "direct";
 }
 

@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "geo.placename", content: "Arusha, Tanzania" },
       ],
       // Who the studio is, once, on every page. Built from the saved settings
-      // so the Instagram and Facebook links count as the same identity.
+      // so the social profiles count as the same identity.
       scripts: [jsonLd(siteGraph(loaderData))],
       links: [
         { rel: "stylesheet", href: appCss },

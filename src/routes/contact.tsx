@@ -6,8 +6,6 @@ import {
   Mail,
   MapPin,
   MessageCircle,
-  Instagram,
-  Facebook,
 } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
@@ -15,6 +13,8 @@ import { categories, disciplines } from "@/lib/gallery-data";
 import { submitInquiry } from "@/lib/data/inquiries";
 import { getSiteSettings } from "@/lib/data/site-settings";
 import { canonical, seoMeta } from "@/lib/seo";
+import { savedProfiles } from "@/lib/social";
+import { SocialIcon } from "@/components/site/SocialIcon";
 
 const contactSearchSchema = z.object({
   type: z.string().optional(),
@@ -227,28 +227,18 @@ function Contact() {
               )}
               {/* Social icons only render once a real profile URL is saved in
                   the Studio — better no icon than one linking to instagram.com. */}
-              {settings.instagram_url && (
+              {savedProfiles(settings).map((p) => (
                 <a
-                  href={settings.instagram_url}
+                  key={p.key}
+                  href={p.href}
                   target="_blank"
                   rel="noopener"
-                  aria-label="Instagram"
+                  aria-label={p.label}
                   className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold"
                 >
-                  <Instagram size={16} />
+                  <SocialIcon platform={p.key} size={16} />
                 </a>
-              )}
-              {settings.facebook_url && (
-                <a
-                  href={settings.facebook_url}
-                  target="_blank"
-                  rel="noopener"
-                  aria-label="Facebook"
-                  className="rounded-sm border border-ink/10 p-3 text-ink hover:text-gold"
-                >
-                  <Facebook size={16} />
-                </a>
-              )}
+              ))}
             </div>
 
             <div className="mt-10 border border-dashed border-ink/15 bg-paper p-5 text-xs text-ink/50">
