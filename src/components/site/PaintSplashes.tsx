@@ -35,7 +35,9 @@ export function PaintSplashes() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      // Behind the page content (Layout isolates the stacking context). At
+      // z-0 this layer was drawn after everything and tinted the artwork.
+      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
     >
       {splashes.map((s, i) => (
         <svg

@@ -25,7 +25,11 @@ export function Layout({
 }) {
   return (
     <div
-      className={`relative min-h-screen bg-canvas text-ink${dept ? " dept-tinted" : ""}`}
+      // `isolate` makes this the stacking context the paint splashes sit in, so
+      // their negative z-index puts them above this ground but beneath every
+      // section, image and line of text — decoration in the open space only,
+      // never washing colour over a painting.
+      className={`relative isolate min-h-screen bg-canvas text-ink${dept ? " dept-tinted" : ""}`}
       style={
         dept
           ? ({
