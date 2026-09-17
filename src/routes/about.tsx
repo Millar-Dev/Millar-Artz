@@ -28,8 +28,8 @@ export const Route = createFileRoute("/about")({
   },
   head: () => ({
     meta: seoMeta(
-      "About Miller S.K. — Tanzanian Artist | MillerArtz",
-      "Miller S.K. is a Tanzanian visual artist and the founder of MillerArtz, a studio working across painting, music, dance, sculpture and acrobatics.",
+      "About Miller Sunday Kitumi — Arusha, Tanzania | MillerArtz",
+      "Miller Sunday Kitumi (Miller S.K.) is a Tanzanian visual artist based in Arusha and founder of MillerArtz, creating for collectors in Tanzania and worldwide.",
       "/about",
     ),
     links: [canonical("/about")],
@@ -89,8 +89,9 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
-              MillerArtz is the Tanzanian art studio of Miller S.K., built
-              around one artist's hand: hyperrealistic graphite and charcoal work developed over
+              MillerArtz is the Arusha studio of Tanzanian artist Miller Sunday
+              Kitumi — Miller S.K. — built around one artist's hand:
+              hyperrealistic graphite and charcoal work developed over
               hundreds of hours of observation, acrylic and oil wildlife
               painting rooted in East Africa, and commissioned portraits and
               cultural scenes for clients and community organisations.
@@ -172,7 +173,7 @@ function About() {
               <div className="mt-6 space-y-4 text-base font-light leading-relaxed text-ink/70">
                 <p>
                   Every piece on this site is made by hand in one room in
-                  Tanzania — no assistants, no print reproductions passed off as
+                  Arusha, Tanzania — no assistants, no print reproductions passed off as
                   originals. Graphite and charcoal work happens at the desk;
                   canvases go up on the easel; murals leave the studio entirely
                   and get painted on site.

@@ -22,7 +22,7 @@ export function Footer() {
             />
             <p className="text-sm leading-relaxed text-band-foreground/50">
               One threshold, five disciplines — painting, music, dance,
-              sculpture and acrobatics, under one roof in Tanzania.
+              sculpture and acrobatics, under one roof in Arusha, Tanzania.
             </p>
           </div>
           <div>
@@ -54,7 +54,7 @@ export function Footer() {
                   {settings.email}
                 </a>
               )}
-              <p>Tanzania</p>
+              <p>Arusha, Tanzania</p>
             </div>
           </div>
           <div>

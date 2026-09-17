@@ -24,8 +24,8 @@ export const Route = createFileRoute("/contact")({
   validateSearch: contactSearchSchema,
   head: () => ({
     meta: seoMeta(
-      "Commission Art in Tanzania — Contact MillerArtz",
-      "Commission a painting, portrait or mural from Tanzanian artist Miller S.K. Reach MillerArtz by WhatsApp, phone or email — a quotation follows within days.",
+      "Commission Art from Arusha, Tanzania — MillerArtz",
+      "Commission a painting, portrait or mural from Arusha-based artist Miller S.K. by WhatsApp, phone or email. Delivery across Tanzania and worldwide.",
       "/contact",
     ),
     links: [canonical("/contact")],

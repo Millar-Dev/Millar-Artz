@@ -31,7 +31,7 @@ export const SETTING_DEFAULTS: SiteSettings = {
   email: "millarkitumi04@gmail.com",
   phone_primary: "+255 616 110 100",
   phone_secondary: "+255 754 300 543",
-  location: "Tanzania — visits by appointment.",
+  location: "Arusha, Tanzania — visits by appointment.",
   hero_collage_ids: "",
   hero_mobile_ids: "",
 };

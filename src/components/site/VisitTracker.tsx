@@ -68,10 +68,19 @@ function interactionFor(href: string) {
   return null;
 }
 
-/** Skip local development, the owner's dashboard, and browsers that have asked
- *  not to be tracked. */
+/** Set on a browser that should never be counted — the owner's own phone and
+ *  laptop. Signing into the Studio sets it; the Visitors panel can clear it. */
+export const EXCLUDE_DEVICE_KEY = "millerartz:exclude-device";
+
+/** Skip local development, the owner's dashboard and devices, and browsers
+ *  that have asked not to be tracked. */
 function shouldTrack() {
   if (typeof window === "undefined") return false;
+  try {
+    if (localStorage.getItem(EXCLUDE_DEVICE_KEY) === "1") return false;
+  } catch {
+    /* storage blocked — carry on */
+  }
   const host = window.location.hostname;
   if (host === "localhost" || host === "127.0.0.1") return false;
   if (window.location.pathname.startsWith("/studio")) return false;

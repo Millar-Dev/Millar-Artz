@@ -23,8 +23,8 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: seoMeta(
-      "MillerArtz — Tanzanian Art Studio of Miller S.K.",
-      "The Tanzanian art studio of artist Miller S.K. — hyperrealistic paintings, portraits and wildlife art, plus music, dance, sculpture and acrobatics.",
+      "MillerArtz — Miller S.K., Tanzanian Artist in Arusha",
+      "The Arusha studio of Tanzanian artist Miller S.K. (Miller Sunday Kitumi) — hyperrealistic paintings, portraits and wildlife art for collectors worldwide.",
       "/",
     ),
     links: [canonical("/")],
@@ -43,8 +43,8 @@ const promises = [
     body: "A brief that needs a mural, a score and a troupe doesn't need three studios. It needs one threshold.",
   },
   {
-    title: "Made by hand, in Tanzania",
-    body: "Every discipline is practised, not outsourced — work made here, by people you can talk to directly.",
+    title: "Made by hand in Arusha",
+    body: "Every discipline is practised, not outsourced — made here in Tanzania by people you can talk to directly, and delivered wherever in the world it's wanted.",
   },
   {
     title: "Commissioned, not catalogued",
@@ -127,9 +127,9 @@ function Home() {
             className="animate-float-in mt-6 max-w-xl text-base font-light leading-relaxed text-band-foreground/75 md:text-lg"
             style={{ animationDelay: "1.24s" }}
           >
-            The Tanzanian art studio of Miller S.K., across five disciplines —
-            painting, music, dance, sculpture and acrobatics. Step through
-            whichever doorway you came for.
+            The Arusha studio of Tanzanian artist Miller S.K., across five
+            disciplines — painting, music, dance, sculpture and acrobatics —
+            made for collectors in Tanzania and around the world.
           </p>
 
           <div

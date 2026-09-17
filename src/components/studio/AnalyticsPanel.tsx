@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { getAnalytics, type AnalyticsReport } from "@/lib/data/analytics";
 import { Check, Copy, Loader2 } from "lucide-react";
 import setupSql from "../../../supabase/analytics.sql?raw";
+import { EXCLUDE_DEVICE_KEY } from "@/components/site/VisitTracker";
 
 /**
  * "Is anyone looking?" — the owner's view of the site's audience.
@@ -143,6 +144,8 @@ export function AnalyticsPanel() {
         </div>
       </div>
 
+      <DeviceToggle />
+
       {!report && loading && (
         <p className="mt-8 inline-flex items-center gap-2 text-sm text-ink/55">
           <Loader2 size={14} className="animate-spin" /> Loading visitor numbers…
@@ -248,7 +251,8 @@ function Report({ report }: { report: AnalyticsReport }) {
               unit="visitors"
             />
             <RankList
-              title="Cities"
+              title="Cities (approximate)"
+              note="From the visitor's internet provider, not GPS. Many Tanzanian networks route through Dar es Salaam, so people elsewhere in Tanzania — Arusha included — often show up there. Countries are reliable."
               rows={report.cities.map((c) => ({
                 key: `${c.name}-${c.country}`,
                 label: c.name,
@@ -287,9 +291,9 @@ function Report({ report }: { report: AnalyticsReport }) {
 
       <p className="text-[11px] leading-relaxed text-ink/45">
         Privacy: no cookies, no IP addresses and nothing visitors type are stored.
-        Each visitor is an anonymous code that changes every day, and locations are
-        the approximate city of their internet connection — so there's no way to see
-        a visitor's name, and no consent banner is needed.
+        Each visitor is an anonymous code that changes every day, and locations come
+        from their internet connection — so there's no way to see a visitor's name,
+        and no consent banner is needed.
         {report.truncated && " Showing the most recent 100,000 events."}
       </p>
     </div>
@@ -533,9 +537,11 @@ function RankList({
   rows,
   unit,
   percent,
+  note,
   empty = "Nothing recorded in this period.",
 }: {
   title: string;
+  note?: string;
   rows: { key: string; label: string; sub?: string; value: number }[];
   unit: string;
   percent?: boolean;
@@ -546,6 +552,7 @@ function RankList({
   return (
     <div className="border border-ink/10 bg-paper p-5">
       <h3 className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink/70">{title}</h3>
+      {note && <p className="mt-1.5 text-[11px] leading-snug text-ink/45">{note}</p>}
       {rows.length === 0 ? (
         <p className="mt-4 text-xs text-ink/45">{empty}</p>
       ) : (
@@ -593,7 +600,9 @@ function Recent({ rows }: { rows: AnalyticsReport["recent"] }) {
       </h3>
       <ul className="mt-4 divide-y divide-ink/5">
         {rows.map((r, i) => {
-          const where = [r.city, r.country ? countryName(r.country) : ""].filter(Boolean).join(", ");
+          // Country only: the city is a network guess, and in Tanzania it is
+          // usually Dar es Salaam regardless of where the person actually is.
+          const where = r.country ? countryName(r.country) : "";
           const page = PAGE_LABELS[r.path] ?? r.path;
           const via = SOURCE_LABELS[r.source] ?? r.source;
           const action =
@@ -615,6 +624,48 @@ function Recent({ rows }: { rows: AnalyticsReport["recent"] }) {
         })}
       </ul>
     </div>
+  );
+}
+
+/**
+ * Keeps the owner's own phone and laptop out of the numbers, even when not
+ * signed in. Any browser that opens this dashboard is excluded automatically
+ * the first time; the button undoes it, for instance to test tracking. Stored
+ * per browser, so each device is set by signing into the Studio on it once.
+ */
+function DeviceToggle() {
+  const [excluded, setExcluded] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(EXCLUDE_DEVICE_KEY) === null) {
+        localStorage.setItem(EXCLUDE_DEVICE_KEY, "1");
+      }
+      setExcluded(localStorage.getItem(EXCLUDE_DEVICE_KEY) === "1");
+    } catch {
+      setExcluded(null);
+    }
+  }, []);
+
+  if (excluded === null) return null;
+  const flip = () => {
+    const next = !excluded;
+    try {
+      localStorage.setItem(EXCLUDE_DEVICE_KEY, next ? "1" : "0");
+      setExcluded(next);
+    } catch {
+      /* storage blocked */
+    }
+  };
+  return (
+    <p className="mt-3 text-xs text-ink/55">
+      {excluded
+        ? "Visits from this device aren't counted, even when you're signed out."
+        : "Visits from this device are being counted."}{" "}
+      <button onClick={flip} className="font-medium text-ink/75 underline underline-offset-2 hover:text-ink">
+        {excluded ? "Count this device" : "Stop counting this device"}
+      </button>
+    </p>
   );
 }
 

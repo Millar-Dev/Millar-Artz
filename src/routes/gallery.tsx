@@ -43,7 +43,7 @@ export const Route = createFileRoute("/gallery")({
   head: ({ loaderData }) => ({
     meta: seoMeta(
       "Art Gallery — Tanzanian Paintings & Portraits | MillerArtz",
-      "Browse the MillerArtz gallery: hyperrealistic portraits, wildlife paintings, murals and abstract works by Tanzanian artist Miller S.K.",
+      "Browse the MillerArtz gallery: hyperrealistic portraits, wildlife paintings, murals and abstract works by Miller S.K., a Tanzanian artist in Arusha.",
       "/gallery",
     ),
     links: [canonical("/gallery")],

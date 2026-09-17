@@ -36,7 +36,7 @@ export const OG_IMAGE = {
   url: absoluteUrl("/og-image.png"),
   width: 1200,
   height: 630,
-  alt: "MillerArtz — the Tanzanian art studio of Miller S.K.",
+  alt: "MillerArtz — the Arusha, Tanzania art studio of Miller S.K.",
 };
 
 /**
@@ -50,8 +50,15 @@ export const SEARCH_TERMS = [
   "MillerArtz",
   "Miller Artz",
   "Miller S.K.",
+  "Miller Sunday Kitumi",
+  "Miller Kitumi",
+  "Millar Kitumi",
   "Miller",
+  "Arusha artist",
+  "artist in Arusha",
+  "Arusha",
   "Tanzanian artist",
+  "Tanzanian painter",
   "Tanzanian art",
   "Tanzania",
   "art",
@@ -107,6 +114,20 @@ export function siteGraph(contact?: SiteContact) {
     (u): u is string => Boolean(u && u.trim()),
   );
   const country = { "@type": "Country", name: "Tanzania" };
+  // City-level only — deliberately no street address or coordinates.
+  const arusha = {
+    "@type": "Place",
+    name: "Arusha, Tanzania",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Arusha",
+      addressRegion: "Arusha",
+      addressCountry: "TZ",
+    },
+  };
+  // Based in Arusha, working for collectors anywhere: the FAQ already offers
+  // international shipping, quoted per piece.
+  const served = [country, { "@type": "Place", name: "Worldwide" }];
   const disciplines = [
     "Painting",
     "Hyperrealism",
@@ -126,12 +147,24 @@ export function siteGraph(contact?: SiteContact) {
         "@type": "Person",
         "@id": `${SITE_URL}/#artist`,
         name: ARTIST_NAME,
-        alternateName: ["Miller", "Miller SK"],
+        // The full name and the spellings people search by. "Millar" is how
+        // the artist's own Instagram handle spells it.
+        givenName: "Miller",
+        additionalName: "Sunday",
+        familyName: "Kitumi",
+        alternateName: [
+          "Miller Sunday Kitumi",
+          "Miller Kitumi",
+          "Millar Kitumi",
+          "Miller SK",
+          "Miller",
+        ],
         url: absoluteUrl("/about"),
         jobTitle: "Visual Artist",
-        description: `${ARTIST_NAME} is a Tanzanian visual artist and the founder of ${STUDIO_NAME}.`,
+        description: `${ARTIST_NAME} (Miller Sunday Kitumi) is a Tanzanian visual artist based in Arusha and the founder of ${STUDIO_NAME}.`,
         nationality: country,
-        homeLocation: country,
+        homeLocation: arusha,
+        workLocation: arusha,
         worksFor: { "@id": `${SITE_URL}/#studio` },
         knowsAbout: disciplines,
         ...(sameAs.length ? { sameAs } : {}),
@@ -149,10 +182,11 @@ export function siteGraph(contact?: SiteContact) {
           height: 512,
         },
         image: OG_IMAGE.url,
-        description: `The Tanzanian art studio of ${ARTIST_NAME}, working across painting, music, dance, sculpture and acrobatics.`,
+        description: `The Arusha, Tanzania art studio of ${ARTIST_NAME}, working across painting, music, dance, sculpture and acrobatics for collectors in Tanzania and worldwide.`,
         founder: { "@id": `${SITE_URL}/#artist` },
-        address: { "@type": "PostalAddress", addressCountry: "TZ" },
-        areaServed: country,
+        address: arusha.address,
+        location: arusha,
+        areaServed: served,
         knowsAbout: disciplines,
         ...(contact?.email ? { email: contact.email } : {}),
         ...(contact?.phone_primary ? { telephone: contact.phone_primary } : {}),
@@ -164,7 +198,7 @@ export function siteGraph(contact?: SiteContact) {
         url: SITE_URL,
         // Google uses these for the site name shown above a result.
         name: STUDIO_NAME,
-        alternateName: ["Miller Artz", `${STUDIO_NAME} Tanzania`],
+        alternateName: ["Miller Artz", `${STUDIO_NAME} Arusha`, `${STUDIO_NAME} Tanzania`],
         inLanguage: "en",
         publisher: { "@id": `${SITE_URL}/#studio` },
       },
@@ -245,7 +279,10 @@ export function departmentGraph(d: {
     description: d.intro,
     url: absoluteUrl(d.slug),
     provider: { "@id": `${SITE_URL}/#studio` },
-    areaServed: { "@type": "Country", name: "Tanzania" },
+    areaServed: [
+      { "@type": "Country", name: "Tanzania" },
+      { "@type": "Place", name: "Worldwide" },
+    ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: `${d.label} commissions`,

@@ -32,7 +32,7 @@ export const Route = createFileRoute("/paintings")({
   head: () => ({
     meta: seoMeta(
       "Paintings by Miller S.K. — Tanzanian Artist | MillerArtz",
-      "Original paintings by Tanzanian artist Miller S.K. — hyperrealism, portraits, wildlife, murals, traditional and abstract art. Commissions open.",
+      "Original paintings by Arusha-based Tanzanian artist Miller S.K. — hyperrealism, portraits, wildlife, murals and abstract art. Commissions open worldwide.",
       "/paintings",
     ),
     links: [canonical("/paintings")],
@@ -290,7 +290,8 @@ function Paintings() {
                   I'm Miller S.K. — founder and creative director of MillerArtz.
                   What started as graphite portraits and wildlife studies has
                   grown into a studio across five disciplines, based here in
-                  Tanzania and built one commission at a time.
+                  Arusha and built one commission at a time — for collectors at
+                  home and abroad.
                 </p>
                 <Link
                   to="/about"

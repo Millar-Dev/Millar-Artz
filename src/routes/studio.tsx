@@ -690,7 +690,7 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
             ["email", "Email", "millarkitumi04@gmail.com"],
             ["phone_primary", "Phone (primary)", "+255 616 110 100"],
             ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
-            ["location", "Location", "Tanzania — visits by appointment."],
+            ["location", "Location", "Arusha, Tanzania — visits by appointment."],
           ] as const
         ).map(([key, label, placeholder]) => (
           <Field key={key} label={label}>

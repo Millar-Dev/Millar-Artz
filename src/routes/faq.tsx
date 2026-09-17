@@ -8,7 +8,7 @@ export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: seoMeta(
       "FAQ — Commissioning Art from MillerArtz",
-      "How commissions work at MillerArtz, the Tanzanian art studio of Miller S.K.: process, pricing, timelines, delivery and payment.",
+      "How commissions work at MillerArtz, the Arusha art studio of Miller S.K.: process, pricing, timelines, international delivery and payment.",
       "/faq",
     ),
     links: [canonical("/faq")],

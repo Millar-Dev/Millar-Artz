@@ -8,8 +8,8 @@ const discipline = disciplines.find((d) => d.id === "music")!;
 export const Route = createFileRoute("/music")({
   head: () => ({
     meta: seoMeta(
-      "Music — MillerArtz, Tanzania",
-      "Original composition, scoring, recording and sound design from MillerArtz in Tanzania — written for the film, campaign or room it is made for.",
+      "Music — MillerArtz, Arusha, Tanzania",
+      "Original composition, scoring, recording and sound design from MillerArtz in Arusha, Tanzania — written for the film, campaign or room it is made for.",
       "/music",
     ),
     links: [canonical("/music")],

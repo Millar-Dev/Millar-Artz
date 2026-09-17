@@ -103,8 +103,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:image:alt", content: OG_IMAGE.alt },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:image", content: OG_IMAGE.url },
-        { name: "geo.region", content: "TZ" },
-        { name: "geo.placename", content: "Tanzania" },
+        // ISO 3166-2 code for Arusha region.
+        { name: "geo.region", content: "TZ-01" },
+        { name: "geo.placename", content: "Arusha, Tanzania" },
       ],
       // Who the studio is, once, on every page. Built from the saved settings
       // so the Instagram and Facebook links count as the same identity.

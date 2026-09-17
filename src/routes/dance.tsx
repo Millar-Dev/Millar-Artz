@@ -8,8 +8,8 @@ const discipline = disciplines.find((d) => d.id === "dance")!;
 export const Route = createFileRoute("/dance")({
   head: () => ({
     meta: seoMeta(
-      "Dance — MillerArtz, Tanzania",
-      "Choreography and live performance from MillerArtz in Tanzania — traditional and contemporary East African dance for stage, film and events.",
+      "Dance — MillerArtz, Arusha, Tanzania",
+      "Choreography and live performance from MillerArtz in Arusha, Tanzania — traditional and contemporary East African dance for stage, film and events.",
       "/dance",
     ),
     links: [canonical("/dance")],
