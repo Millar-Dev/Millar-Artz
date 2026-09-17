@@ -1,4 +1,4 @@
-import { savedProfiles } from "./social";
+import { normalizeProfileUrl, savedProfiles } from "./social";
 import { parseCoords, pinUrl } from "./map";
 import { LANGS, localizePath, type Lang } from "./i18n";
 
@@ -124,6 +124,7 @@ export function seoMeta(
 }
 
 interface SiteContact {
+  google_profile_url?: string;
   instagram_url?: string;
   facebook_url?: string;
   tiktok_url?: string;
@@ -145,7 +146,13 @@ interface SiteContact {
  * all one identity — so it is built from live settings, not hard-coded.
  */
 export function siteGraph(contact?: SiteContact) {
-  const sameAs = savedProfiles(contact).map((p) => p.href);
+  // The Google Business Profile belongs in sameAs with the social accounts:
+  // it is the strongest signal that the website and the business Google
+  // already knows about are one and the same studio.
+  const sameAs = [
+    ...savedProfiles(contact).map((p) => p.href),
+    normalizeProfileUrl(contact?.google_profile_url),
+  ].filter(Boolean);
   const country = { "@type": "Country", name: "Tanzania" };
   // City-level address. The exact pin is added below only when the owner has
   // saved a map link — publishing it is their choice, made in the Studio.

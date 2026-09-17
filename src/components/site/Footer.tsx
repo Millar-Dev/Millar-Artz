@@ -4,6 +4,7 @@ import { MessageCircle, Mail } from "lucide-react";
 import { savedProfiles } from "@/lib/social";
 import { SocialIcon } from "./SocialIcon";
 import { BrandLockup } from "./BrandLogo";
+import { ReviewLink } from "./ReviewLink";
 import { SETTING_DEFAULTS } from "@/lib/data/site-settings";
 import { useT } from "@/lib/i18n";
 
@@ -96,6 +97,11 @@ export function Footer() {
               <Link to="/subscription" className="block hover:text-gold">
                 {t("Subscription")}
               </Link>
+              <ReviewLink
+                settings={settings}
+                variant="link"
+                className="block hover:text-gold"
+              />
             </div>
           </div>
           <div>

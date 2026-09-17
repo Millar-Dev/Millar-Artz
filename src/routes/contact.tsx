@@ -16,6 +16,7 @@ import { canonical, seoMeta } from "@/lib/seo";
 import { savedProfiles } from "@/lib/social";
 import { SocialIcon } from "@/components/site/SocialIcon";
 import { StudioMap } from "@/components/site/StudioMap";
+import { ReviewLink } from "@/components/site/ReviewLink";
 import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
 import { translator, useT } from "@/lib/i18n";
 
@@ -269,6 +270,7 @@ function Contact() {
             </div>
 
             <StudioMap settings={settings} className="mt-10" />
+            <ReviewLink settings={settings} className="mt-6" />
           </aside>
 
           {/* Form column */}

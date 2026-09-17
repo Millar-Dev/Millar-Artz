@@ -19,6 +19,12 @@ export const SETTING_KEYS = [
   "map_url",
   /** "lat,lng" resolved from map_url when it is saved. Pages read this. */
   "map_coords",
+  /** The studio's Google Business Profile, for the "sameAs" identity signal
+   *  and the link under the map. */
+  "google_profile_url",
+  /** The profile's "Ask for reviews" short link — the one that opens the
+   *  review box directly, not the profile page. */
+  "google_review_url",
   /** Currency a first-time visitor sees prices in. */
   "display_currency",
   /** JSON: shillings per unit of each foreign currency, e.g. {"USD":2645.5}. */
@@ -54,6 +60,9 @@ export const SETTING_DEFAULTS: SiteSettings = {
   // The studio in Arusha, from the owner's share link.
   map_url: "https://maps.app.goo.gl/9mpr5uzms4CnQDMX7",
   map_coords: "-3.311128,36.639965",
+  // From the owner's verified Business Profile.
+  google_profile_url: "https://g.page/r/CSC8V1xeWiogEBM",
+  google_review_url: "https://g.page/r/CSC8V1xeWiogEBM/review",
   display_currency: BASE_CURRENCY,
   currency_rates: JSON.stringify(DEFAULT_RATES),
   rates_updated: "2026-09-17",

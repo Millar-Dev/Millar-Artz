@@ -739,6 +739,8 @@ const CONTACT_FIELDS = [
   ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
   ["location", "Location", "Arusha, Tanzania — visits by appointment."],
   ["map_url", "Studio map link (Google Maps → Share)", "https://maps.app.goo.gl/…"],
+  ["google_profile_url", "Google Business Profile link", "https://g.page/r/…"],
+  ["google_review_url", "Google review link (Ask for reviews)", "https://g.page/r/…/review"],
 ] as const;
 
 function SettingsPanel({ initial }: { initial: SiteSettings }) {

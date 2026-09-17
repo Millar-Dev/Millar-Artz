@@ -22,6 +22,7 @@ export const INTERACTIONS = [
   "youtube_click",
   "commission_click",
   "share_click",
+  "review_click",
   "enquiry_sent",
   "subscribed",
 ] as const;

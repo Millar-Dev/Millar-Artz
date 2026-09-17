@@ -68,6 +68,8 @@ function interactionFor(href: string) {
   // messaging the studio — count it separately.
   if (/wa\.me\/\?text=|whatsapp\.com\/send\/?\?text=/.test(h)) return "share_click";
   if (/wa\.me|whatsapp\.com|^whatsapp:/.test(h)) return "whatsapp_click";
+  // The Google review link, in either the short or the full Maps form.
+  if (/g\.page\/r\/|review/.test(h) && /g\.page|google\./.test(h)) return "review_click";
   if (h.includes("instagram.com")) return "instagram_click";
   if (/facebook\.com|fb\.com|fb\.me/.test(h)) return "facebook_click";
   if (h.includes("tiktok.com")) return "tiktok_click";
