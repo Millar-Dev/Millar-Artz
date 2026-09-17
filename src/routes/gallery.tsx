@@ -18,6 +18,7 @@ import {
 } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { artworkListGraph, canonical, jsonLd, seoMeta } from "@/lib/seo";
+import { translate, useT } from "@/lib/i18n";
 
 const gallerySearchSchema = z.object({
   category: z
@@ -42,13 +43,15 @@ export const Route = createFileRoute("/gallery")({
     const rows = await listArtworks();
     return { artworks: rows.map(fromArtworkRow) };
   },
-  head: ({ loaderData }) => ({
+  head: ({ loaderData, match }) => ({
     meta: seoMeta(
-      "Art Gallery — Tanzanian Paintings & Portraits | MillerArtz",
-      "Browse the MillerArtz gallery: hyperrealistic portraits, wildlife paintings, murals and abstract works by Miller S.K., a Tanzanian artist in Arusha.",
+      translate(match.context.lang, "Art Gallery — Tanzanian Paintings & Portraits | MillerArtz"),
+      translate(match.context.lang, "Browse the MillerArtz gallery: hyperrealistic portraits, wildlife paintings, murals and abstract works by Miller S.K., a Tanzanian artist in Arusha."),
       "/gallery",
+      undefined,
+      match.context.lang,
     ),
-    links: [canonical("/gallery")],
+    links: [canonical("/gallery", match.context.lang)],
     // Each piece described as a VisualArtwork so the collection can surface
     // in image and rich results rather than as one opaque page.
     scripts: [jsonLd(artworkListGraph(loaderData?.artworks ?? []))],
@@ -57,6 +60,7 @@ export const Route = createFileRoute("/gallery")({
 });
 
 function Gallery() {
+  const t = useT();
   const search = Route.useSearch();
   const { artworks } = Route.useLoaderData();
   const { price } = useCurrency();
@@ -74,10 +78,13 @@ function Gallery() {
         !q ||
         a.title.toLowerCase().includes(q) ||
         a.categoryLabel.toLowerCase().includes(q) ||
-        a.medium.toLowerCase().includes(q);
+        a.medium.toLowerCase().includes(q) ||
+        // Swahili searches match the translated category and medium too.
+        t(a.categoryLabel).toLowerCase().includes(q) ||
+        t(a.medium).toLowerCase().includes(q);
       return matchesCat && matchesQuery;
     });
-  }, [artworks, category, query]);
+  }, [artworks, category, query, t]);
 
   const activeCategory = categories.find((c) => c.value === category);
 
@@ -87,15 +94,17 @@ function Gallery() {
         <div className="glow-violet pointer-events-none absolute -right-40 top-0 h-[420px] w-[420px] rounded-full opacity-[0.12] blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            The Collection
+            {t("The Collection")}
           </span>
           <h1 className="mt-6 font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
-            The <span className="">Gallery</span>.
+            {t("The Gallery.")}
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-light text-ink/70">
-            {activeCategory?.value === "all"
-              ? "The painting department's living archive — filter by category or search a title, medium or subject."
-              : activeCategory?.blurb}
+            {t(
+              activeCategory?.value === "all"
+                ? "The painting department's living archive — filter by category or search a title, medium or subject."
+                : (activeCategory?.blurb ?? ""),
+            )}
           </p>
         </div>
       </section>
@@ -114,7 +123,7 @@ function Gallery() {
                     : "text-ink/40 hover:text-ink"
                 }`}
               >
-                {c.label}
+                {t(c.label)}
               </button>
             ))}
           </div>
@@ -128,7 +137,7 @@ function Gallery() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search artworks..."
+              placeholder={t("Search artworks...")}
               className="w-full rounded-sm border border-ink/10 bg-paper py-2 pl-9 pr-3 text-sm text-ink placeholder:text-ink/40 focus:border-gold focus:outline-none"
             />
           </div>
@@ -142,13 +151,14 @@ function Gallery() {
           {filtered.length === 0 ? (
             <div className="py-24 text-center text-ink/50">
               <p className="font-display font-bold text-2xl">
-                {query
-                  ? "No works match your search."
-                  : "New pieces in this category are coming soon."}
+                {t(
+                  query
+                    ? "No works match your search."
+                    : "New pieces in this category are coming soon.",
+                )}
               </p>
               <p className="mt-3 text-sm">
-                Looking for something in this style? A commission can be
-                arranged.
+                {t("Looking for something in this style? A commission can be arranged.")}
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-4">
                 <button
@@ -158,7 +168,7 @@ function Gallery() {
                   }}
                   className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold"
                 >
-                  Clear filters
+                  {t("Clear filters")}
                 </button>
                 <Link
                   to="/contact"
@@ -170,7 +180,7 @@ function Gallery() {
                   }}
                   className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink underline underline-offset-4"
                 >
-                  Request this style
+                  {t("Request this style")}
                 </Link>
               </div>
             </div>
@@ -198,7 +208,7 @@ function Gallery() {
                           Always shown on touch screens, which have no hover. */}
                       <button
                         type="button"
-                        aria-label={`Quick view of ${a.title}`}
+                        aria-label={t("Quick view of {title}", { title: a.title })}
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -218,7 +228,7 @@ function Gallery() {
                         </Link>
                       </h3>
                       <p className="mt-1 text-xs uppercase tracking-tighter text-ink/50">
-                        {a.medium}
+                        {t(a.medium)}
                         {a.dimensions ? ` · ${a.dimensions}` : ""}
                       </p>
                       {a.status !== "sold" && a.price != null && (
@@ -240,15 +250,13 @@ function Gallery() {
       <section className="grain relative border-t border-white/5 bg-band py-14 md:py-24 text-band-foreground">
         <div className="relative mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            Beyond the Canvas
+            {t("Beyond the Canvas")}
           </span>
           <h2 className="mt-6 max-w-2xl font-display font-bold text-4xl md:text-5xl">
-            One threshold, five disciplines.
+            {t("One threshold, five disciplines.")}
           </h2>
           <p className="mt-6 max-w-2xl text-band-foreground/70">
-            One threshold, five disciplines. Painting has a gallery here; the
-            other four are open for commission and the conversation can start
-            now.
+            {t("One threshold, five disciplines. Painting has a gallery here; the other four are open for commission and the conversation can start now.")}
           </p>
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
             {disciplines.map((d) => {
@@ -268,13 +276,13 @@ function Gallery() {
                     title=""
                   />
                   <div className="mt-8">
-                    <h3 className="font-display text-xl font-bold">{d.label}</h3>
+                    <h3 className="font-display text-xl font-bold">{t(d.label)}</h3>
                     <p className="mt-2 text-xs leading-relaxed text-band-foreground/60">
-                      {d.blurb}
+                      {t(d.blurb)}
                     </p>
                   </div>
                   <span className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gold opacity-0 transition-opacity group-hover:opacity-100">
-                    Discuss this idea →
+                    {t("Discuss this idea →")}
                   </span>
                 </Link>
               );
@@ -290,22 +298,20 @@ function Gallery() {
       >
         <div className="mx-auto max-w-3xl px-6 text-center">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            Custom Orders
+            {t("Custom Orders")}
           </span>
           <h2 className="mt-6 font-display font-bold text-4xl text-ink md:text-5xl">
-            Commission a piece.
+            {t("Commission a piece.")}
           </h2>
           <p className="mt-6 text-ink/70">
-            Share your reference photos, describe the artwork you're imagining,
-            and choose your preferred size and medium. We'll return with a
-            quotation and timeline.
+            {t("Share your reference photos, describe the artwork you're imagining, and choose your preferred size and medium. We'll return with a quotation and timeline.")}
           </p>
           <Link
             to="/contact"
             search={{ type: "commission" }}
             className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
           >
-            Start a commission
+            {t("Start a commission")}
           </Link>
         </div>
       </section>
@@ -326,6 +332,7 @@ function Lightbox({
   onClose: () => void;
 }) {
   const { price } = useCurrency();
+  const t = useT();
   return (
     <div
       className="animate-fade fixed inset-0 z-[100] flex items-center justify-center bg-band/95 p-4 backdrop-blur-sm"
@@ -333,7 +340,7 @@ function Lightbox({
     >
       <button
         onClick={onClose}
-        aria-label="Close"
+        aria-label={t("Close")}
         className="absolute right-6 top-6 rounded-full bg-band-foreground/10 p-2 text-band-foreground hover:bg-band-foreground/20"
       >
         <X size={20} />
@@ -351,7 +358,7 @@ function Lightbox({
         />
         <div className="text-band-foreground">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold">
-            {artwork.categoryLabel}
+            {t(artwork.categoryLabel)}
           </p>
           <h3 className="mt-4 font-display font-bold text-4xl">{artwork.title}</h3>
           <p className="mt-6 text-sm font-light leading-relaxed text-band-foreground/80">
@@ -360,39 +367,41 @@ function Lightbox({
           <dl className="mt-8 space-y-3 text-sm text-band-foreground/70">
             <div className="flex justify-between border-t border-band-foreground/10 pt-3">
               <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
-                Medium
+                {t("Medium")}
               </dt>
-              <dd className="text-right">{artwork.medium}</dd>
+              <dd className="text-right">{t(artwork.medium)}</dd>
             </div>
             {artwork.dimensions && (
               <div className="flex justify-between border-t border-band-foreground/10 pt-3">
                 <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
-                  Dimensions
+                  {t("Dimensions")}
                 </dt>
                 <dd>{artwork.dimensions}</dd>
               </div>
             )}
             <div className="flex justify-between border-t border-band-foreground/10 pt-3">
               <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
-                Year
+                {t("Year")}
               </dt>
               <dd>{artwork.year}</dd>
             </div>
             <div className="flex justify-between border-t border-band-foreground/10 pt-3">
               <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
-                Status
+                {t("Status")}
               </dt>
-              <dd className="uppercase tracking-wider">{artwork.status}</dd>
+              <dd className="uppercase tracking-wider">
+                {t({ available: "Available", sold: "Sold", featured: "Featured", commission: "Commissioned" }[artwork.status] ?? artwork.status)}
+              </dd>
             </div>
             <div className="flex justify-between border-t border-band-foreground/10 pt-3">
               <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
-                Price
+                {t("Price")}
               </dt>
               <dd className="text-right">
                 {artwork.status === "sold" ? (
-                  <span className="font-display font-bold text-lg text-gold">Sold</span>
+                  <span className="font-display font-bold text-lg text-gold">{t("Sold")}</span>
                 ) : artwork.price == null ? (
-                  <span className="font-display font-bold text-lg text-gold">On request</span>
+                  <span className="font-display font-bold text-lg text-gold">{t("On request")}</span>
                 ) : (
                   <>
                     <span className="block font-display font-bold text-lg text-gold">
@@ -418,14 +427,14 @@ function Lightbox({
               search={{ type: artwork.categoryLabel, piece: artwork.title }}
               className="inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
             >
-              Inquire about this piece
+              {t("Inquire about this piece")}
             </Link>
             <Link
               to="/gallery/$id"
               params={{ id: artwork.id }}
               className="inline-block rounded-sm border border-band-foreground/20 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band-foreground/85 hover:text-band-foreground"
             >
-              View full page
+              {t("View full page")}
             </Link>
           </div>
         </div>

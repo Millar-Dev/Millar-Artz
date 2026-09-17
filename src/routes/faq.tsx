@@ -3,18 +3,28 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { canonical, faqGraph, jsonLd, seoMeta } from "@/lib/seo";
+import { translator, useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/faq")({
-  head: () => ({
-    meta: seoMeta(
-      "FAQ — Commissioning Art from MillerArtz",
-      "How commissions work at MillerArtz, the Arusha art studio of Miller S.K.: process, pricing, timelines, international delivery and payment.",
-      "/faq",
-    ),
-    links: [canonical("/faq")],
-    // FAQPage markup — these can surface as expandable answers in search.
-    scripts: [jsonLd(faqGraph(groups.flatMap((g) => g.items)))],
-  }),
+  head: ({ match }) => {
+    const { lang } = match.context;
+    const t = translator(lang);
+    return {
+      meta: seoMeta(
+        t("FAQ — Commissioning Art from MillerArtz"),
+        t("How commissions work at MillerArtz, the Arusha art studio of Miller S.K.: process, pricing, timelines, international delivery and payment."),
+        "/faq",
+        undefined,
+        lang,
+      ),
+      links: [canonical("/faq", lang)],
+      // FAQPage markup — these can surface as expandable answers in search,
+      // in the language the page is in.
+      scripts: [
+        jsonLd(faqGraph(groups.flatMap((g) => g.items).map((i) => ({ q: t(i.q), a: t(i.a) })))),
+      ],
+    };
+  },
   component: Faq,
 });
 
@@ -81,19 +91,19 @@ const groups: { heading: string; items: { q: string; a: string }[] }[] = [
 ];
 
 function Faq() {
+  const t = useT();
   return (
     <Layout>
       <section className="pt-16 pb-10">
         <div className="mx-auto max-w-3xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            Questions
+            {t("Questions")}
           </span>
           <h1 className="mt-6 font-display font-bold text-5xl leading-[1.05] text-ink md:text-6xl">
-            Before you <span className="">commission</span>.
+            {t("Before you commission.")}
           </h1>
           <p className="mt-6 text-lg font-light text-ink/70">
-            The things most people ask before ordering a piece. If your question
-            isn't here, just ask — it's a short reply either way.
+            {t("The things most people ask before ordering a piece. If your question isn't here, just ask — it's a short reply either way.")}
           </p>
         </div>
       </section>
@@ -103,11 +113,11 @@ function Faq() {
           {groups.map((group) => (
             <div key={group.heading}>
               <h2 className="font-display font-bold text-2xl text-ink">
-                {group.heading}
+                {t(group.heading)}
               </h2>
               <div className="mt-5 divide-y divide-ink/10 border-y border-ink/10">
                 {group.items.map((item) => (
-                  <FaqItem key={item.q} question={item.q} answer={item.a} />
+                  <FaqItem key={item.q} question={t(item.q)} answer={t(item.a)} />
                 ))}
               </div>
             </div>
@@ -118,17 +128,17 @@ function Faq() {
       <section className="bg-band py-12 md:py-20 text-band-foreground">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h2 className="font-display font-bold text-3xl md:text-4xl">
-            Still have a question?
+            {t("Still have a question?")}
           </h2>
           <p className="mt-4 text-band-foreground/70">
-            Ask directly — no obligation, and no pressure to commit to anything.
+            {t("Ask directly — no obligation, and no pressure to commit to anything.")}
           </p>
           <Link
             to="/contact"
             search={{ type: "commission" }}
             className="mt-8 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
           >
-            Get in touch
+            {t("Get in touch")}
           </Link>
         </div>
       </section>

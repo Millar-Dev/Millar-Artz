@@ -11,33 +11,34 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { getSiteSettings } from "@/lib/data/site-settings";
-import { jsonLd, SEARCH_TERMS, siteGraph } from "@/lib/seo";
+import { absoluteUrl, jsonLd, SEARCH_TERMS, siteGraph } from "@/lib/seo";
+import { langFromPath, localizePath, useLang, useT } from "@/lib/i18n";
 import { VisitTracker } from "@/components/site/VisitTracker";
 import { CurrencyProvider } from "@/components/site/CurrencyProvider";
 
 function NotFoundComponent() {
+  const t = useT();
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       {/* Without this the browser tab is blank on any mistyped link. */}
-      <title>Page not found — MillerArtz</title>
+      <title>{t("Page not found — MillerArtz")}</title>
       <div className="max-w-md text-center">
         <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
           MillerArtz
         </p>
         <h1 className="mt-6 font-display font-bold text-7xl text-ink">404</h1>
         <h2 className="mt-4 font-display font-bold text-2xl text-ink">
-          Page not found
+          {t("Page not found")}
         </h2>
         <p className="mt-3 text-sm text-ink/60">
-          This canvas is blank. The page you're looking for isn't part of the
-          collection.
+          {t("This canvas is blank. The page you're looking for isn't part of the collection.")}
         </p>
         <div className="mt-8">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-sm bg-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
           >
-            Return home
+            {t("Return home")}
           </Link>
         </div>
       </div>
@@ -48,15 +49,17 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const lang = useLang();
+  const t = useT();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       <div className="max-w-md text-center">
         <h1 className="font-display font-bold text-2xl text-ink">
-          This page didn't load
+          {t("This page didn't load")}
         </h1>
         <p className="mt-2 text-sm text-ink/60">
-          Something went wrong. You can try again or return to the studio.
+          {t("Something went wrong. You can try again or return to the studio.")}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <button
@@ -66,13 +69,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="inline-flex items-center justify-center rounded-sm bg-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
           >
-            Try again
+            {t("Try again")}
           </button>
           <a
-            href="/"
+            href={localizePath("/", lang)}
             className="inline-flex items-center justify-center rounded-sm border border-ink/20 bg-canvas px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-ink transition-colors hover:bg-ink/5"
           >
-            Go home
+            {t("Go home")}
           </a>
         </div>
       </div>
@@ -82,7 +85,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
-    head: ({ loaderData }) => ({
+    // Which language this address is in, for every route's head() below.
+    beforeLoad: ({ location }) => ({ lang: langFromPath(location.publicHref) }),
+    head: ({ loaderData, matches }) => ({
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -97,7 +102,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "MillerArtz" },
-        { property: "og:locale", content: "en_GB" },
         // The share image itself is set per page by seoMeta().
         { name: "twitter:card", content: "summary_large_image" },
         // ISO 3166-2 code for Arusha region.
@@ -109,6 +113,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       scripts: [jsonLd(siteGraph(loaderData))],
       links: [
         { rel: "stylesheet", href: appCss },
+        // The same page in each language, so search engines show Swahili
+        // speakers the Swahili page. The Studio is English-only.
+        ...alternates(matches[matches.length - 1]?.pathname ?? "/"),
         /* SVG first for browsers that take it, PNG as the fallback. */
         { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
         {
@@ -149,9 +156,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 // saved "dark" preference never flashes the light theme first.
 const themeBootScript = `try{if(localStorage.getItem("theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`;
 
+function alternates(path: string) {
+  if (/^\/studio(\/|$)/.test(path)) return [];
+  return [
+    { rel: "alternate", hrefLang: "en", href: absoluteUrl(localizePath(path, "en")) },
+    { rel: "alternate", hrefLang: "sw", href: absoluteUrl(localizePath(path, "sw")) },
+    { rel: "alternate", hrefLang: "x-default", href: absoluteUrl(localizePath(path, "en")) },
+  ];
+}
+
 function RootShell({ children }: { children: ReactNode }) {
+  const lang = useLang();
   return (
-    <html lang="en">
+    <html lang={lang}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <HeadContent />

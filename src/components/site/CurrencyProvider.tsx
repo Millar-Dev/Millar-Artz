@@ -11,6 +11,7 @@ import {
   type CurrencyCode,
   type Rates,
 } from "@/lib/currency";
+import { translator, useLang, useT } from "@/lib/i18n";
 
 /**
  * One currency choice for the whole visit.
@@ -101,19 +102,20 @@ export const REGIONS = [...new Set(CURRENCIES.map((c) => c.region))];
  *  means nothing to someone outside East Africa. */
 export function CurrencySelect({ className = "" }: { className?: string }) {
   const { currency, setCurrency } = useCurrency();
+  const t = useT();
   return (
     <label className={`inline-flex items-center gap-2 text-xs text-ink/60 ${className}`}>
-      <span>Show prices in</span>
+      <span>{t("Show prices in")}</span>
       <select
         value={currency}
         onChange={(e) => isCurrency(e.target.value) && setCurrency(e.target.value)}
         className="rounded-sm border border-ink/15 bg-paper px-2 py-1.5 text-xs font-medium text-ink focus:border-gold focus:outline-none"
       >
         {REGIONS.map((region) => (
-          <optgroup key={region} label={region}>
+          <optgroup key={region} label={t(region)}>
             {CURRENCIES.filter((c) => c.region === region).map((c) => (
               <option key={c.code} value={c.code}>
-                {c.code} — {c.name}
+                {c.code} — {t(c.name)}
               </option>
             ))}
           </optgroup>
@@ -126,9 +128,11 @@ export function CurrencySelect({ className = "" }: { className?: string }) {
 /** "1 USD = TSh 2,646 (set 17 Sep 2026)" — or per 1,000 for small units. */
 export function RateNote({ className = "text-ink/50" }: { className?: string }) {
   const { currency, rates, ratesUpdated } = useCurrency();
+  const lang = useLang();
+  const t = translator(lang);
   if (currency === BASE_CURRENCY) return null;
   const when = ratesUpdated
-    ? new Date(`${ratesUpdated}T12:00:00`).toLocaleDateString("en-GB", {
+    ? new Date(`${ratesUpdated}T12:00:00`).toLocaleDateString(lang === "sw" ? "sw-TZ" : "en-GB", {
         day: "numeric",
         month: "short",
         year: "numeric",
@@ -136,10 +140,10 @@ export function RateNote({ className = "text-ink/50" }: { className?: string }) 
     : "";
   return (
     <p className={`text-[11px] leading-snug ${className}`}>
-      Prices are set in Tanzanian shillings and converted at the studio's rate of{" "}
-      {describeRate(currency, rates)}
-      {when && ` (set ${when})`}. Converted figures are a guide — your quotation confirms the
-      exact amount.
+      {t(
+        "Prices are set in Tanzanian shillings and converted at the studio's rate of {rate}{when}. Converted figures are a guide — your quotation confirms the exact amount.",
+        { rate: describeRate(currency, rates), when: when ? t(" (set {date})", { date: when }) : "" },
+      )}
     </p>
   );
 }

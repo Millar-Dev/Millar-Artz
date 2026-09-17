@@ -1,5 +1,6 @@
 import { savedProfiles } from "./social";
 import { parseCoords, pinUrl } from "./map";
+import { LANGS, localizePath, type Lang } from "./i18n";
 
 /**
  * Canonical URL + structured-data helpers.
@@ -19,10 +20,12 @@ export const SITE_URL = "https://www.millerartz.com";
 export const absoluteUrl = (path: string) =>
   `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 
-/** Route `head()` link entry pointing search engines at the canonical page. */
-export const canonical = (path: string) => ({
+/** Route `head()` link entry pointing search engines at the canonical page.
+ *  A Swahili page is its own canonical — not a duplicate of the English one —
+ *  and the two are tied together by the hreflang links in the root route. */
+export const canonical = (path: string, lang: Lang = "en") => ({
   rel: "canonical",
-  href: absoluteUrl(path),
+  href: absoluteUrl(localizePath(path, lang)),
 });
 
 /** Route `head()` script entry carrying a JSON-LD graph. */
@@ -92,9 +95,15 @@ export function seoMeta(
   description: string,
   path: string,
   image: { url: string; alt: string; width?: number; height?: number } = OG_IMAGE,
+  lang: Lang = "en",
 ) {
-  const url = absoluteUrl(path);
+  const url = absoluteUrl(localizePath(path, lang));
   return [
+    { property: "og:locale", content: LANGS.find((l) => l.code === lang)!.locale },
+    ...LANGS.filter((l) => l.code !== lang).map((l) => ({
+      property: "og:locale:alternate",
+      content: l.locale,
+    })),
     { title },
     { name: "description", content: description },
     { property: "og:title", content: title },
@@ -231,7 +240,7 @@ export function siteGraph(contact?: SiteContact) {
         // Google uses these for the site name shown above a result.
         name: STUDIO_NAME,
         alternateName: ["Miller Artz", `${STUDIO_NAME} Arusha`, `${STUDIO_NAME} Tanzania`],
-        inLanguage: "en",
+        inLanguage: ["en", "sw"],
         publisher: { "@id": `${SITE_URL}/#studio` },
       },
     ],

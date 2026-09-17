@@ -1,6 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import { langRewrite } from "./lib/i18n";
 
 export const getRouter = () => {
   const queryClient = new QueryClient();
@@ -10,6 +11,8 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
+    // /sw/... serves the Kiswahili version of the same routes.
+    rewrite: langRewrite(),
   });
 
   return router;

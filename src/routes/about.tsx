@@ -8,6 +8,7 @@ import { getSiteSettings } from "@/lib/data/site-settings";
 import { canonical, seoMeta } from "@/lib/seo";
 import { StudioMap } from "@/components/site/StudioMap";
 import { MapPin, Clock, Palette, Mail } from "lucide-react";
+import { translator, useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
   loader: async () => {
@@ -28,14 +29,20 @@ export const Route = createFileRoute("/about")({
       settings,
     };
   },
-  head: () => ({
-    meta: seoMeta(
-      "About Miller Sunday Kitumi — Arusha, Tanzania | MillerArtz",
-      "Miller Sunday Kitumi (Miller S.K.) is a Tanzanian visual artist based in Arusha and founder of MillerArtz, creating for collectors in Tanzania and worldwide.",
-      "/about",
-    ),
-    links: [canonical("/about")],
-  }),
+  head: ({ match }) => {
+    const { lang } = match.context;
+    const t = translator(lang);
+    return {
+      meta: seoMeta(
+        t("About Miller Sunday Kitumi — Arusha, Tanzania | MillerArtz"),
+        t("Miller Sunday Kitumi (Miller S.K.) is a Tanzanian visual artist based in Arusha and founder of MillerArtz, creating for collectors in Tanzania and worldwide."),
+        "/about",
+        undefined,
+        lang,
+      ),
+      links: [canonical("/about", lang)],
+    };
+  },
   component: About,
 });
 
@@ -71,6 +78,7 @@ const disciplinesWorked = [
 ];
 
 function About() {
+  const t = useT();
   const { portrait, studio, settings } = Route.useLoaderData();
 
   return (
@@ -79,10 +87,10 @@ function About() {
         <div className="glow-coral pointer-events-none absolute -left-40 top-0 h-[420px] w-[420px] rounded-full opacity-[0.12] blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            About
+            {t("About")}
           </span>
           <h1 className="mt-6 max-w-4xl font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
-            About <span className="">MillerArtz</span>
+            {t("About MillerArtz")}
           </h1>
         </div>
       </section>
@@ -91,38 +99,19 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
-              MillerArtz is the Arusha studio of Tanzanian artist Miller Sunday
-              Kitumi — Miller S.K. — built around one artist's hand:
-              hyperrealistic graphite and charcoal work developed over
-              hundreds of hours of observation, acrylic and oil wildlife
-              painting rooted in East Africa, and commissioned portraits and
-              cultural scenes for clients and community organisations.
+              {t("MillerArtz is the Arusha studio of Tanzanian artist Miller Sunday Kitumi — Miller S.K. — built around one artist's hand: hyperrealistic graphite and charcoal work developed over hundreds of hours of observation, acrylic and oil wildlife painting rooted in East Africa, and commissioned portraits and cultural scenes for clients and community organisations.")}
             </p>
             <p>
-              The studio's range has grown deliberately — from tightly-observed
-              pencil portraits and wildlife studies, into traditional and
-              cultural commissions, bold abstract and illusional work,
-              large-scale mural painting, and playful cartoon and character
-              illustration. Every new discipline is added the same way: by doing
-              the work, not claiming the label first.
+              {t("The studio's range has grown deliberately — from tightly-observed pencil portraits and wildlife studies, into traditional and cultural commissions, bold abstract and illusional work, large-scale mural painting, and playful cartoon and character illustration. Every new discipline is added the same way: by doing the work, not claiming the label first.")}
             </p>
             <p>
-              We believe art has the power to communicate beyond words. Whether
-              it's a family portrait, a wildlife piece for a collector, a mural
-              for a public wall, or a community commission like the piece
-              created for the Embuan Children &amp; Youth Foundation, the goal
-              is the same: work that means something to the person who asked for
-              it.
+              {t("We believe art has the power to communicate beyond words. Whether it's a family portrait, a wildlife piece for a collector, a mural for a public wall, or a community commission like the piece created for the Embuan Children & Youth Foundation, the goal is the same: work that means something to the person who asked for it.")}
             </p>
             <p>
-              Drawing and painting remain the foundation, but MillerArtz is
-              designed with a wider horizon in mind — the studio is already
-              opening conversations around music, dance and performance, digital
-              art, and sculpture, for collectors and collaborators who want to
-              build something new together.
+              {t("Drawing and painting remain the foundation, but MillerArtz is designed with a wider horizon in mind — the studio is already opening conversations around music, dance and performance, digital art, and sculpture, for collectors and collaborators who want to build something new together.")}
             </p>
             <p className="font-display font-bold text-2xl text-ink">
-              At MillerArtz, every masterpiece begins with imagination.
+              {t("At MillerArtz, every masterpiece begins with imagination.")}
             </p>
           </div>
           <div className="md:col-span-5">
@@ -130,13 +119,13 @@ function About() {
               src={sized(portrait.image_path, 720)}
               srcSet={srcSetFor(portrait.image_path, [480, 720, 960])}
               sizes="(min-width: 768px) 40vw, 100vw"
-              alt="Miller S.K., founding artist of MillerArtz"
+              alt={t("Miller S.K., founding artist of MillerArtz")}
               loading="lazy"
               className="aspect-[4/5] w-full rounded-sm object-cover shadow-2xl"
             />
             <div className="mt-4 flex items-center justify-between">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/50">
-                {portrait.caption}
+                {t(portrait.caption ?? "")}
               </p>
               <BrandMark className="h-8 w-auto shrink-0 text-ink/45" title="" />
             </div>
@@ -148,7 +137,7 @@ function About() {
       <section className="border-y border-ink/5 bg-paper py-10 md:py-16">
         <div className="mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            Disciplines
+            {t("Disciplines")}
           </span>
           <div className="mt-6 flex flex-wrap gap-3">
             {disciplinesWorked.map((d) => (
@@ -156,7 +145,7 @@ function About() {
                 key={d}
                 className="rounded-full border border-ink/10 bg-canvas px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-ink/70"
               >
-                {d}
+                {t(d)}
               </span>
             ))}
           </div>
@@ -169,25 +158,17 @@ function About() {
           <div className="grid items-center gap-14 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-6">
               <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-                The Studio
+                {t("The Studio")}
               </span>
               <h2 className="mt-5 font-display font-bold text-4xl text-ink md:text-5xl">
-                Where the work happens.
+                {t("Where the work happens.")}
               </h2>
               <div className="mt-6 space-y-4 text-base font-light leading-relaxed text-ink/70">
                 <p>
-                  Every piece on this site is made by hand in one room in
-                  Arusha, Tanzania — no assistants, no print reproductions passed off as
-                  originals. Graphite and charcoal work happens at the desk;
-                  canvases go up on the easel; murals leave the studio entirely
-                  and get painted on site.
+                  {t("Every piece on this site is made by hand in one room in Arusha, Tanzania — no assistants, no print reproductions passed off as originals. Graphite and charcoal work happens at the desk; canvases go up on the easel; murals leave the studio entirely and get painted on site.")}
                 </p>
                 <p>
-                  It doubles as the meeting room. If you're commissioning
-                  something substantial, you're welcome to come and see work in
-                  progress, look at finished pieces in person, and talk through
-                  sizes and framing properly — photographs flatten things, and
-                  scale is hard to judge on a screen.
+                  {t("It doubles as the meeting room. If you're commissioning something substantial, you're welcome to come and see work in progress, look at finished pieces in person, and talk through sizes and framing properly — photographs flatten things, and scale is hard to judge on a screen.")}
                 </p>
               </div>
 
@@ -196,7 +177,7 @@ function About() {
                   <MapPin size={17} className="mt-0.5 shrink-0 text-gold" />
                   <div>
                     <dt className="text-[10px] font-bold uppercase tracking-widest text-ink">
-                      Location
+                      {t("Location")}
                     </dt>
                     <dd className="mt-1 text-sm text-ink/65">
                       {settings.location}
@@ -208,10 +189,10 @@ function About() {
                   <Clock size={17} className="mt-0.5 shrink-0 text-gold" />
                   <div>
                     <dt className="text-[10px] font-bold uppercase tracking-widest text-ink">
-                      Visits
+                      {t("Visits")}
                     </dt>
                     <dd className="mt-1 text-sm text-ink/65">
-                      By appointment — message ahead and we'll find a time.
+                      {t("By appointment — message ahead and we'll find a time.")}
                     </dd>
                   </div>
                 </div>
@@ -219,11 +200,10 @@ function About() {
                   <Palette size={17} className="mt-0.5 shrink-0 text-gold" />
                   <div>
                     <dt className="text-[10px] font-bold uppercase tracking-widest text-ink">
-                      Made here
+                      {t("Made here")}
                     </dt>
                     <dd className="mt-1 text-sm text-ink/65">
-                      Graphite, charcoal, acrylic and oil — plus mural work on
-                      location.
+                      {t("Graphite, charcoal, acrylic and oil — plus mural work on location.")}
                     </dd>
                   </div>
                 </div>
@@ -231,7 +211,7 @@ function About() {
                   <Mail size={17} className="mt-0.5 shrink-0 text-gold" />
                   <div>
                     <dt className="text-[10px] font-bold uppercase tracking-widest text-ink">
-                      Arrange a visit
+                      {t("Arrange a visit")}
                     </dt>
                     <dd className="mt-1 text-sm text-ink/65">
                       <Link
@@ -239,7 +219,7 @@ function About() {
                         search={{ type: "Studio visit" }}
                         className="text-gold hover:underline"
                       >
-                        Send a message →
+                        {t("Send a message →")}
                       </Link>
                     </dd>
                   </div>
@@ -255,7 +235,7 @@ function About() {
                       src={sized(studio.image_path, 960)}
                       srcSet={srcSetFor(studio.image_path, [480, 720, 960, 1280])}
                       sizes="(min-width: 1024px) 50vw, 100vw"
-                      alt={studio.caption || "Inside the MillerArtz studio"}
+                      alt={studio.caption || t("Inside the MillerArtz studio")}
                       loading="lazy"
                       className="aspect-[4/3] w-full rounded-lg object-cover"
                     />
@@ -269,8 +249,7 @@ function About() {
               ) : (
                 <div className="flex aspect-[4/3] items-center justify-center rounded-lg border border-dashed border-ink/20 bg-paper/50 p-8 text-center">
                   <p className="max-w-xs text-sm text-ink/45">
-                    A photograph of the studio goes here — upload one in the
-                    Studio under “Studio photo”.
+                    {t("A photograph of the studio goes here — upload one in the Studio under “Studio photo”.")}
                   </p>
                 </div>
               )}
@@ -284,28 +263,24 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-2">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-              Mission
+              {t("Mission")}
             </span>
             <h2 className="mt-6 font-display font-bold text-3xl text-ink md:text-4xl">
-              To translate feeling into form.
+              {t("To translate feeling into form.")}
             </h2>
             <p className="mt-6 text-ink/70">
-              To create original, deeply-observed work across every discipline
-              the studio takes on — preserving moments, honouring subjects, and
-              giving collectors something worth living with for generations.
+              {t("To create original, deeply-observed work across every discipline the studio takes on — preserving moments, honouring subjects, and giving collectors something worth living with for generations.")}
             </p>
           </div>
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-              Vision
+              {t("Vision")}
             </span>
             <h2 className="mt-6 font-display font-bold text-3xl text-ink md:text-4xl">
-              An African art house with a global voice.
+              {t("An African art house with a global voice.")}
             </h2>
             <p className="mt-6 text-ink/70">
-              To grow MillerArtz into a multidisciplinary studio — expanding
-              into new mediums, exhibitions, and communities while never letting
-              go of the discipline of the hand.
+              {t("To grow MillerArtz into a multidisciplinary studio — expanding into new mediums, exhibitions, and communities while never letting go of the discipline of the hand.")}
             </p>
           </div>
         </div>
@@ -315,10 +290,10 @@ function About() {
       <section className="py-14 md:py-24">
         <div className="mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            Core Values
+            {t("Core Values")}
           </span>
           <h2 className="mt-6 font-display font-bold text-4xl text-ink md:text-5xl">
-            What guides the work.
+            {t("What guides the work.")}
           </h2>
           <div className="mt-16 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             {values.map((v, i) => (
@@ -327,10 +302,10 @@ function About() {
                   0{i + 1}
                 </p>
                 <h3 className="mt-4 font-display font-bold text-2xl text-ink">
-                  {v.title}
+                  {t(v.title)}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-ink/60">
-                  {v.body}
+                  {t(v.body)}
                 </p>
               </div>
             ))}
@@ -343,55 +318,49 @@ function About() {
         <div className="relative mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-2">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-              Future Projects
+              {t("Future Projects")}
             </span>
             <h2 className="mt-6 font-display font-bold text-4xl md:text-5xl">
-              The years ahead.
+              {t("The years ahead.")}
             </h2>
             <ul className="mt-10 space-y-6 text-band-foreground/80">
               <li>
                 <p className="font-display font-bold text-xl">
-                  Wildlife Series II
+                  {t("Wildlife Series II")}
                 </p>
                 <p className="mt-1 text-sm font-light">
-                  A follow-up painted series on the birds and great cats of East
-                  Africa.
+                  {t("A follow-up painted series on the birds and great cats of East Africa.")}
                 </p>
               </li>
               <li>
                 <p className="font-display font-bold text-xl">
-                  The Portrait Archive
+                  {t("The Portrait Archive")}
                 </p>
                 <p className="mt-1 text-sm font-light">
-                  An open commission window for community portraiture across
-                  Tanzania.
+                  {t("An open commission window for community portraiture across Tanzania.")}
                 </p>
               </li>
               <li>
-                <p className="font-display font-bold text-xl">Beyond the Canvas</p>
+                <p className="font-display font-bold text-xl">{t("Beyond the Canvas")}</p>
                 <p className="mt-1 text-sm font-light">
-                  First collaborations in music, dance and sculpture — early
-                  conversations welcome.
+                  {t("First collaborations in music, dance and sculpture — early conversations welcome.")}
                 </p>
               </li>
             </ul>
           </div>
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-              Community &amp; Commissions
+              {t("Community & Commissions")}
             </span>
             <h2 className="mt-6 font-display font-bold text-4xl md:text-5xl">
-              A quiet record, growing.
+              {t("A quiet record, growing.")}
             </h2>
             <p className="mt-8 text-band-foreground/70">
-              Recent work includes a commissioned piece for the Embuan Children
-              &amp; Youth Foundation and a commissioned exterior mural. As
-              exhibitions, features and honours accumulate, they'll be added
-              here.
+              {t("Recent work includes a commissioned piece for the Embuan Children & Youth Foundation and a commissioned exterior mural. As exhibitions, features and honours accumulate, they'll be added here.")}
             </p>
             <div className="mt-10 border-t border-band-foreground/10 pt-6 text-sm text-band-foreground/60">
               <p className="">
-                Featured spaces &amp; press listings — coming soon.
+                {t("Featured spaces & press listings — coming soon.")}
               </p>
             </div>
           </div>
@@ -401,21 +370,21 @@ function About() {
       <section className="py-12 md:py-20">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="font-display font-bold text-3xl text-ink md:text-4xl">
-            Interested in a piece — or a commission?
+            {t("Interested in a piece — or a commission?")}
           </h2>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               to="/gallery"
               className="rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
             >
-              Browse gallery
+              {t("Browse gallery")}
             </Link>
             <Link
               to="/contact"
               search={{ type: "commission" }}
               className="rounded-sm border border-ink/20 px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:border-gold hover:text-gold"
             >
-              Start a commission
+              {t("Start a commission")}
             </Link>
           </div>
         </div>

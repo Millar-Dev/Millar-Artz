@@ -8,6 +8,8 @@ import { listArtworks } from "@/lib/data/artworks";
 import { canonical, seoMeta } from "@/lib/seo";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Artwork } from "@/lib/gallery-data";
+import { translator } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 /**
  * The directory.
@@ -22,19 +24,19 @@ export const Route = createFileRoute("/")({
     const rows = await listArtworks();
     return { artworks: rows.map(fromArtworkRow) };
   },
-  head: () => ({
-    meta: seoMeta(
-      "MillerArtz — Miller S.K., Tanzanian Artist in Arusha",
-      "The Arusha studio of Tanzanian artist Miller S.K. (Miller Sunday Kitumi) — hyperrealistic paintings, portraits and wildlife art for collectors worldwide.",
-      "/",
-    ),
-    links: [canonical("/")],
-  }),
+  head: ({ match }) => {
+    const { lang } = match.context;
+    const t = translator(lang);
+    return {
+      meta: seoMeta(t("MillerArtz — Miller S.K., Tanzanian Artist in Arusha"), t("The Arusha studio of Tanzanian artist Miller S.K. (Miller Sunday Kitumi) — hyperrealistic paintings, portraits and wildlife art for collectors worldwide."), "/", undefined, lang),
+      links: [canonical("/", lang)],
+    };
+  },
   component: Home,
 });
 
 /** Rises one word at a time as the page settles. */
-const heroWords = ["Where", "stories", "take", "shape."];
+const HERO_LINE = "Where stories take shape.";
 
 /** What the studio is for, said three ways. Kept short — the departments
  *  below carry the detail. */
@@ -54,6 +56,8 @@ const promises = [
 ];
 
 function Home() {
+  const t = useT();
+  const heroWords = t(HERO_LINE).split(" ");
   const { artworks } = Route.useLoaderData();
   // Real pieces, so the directory opens onto actual work rather than stock.
   const featured = artworks.slice(0, 6);
@@ -108,7 +112,7 @@ function Home() {
             className="animate-float-in mt-5 text-[11px] font-bold uppercase tracking-[0.42em] text-band-foreground/70 md:text-xs"
             style={{ animationDelay: "0.62s" }}
           >
-            The threshold to what's possible
+            {t("The threshold to what's possible")}
           </p>
 
           <h2 className="mt-10 font-display text-3xl italic leading-tight md:text-5xl">
@@ -128,9 +132,7 @@ function Home() {
             className="animate-float-in mt-6 max-w-xl text-base font-light leading-relaxed text-band-foreground/75 md:text-lg"
             style={{ animationDelay: "1.24s" }}
           >
-            The Arusha studio of Tanzanian artist Miller S.K., across five
-            disciplines — painting, music, dance, sculpture and acrobatics —
-            made for collectors in Tanzania and around the world.
+            {t("The Arusha studio of Tanzanian artist Miller S.K., across five disciplines — painting, music, dance, sculpture and acrobatics — made for collectors in Tanzania and around the world.")}
           </p>
 
           <div
@@ -143,7 +145,7 @@ function Home() {
                 to={d.slug}
                 className="rounded-full border border-white/15 px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.15em] text-band-foreground/85 transition-colors hover:border-white/40 hover:text-band-foreground"
               >
-                {d.label}
+                {t(d.label)}
               </Link>
             ))}
           </div>
@@ -158,15 +160,14 @@ function Home() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold">
-                The departments
+                {t("The departments")}
               </span>
               <h2 className="mt-4 font-display text-4xl italic text-ink md:text-5xl">
-                One threshold, five disciplines
+                {t("One threshold, five disciplines")}
               </h2>
             </div>
             <p className="max-w-sm text-sm font-light leading-relaxed text-ink/60">
-              Each keeps the arch and takes its own colour and its own object in
-              the doorway. Step through any of them.
+              {t("Each keeps the arch and takes its own colour and its own object in the doorway. Step through any of them.")}
             </p>
           </div>
 
@@ -196,21 +197,19 @@ function Home() {
                     title=""
                   />
                   <h3 className="relative mt-6 font-display text-2xl text-ink">
-                    {d.label}
+                    {t(d.label)}
                   </h3>
                   <p
                     className="relative mt-1 text-[11px] font-bold uppercase tracking-[0.18em]"
                     style={{ color: "var(--dept-on)" }}
                   >
-                    {d.tagline}
+                    {t(d.tagline)}
                   </p>
                   <p className="relative mt-4 grow text-sm font-light leading-relaxed text-ink/65">
-                    {d.blurb}
+                    {t(d.blurb)}
                   </p>
                   <span className="relative mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-ink/70 transition-colors group-hover:text-[var(--dept-on)]">
-                    {d.status === "live"
-                      ? "Browse the work"
-                      : "Open for commission"}
+                    {t(d.status === "live" ? "Browse the work" : "Open for commission")}
                     <ArrowRight
                       size={14}
                       className="transition-transform group-hover:translate-x-1"
@@ -224,13 +223,10 @@ function Home() {
             <div className="flex flex-col justify-between border border-dashed border-ink/15 p-7">
               <div>
                 <h3 className="font-display text-2xl italic text-ink">
-                  Something else entirely?
+                  {t("Something else entirely?")}
                 </h3>
                 <p className="mt-4 text-sm font-light leading-relaxed text-ink/65">
-                  The five departments are where the studio works today, not a
-                  fence around it. If your brief crosses them — or falls outside
-                  all of them — say so, and we'll tell you honestly whether
-                  we're the right hands for it.
+                  {t("The five departments are where the studio works today, not a fence around it. If your brief crosses them — or falls outside all of them — say so, and we'll tell you honestly whether we're the right hands for it.")}
                 </p>
               </div>
               <Link
@@ -238,7 +234,7 @@ function Home() {
                 search={{ type: "general" }}
                 className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-gold"
               >
-                Ask us
+                {t("Ask us")}
                 <ArrowUpRight size={14} />
               </Link>
             </div>
@@ -251,9 +247,9 @@ function Home() {
         <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-3">
           {promises.map((p) => (
             <div key={p.title}>
-              <h3 className="font-display text-xl text-ink">{p.title}</h3>
+              <h3 className="font-display text-xl text-ink">{t(p.title)}</h3>
               <p className="mt-3 text-sm font-light leading-relaxed text-ink/65">
-                {p.body}
+                {t(p.body)}
               </p>
             </div>
           ))}
@@ -266,13 +262,13 @@ function Home() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <h2 className="font-display text-4xl italic text-ink">
-                A look at the work
+                {t("A look at the work")}
               </h2>
               <Link
                 to="/paintings"
                 className="inline-flex items-center gap-2 border-b border-gold/40 pb-1 text-sm font-medium text-gold transition-colors hover:border-gold"
               >
-                Into the painting department
+                {t("Into the painting department")}
                 <ArrowRight size={15} />
               </Link>
             </div>
@@ -314,12 +310,10 @@ function Home() {
             title=""
           />
           <h2 className="mt-8 font-display text-3xl italic md:text-4xl">
-            Bring us what you have in mind
+            {t("Bring us what you have in mind")}
           </h2>
           <p className="mx-auto mt-5 max-w-xl font-light leading-relaxed text-band-foreground/70">
-            A commission starts as a conversation — what it's for, where it will
-            live, and what it needs to do. A quotation follows within a few
-            days.
+            {t("A commission starts as a conversation — what it's for, where it will live, and what it needs to do. A quotation follows within a few days.")}
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link
@@ -327,13 +321,13 @@ function Home() {
               search={{ type: "commission" }}
               className="rounded-sm bg-gold px-8 py-4 text-sm font-medium text-band transition-transform hover:-translate-y-0.5"
             >
-              Start a commission
+              {t("Start a commission")}
             </Link>
             <Link
               to="/about"
               className="glass rounded-sm px-8 py-4 text-sm font-medium text-band-foreground transition-colors hover:text-gold"
             >
-              About the studio
+              {t("About the studio")}
             </Link>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { localizePath } from "@/lib/i18n";
 import { useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { trackEvent } from "@/lib/data/analytics";
@@ -45,7 +46,9 @@ export function VisitTracker() {
       send({
         kind: "interaction",
         name,
-        path: window.location.pathname,
+        // Without the /sw prefix, so a page counts as one page in both
+        // languages — the same path page views record.
+        path: localizePath(window.location.pathname, "en"),
       });
     };
     // Capture phase, so it still sees clicks a component stops propagating.

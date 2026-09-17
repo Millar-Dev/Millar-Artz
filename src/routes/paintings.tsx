@@ -15,6 +15,8 @@ import { getSiteImage } from "@/lib/data/site-images";
 import artistPortraitFallback from "@/assets/me-portrait.jpg";
 import { canonical, seoMeta } from "@/lib/seo";
 import type { Artwork, ArtworkCategory, DisciplineId } from "@/lib/gallery-data";
+import { translator } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 /** This page is the painting department, so it takes painting's colour. */
 const painting = disciplines.find((d) => d.id === "painting")!;
@@ -30,14 +32,14 @@ export const Route = createFileRoute("/paintings")({
     ]);
     return { artworks: rows.map(fromArtworkRow), settings, portrait };
   },
-  head: () => ({
-    meta: seoMeta(
-      "Paintings by Miller S.K. — Tanzanian Artist | MillerArtz",
-      "Original paintings by Arusha-based Tanzanian artist Miller S.K. — hyperrealism, portraits, wildlife, murals and abstract art. Commissions open worldwide.",
-      "/paintings",
-    ),
-    links: [canonical("/paintings")],
-  }),
+  head: ({ match }) => {
+    const { lang } = match.context;
+    const t = translator(lang);
+    return {
+      meta: seoMeta(t("Paintings by Miller S.K. — Tanzanian Artist | MillerArtz"), t("Original paintings by Arusha-based Tanzanian artist Miller S.K. — hyperrealism, portraits, wildlife, murals and abstract art. Commissions open worldwide."), "/paintings", undefined, lang),
+      links: [canonical("/paintings", lang)],
+    };
+  },
   component: Paintings,
 });
 
@@ -52,7 +54,7 @@ const rows: { title: string; categories: ArtworkCategory[] }[] = [
   },
 ];
 
-const heroWords = ["Made", "by", "hand,", "always."];
+const HERO_LINE = "Made by hand, always.";
 const quickCategories = categories.filter((c) =>
   ["wildlife", "hyperrealism", "traditional", "abstract"].includes(c.value),
 );
@@ -101,6 +103,8 @@ const BOUQUET = [
 ];
 
 function Paintings() {
+  const t = useT();
+  const heroWords = t(HERO_LINE).split(" ");
   const { artworks, settings, portrait } = Route.useLoaderData();
   const byId = (id: string) => artworks.find((a) => a.id === id);
   const artistPortrait = portrait?.image_path || artistPortraitFallback;
@@ -148,7 +152,7 @@ function Paintings() {
                 headline and copy off the side of a phone screen. */}
             <div className="min-w-0 lg:col-span-5">
               <span className="text-xs font-bold uppercase tracking-[0.3em] text-gold">
-                MillerArtz — Paintings
+                {t("MillerArtz — Paintings")}
               </span>
               <h1 className="mt-6 font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
                 {heroWords.map((word, i) => (
@@ -167,9 +171,7 @@ function Paintings() {
                 ))}
               </h1>
               <p className="mt-6 max-w-md text-lg font-light leading-relaxed text-ink/70">
-                Hyperrealism, wildlife, portraiture, traditional and cultural
-                work, murals and more — the department with an archive you can
-                browse today.
+                {t("Hyperrealism, wildlife, portraiture, traditional and cultural work, murals and more — the department with an archive you can browse today.")}
               </p>
 
               {/* Scrolling ribbon of the collection, sitting under the intro
@@ -198,7 +200,7 @@ function Paintings() {
                     search={{ category: c.value }}
                     className="glass rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-band-foreground/85 transition-colors hover:text-gold"
                   >
-                    {c.label}
+                    {t(c.label)}
                   </Link>
                 ))}
               </div>
@@ -208,14 +210,14 @@ function Paintings() {
                   to="/gallery"
                   className="rounded-sm bg-gold px-8 py-4 text-sm font-medium text-band transition-transform hover:-translate-y-0.5"
                 >
-                  View Gallery
+                  {t("View Gallery")}
                 </Link>
                 <Link
                   to="/contact"
                   search={{ type: "commission" }}
                   className="glass rounded-sm px-8 py-4 text-sm font-medium text-band-foreground transition-colors hover:text-gold"
                 >
-                  Custom Orders
+                  {t("Custom Orders")}
                 </Link>
               </div>
             </div>
@@ -277,7 +279,7 @@ function Paintings() {
                 />
                 <img
                   src={sized(artistPortrait, 160)}
-                  alt="Miller S.K., founder of MillerArtz"
+                  alt={t("Miller S.K., founder of MillerArtz")}
                   loading="lazy"
                   className="relative h-16 w-16 rounded-full object-cover ring-1 ring-gold/40 sm:h-[4.5rem] sm:w-[4.5rem]"
                 />
@@ -288,17 +290,13 @@ function Paintings() {
                   Miller S.K.
                 </p>
                 <p className="mt-3 text-base font-light leading-relaxed text-ink/75">
-                  I'm Miller S.K. — founder and creative director of MillerArtz.
-                  What started as graphite portraits and wildlife studies has
-                  grown into a studio across five disciplines, based here in
-                  Arusha and built one commission at a time — for collectors at
-                  home and abroad.
+                  {t("I'm Miller S.K. — founder and creative director of MillerArtz. What started as graphite portraits and wildlife studies has grown into a studio across five disciplines, based here in Arusha and built one commission at a time — for collectors at home and abroad.")}
                 </p>
                 <Link
                   to="/about"
                   className="mt-4 inline-flex items-center gap-2 border-b border-gold/40 pb-1 text-sm font-medium text-gold transition-colors hover:border-gold"
                 >
-                  More about me →
+                  {t("More about me →")}
                 </Link>
               </figcaption>
             </figure>
@@ -335,7 +333,7 @@ function Paintings() {
               <div key={row.title}>
                 <div className="mb-6 flex items-end justify-between gap-4">
                   <h2 className="font-display font-bold text-2xl text-ink md:text-3xl">
-                    {row.title}
+                    {t(row.title)}
                   </h2>
                   <Link
                     to="/gallery"
@@ -345,7 +343,7 @@ function Paintings() {
                     }}
                     className="shrink-0 border-b border-ink/20 pb-1 text-xs uppercase tracking-[0.15em] text-ink/60 transition-colors hover:border-ink hover:text-ink"
                   >
-                    See all →
+                    {t("See all →")}
                   </Link>
                 </div>
                 <div className="no-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
@@ -370,7 +368,7 @@ function Paintings() {
                             {a.title}
                           </h3>
                           <p className="mt-1 text-[10px] uppercase tracking-widest text-band-foreground/60">
-                            {a.medium}
+                            {t(a.medium)}
                           </p>
                         </div>
                       </div>
@@ -388,15 +386,13 @@ function Paintings() {
         <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2 md:gap-20">
           <div>
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-              Bespoke Commissions
+              {t("Bespoke Commissions")}
             </span>
             <h2 className="mt-6 font-display font-bold text-5xl leading-tight">
-              Your Vision, <span className="">Our Brush</span>.
+              {t("Your Vision, Our Brush.")}
             </h2>
             <p className="mt-8 text-lg font-light leading-relaxed text-band-foreground/70">
-              Whether it's a cherished family portrait, a wildlife piece, a
-              mural for a wall that needs one, or something outside the usual —
-              we specialise in commissions built around what you actually want.
+              {t("Whether it's a cherished family portrait, a wildlife piece, a mural for a wall that needs one, or something outside the usual — we specialise in commissions built around what you actually want.")}
             </p>
             <ul className="mt-10 space-y-4">
               {[
@@ -409,7 +405,7 @@ function Paintings() {
                   className="flex items-center gap-4 text-sm font-light"
                 >
                   <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
-                  {item}
+                  {t(item)}
                 </li>
               ))}
             </ul>
@@ -418,7 +414,7 @@ function Paintings() {
               search={{ type: "commission" }}
               className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
             >
-              Request a Quotation
+              {t("Request a Quotation")}
             </Link>
           </div>
 
@@ -433,10 +429,10 @@ function Paintings() {
                 </span>
                 <div>
                   <h3 className="font-display font-bold text-xl text-band-foreground">
-                    {s.title}
+                    {t(s.title)}
                   </h3>
                   <p className="mt-2 text-sm font-light leading-relaxed text-band-foreground/70">
-                    {s.body}
+                    {t(s.body)}
                   </p>
                 </div>
               </div>
@@ -451,17 +447,17 @@ function Paintings() {
           <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-                The Departments
+                {t("The Departments")}
               </span>
               <h2 className="mt-4 font-display font-bold text-4xl text-ink md:text-5xl">
-                One threshold, five disciplines.
+                {t("One threshold, five disciplines.")}
               </h2>
             </div>
             <Link
               to="/gallery"
               className="border-b border-ink/20 pb-1 text-sm text-ink transition-colors hover:border-ink"
             >
-              See the full studio scope →
+              {t("See the full studio scope →")}
             </Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
@@ -480,10 +476,10 @@ function Paintings() {
                 />
                 <div className="mt-8">
                   <h3 className="font-display text-xl font-bold text-ink">
-                    {d.label}
+                    {t(d.label)}
                   </h3>
                   <p className="mt-2 text-xs leading-relaxed text-ink/60">
-                    {d.blurb}
+                    {t(d.blurb)}
                   </p>
                 </div>
               </Link>
@@ -496,20 +492,19 @@ function Paintings() {
       <section className="border-t border-ink/5 bg-paper py-14 md:py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            Newsletter
+            {t("Newsletter")}
           </span>
           <h2 className="mt-6 font-display font-bold text-4xl text-ink md:text-5xl">
-            Join the Collector's Circle
+            {t("Join the Collector's Circle")}
           </h2>
           <p className="mt-6 text-ink/60">
-            Early access to new collections, studio notes, and exclusive artwork
-            previews — delivered when there's something worth sharing.
+            {t("Early access to new collections, studio notes, and exclusive artwork previews — delivered when there's something worth sharing.")}
           </p>
           <Link
             to="/subscription"
             className="mt-10 inline-block rounded-sm bg-gold px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band transition-colors hover:bg-gold-soft"
           >
-            Subscribe now
+            {t("Subscribe now")}
           </Link>
         </div>
       </section>

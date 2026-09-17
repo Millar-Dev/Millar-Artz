@@ -4,6 +4,8 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { categories, disciplines } from "@/lib/gallery-data";
 import { ThemeToggle } from "./ThemeToggle";
 import { BrandLockup } from "./BrandLogo";
+import { LanguageSwitch } from "./LanguageSwitch";
+import { useT } from "@/lib/i18n";
 
 /**
  * Primary navigation: the five departments, flanked by home, FAQ and contact.
@@ -34,6 +36,7 @@ const minorLinks = [
 const paintingCategories = categories.filter((c) => c.value !== "all");
 
 export function Nav() {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [paintingMenuOpen, setPaintingMenuOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -60,7 +63,7 @@ export function Nav() {
           <Link
             to="/"
             className="shrink-0 text-band-foreground"
-            aria-label="MillerArtz — home"
+            aria-label={t("MillerArtz — home")}
           >
             {/* The band scopes --brand-accent to the light rose itself, so the
                 mark and the ARTZ lettering both inherit the right one here. */}
@@ -85,7 +88,7 @@ export function Nav() {
                     className="flex items-center gap-1 text-band-foreground/80 transition-colors hover:text-gold"
                     activeProps={{ className: "!text-gold" }}
                   >
-                    {l.label}
+                    {t(l.label)}
                     <ChevronDown
                       size={12}
                       className={`transition-transform ${paintingMenuOpen ? "rotate-180" : ""}`}
@@ -101,7 +104,7 @@ export function Nav() {
                             search={{ category: c.value }}
                             className="text-left text-[10px] font-semibold uppercase tracking-[0.15em] text-band-foreground/80 transition-colors hover:text-gold"
                           >
-                            {c.label}
+                            {t(c.label)}
                           </Link>
                         ))}
                       </div>
@@ -109,7 +112,7 @@ export function Nav() {
                         to="/gallery"
                         className="mt-4 block border-t border-band-foreground/10 pt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gold"
                       >
-                        View full archive →
+                        {t("View full archive →")}
                       </Link>
                     </div>
                   )}
@@ -122,7 +125,7 @@ export function Nav() {
                   activeProps={{ className: "!text-gold" }}
                   activeOptions={{ exact: l.to === "/" }}
                 >
-                  {l.label}
+                  {t(l.label)}
                 </Link>
               ),
             )}
@@ -134,13 +137,14 @@ export function Nav() {
               search={{ type: "commission" }}
               className="hidden rounded-full bg-gold px-4 py-2 text-[11px] font-bold uppercase tracking-[0.15em] text-band transition-colors hover:bg-gold-soft sm:inline-block"
             >
-              Commission
+              {t("Commission")}
             </Link>
+            <LanguageSwitch className="text-band-foreground" />
             <ThemeToggle className="text-band-foreground/70 hover:text-gold" />
             <button
               className="text-band-foreground lg:hidden"
               onClick={() => setOpen((v) => !v)}
-              aria-label="Toggle menu"
+              aria-label={t("Toggle menu")}
             >
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -160,12 +164,12 @@ export function Nav() {
                 activeProps={{ className: "!text-gold" }}
                 activeOptions={{ exact: l.to === "/" }}
               >
-                {l.label}
+                {t(l.label)}
               </Link>
             ))}
 
             <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.25em] text-band-foreground/40">
-              More
+              {t("More")}
             </p>
             <div className="mt-2 flex flex-col">
               {minorLinks.map((l) => (
@@ -176,7 +180,7 @@ export function Nav() {
                   className="py-2.5 text-xs font-medium uppercase tracking-[0.15em] text-band-foreground/60"
                   activeProps={{ className: "!text-gold" }}
                 >
-                  {l.label}
+                  {t(l.label)}
                 </Link>
               ))}
             </div>
@@ -187,8 +191,10 @@ export function Nav() {
               onClick={() => setOpen(false)}
               className="mt-6 inline-flex items-center justify-center rounded-full bg-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-band"
             >
-              Start a Commission
+              {t("Start a Commission")}
             </Link>
+
+            <LanguageSwitch className="mt-6 justify-center text-sm text-band-foreground" />
           </div>
         </div>
       )}

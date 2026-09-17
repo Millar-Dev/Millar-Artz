@@ -1,5 +1,6 @@
 import { Navigation, ExternalLink } from "lucide-react";
 import { directionsUrl, mapEmbedUrl, parseCoords, pinUrl } from "@/lib/map";
+import { useT } from "@/lib/i18n";
 
 /**
  * The studio's location, with a live map and a one-tap route there.
@@ -18,6 +19,7 @@ export function StudioMap({
   /** Links only, no embedded map — for places that just need directions. */
   compact?: boolean;
 }) {
+  const t = useT();
   const coords = parseCoords(settings.map_coords);
   if (!coords) return null;
   const openHref = settings.map_url?.trim() || pinUrl(coords);
@@ -30,7 +32,7 @@ export function StudioMap({
         rel="noopener"
         className="inline-flex items-center gap-2 rounded-sm bg-gold px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
       >
-        <Navigation size={13} /> Get directions
+        <Navigation size={13} /> {t("Get directions")}
       </a>
       <a
         href={openHref}
@@ -38,7 +40,7 @@ export function StudioMap({
         rel="noopener"
         className="inline-flex items-center gap-2 rounded-sm border border-ink/15 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] text-ink/75 hover:text-ink"
       >
-        <ExternalLink size={13} /> Open in Google Maps
+        <ExternalLink size={13} /> {t("Open in Google Maps")}
       </a>
     </div>
   );
@@ -52,7 +54,7 @@ export function StudioMap({
       <div className="relative aspect-[4/3] w-full bg-ink/5">
         <iframe
           src={mapEmbedUrl(coords)}
-          title="Map showing the MillerArtz studio in Arusha, Tanzania"
+          title={t("Map showing the MillerArtz studio in Arusha, Tanzania")}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           className="absolute inset-0 h-full w-full border-0"
@@ -61,7 +63,7 @@ export function StudioMap({
       </div>
       <div className="space-y-3 p-5">
         <div>
-          <p className="font-display font-bold text-sm text-ink">The studio</p>
+          <p className="font-display font-bold text-sm text-ink">{t("The studio")}</p>
           {settings.location && (
             <p className="mt-1 text-xs text-ink/60">{settings.location}</p>
           )}

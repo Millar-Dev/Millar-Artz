@@ -19,6 +19,7 @@
  */
 
 import type { ReactNode } from "react";
+import { useT } from "@/lib/i18n";
 
 /** Outer silhouette with the doorway as an evenodd hole. */
 const ARCH_BODY =
@@ -155,6 +156,7 @@ export function BrandLockup({
   showTagline?: boolean;
   accentClassName?: string;
 }) {
+  const t = useT();
   return (
     <span className={`inline-flex items-center gap-3 ${className}`}>
       <BrandMark className={markClassName} title="" />
@@ -164,7 +166,7 @@ export function BrandLockup({
         </span>
         {showTagline && (
           <span className="mt-1.5 font-sans text-[0.42em] font-bold uppercase leading-none tracking-[0.28em] opacity-80">
-            The threshold to what's possible
+            {t("The threshold to what's possible")}
           </span>
         )}
       </span>

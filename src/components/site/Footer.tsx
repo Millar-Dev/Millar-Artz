@@ -5,8 +5,10 @@ import { savedProfiles } from "@/lib/social";
 import { SocialIcon } from "./SocialIcon";
 import { BrandLockup } from "./BrandLogo";
 import { SETTING_DEFAULTS } from "@/lib/data/site-settings";
+import { useT } from "@/lib/i18n";
 
 export function Footer() {
+  const t = useT();
   // Contact details and social links come from the root loader so they're
   // editable in the Studio without a deploy.
   const settings =
@@ -23,13 +25,12 @@ export function Footer() {
               markClassName="h-10 w-auto"
             />
             <p className="text-sm leading-relaxed text-band-foreground/50">
-              One threshold, five disciplines — painting, music, dance,
-              sculpture and acrobatics, under one roof in Arusha, Tanzania.
+              {t("One threshold, five disciplines — painting, music, dance, sculpture and acrobatics, under one roof in Arusha, Tanzania.")}
             </p>
           </div>
           <div>
             <h4 className="mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-band-foreground">
-              Connect
+              {t("Connect")}
             </h4>
             <div className="space-y-3 text-sm text-band-foreground/70">
               {settings.phone_primary && (
@@ -61,51 +62,51 @@ export function Footer() {
           </div>
           <div>
             <h4 className="mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-band-foreground">
-              Departments
+              {t("Departments")}
             </h4>
             <div className="space-y-3 text-sm text-band-foreground/70">
               {disciplines.map((d) => (
                 <Link key={d.id} to={d.slug} className="block hover:text-gold">
-                  {d.label}
+                  {t(d.label)}
                 </Link>
               ))}
             </div>
           </div>
           <div>
             <h4 className="mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-band-foreground">
-              Explore
+              {t("Explore")}
             </h4>
             <div className="space-y-3 text-sm text-band-foreground/70">
               <Link to="/gallery" className="block hover:text-gold">
-                Full archive
+                {t("Full archive")}
               </Link>
               <Link to="/about" className="block hover:text-gold">
-                About Us
+                {t("About Us")}
               </Link>
               <Link
                 to="/contact"
                 search={{ type: "commission" }}
                 className="block hover:text-gold"
               >
-                Commission a Piece
+                {t("Commission a Piece")}
               </Link>
               <Link to="/faq" className="block hover:text-gold">
-                FAQ
+                {t("FAQ")}
               </Link>
               <Link to="/subscription" className="block hover:text-gold">
-                Subscription
+                {t("Subscription")}
               </Link>
             </div>
           </div>
           <div>
             <h4 className="mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-band-foreground">
-              Newsletter
+              {t("Newsletter")}
             </h4>
             <Link
               to="/subscription"
               className="inline-flex items-center gap-2 border-b border-band-foreground/20 pb-2 text-sm text-band-foreground transition-colors hover:border-gold hover:text-gold"
             >
-              Join the Collector's Circle →
+              {t("Join the Collector's Circle →")}
             </Link>
             <div className="mt-6 flex gap-4">
               {/* Only rendered once a real profile URL is saved in the Studio —
@@ -147,10 +148,9 @@ export function Footer() {
         </div>
         <div className="flex flex-col items-start justify-between gap-4 border-t border-band-foreground/5 pt-8 text-[10px] font-semibold uppercase tracking-[0.2em] text-band-foreground/30 sm:flex-row sm:items-center">
           <p>
-            © {new Date().getFullYear()} MillerArtz Studio. All rights
-            reserved.
+            {t("© {year} MillerArtz Studio. All rights reserved.", { year: new Date().getFullYear() })}
           </p>
-          <p>Where imagination meets creativity.</p>
+          <p>{t("Where imagination meets creativity.")}</p>
         </div>
       </div>
     </footer>

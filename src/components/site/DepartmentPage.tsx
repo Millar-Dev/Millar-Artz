@@ -4,6 +4,7 @@ import { DisciplineMark } from "./BrandLogo";
 import { disciplineIcons } from "./discipline-icons";
 import { disciplines, type Discipline } from "@/lib/gallery-data";
 import { ArrowRight, Check } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 /**
  * The page every department shares.
@@ -25,6 +26,8 @@ export function DepartmentPage({
   discipline: Discipline;
   children?: React.ReactNode;
 }) {
+  const t = useT();
+  const label = t(discipline.label);
   const Icon = disciplineIcons[discipline.id];
   const others = disciplines.filter((d) => d.id !== discipline.id);
 
@@ -54,14 +57,14 @@ export function DepartmentPage({
                   className="ml-3 text-[11px] font-bold uppercase tracking-[0.3em]"
                   style={{ color: "var(--dept-on)" }}
                 >
-                  {discipline.label}
+                  {label}
                 </span>
 
                 <h1 className="mt-6 font-display text-5xl leading-[1.05] text-ink md:text-6xl">
-                  {discipline.tagline}
+                  {t(discipline.tagline)}
                 </h1>
                 <p className="mt-6 max-w-xl text-lg font-light leading-relaxed text-ink/70">
-                  {discipline.intro}
+                  {t(discipline.intro)}
                 </p>
 
                 <div className="mt-9 flex flex-wrap gap-4">
@@ -71,7 +74,7 @@ export function DepartmentPage({
                     className="inline-flex items-center gap-2 rounded-sm px-7 py-3.5 text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
                     style={{ backgroundColor: "var(--dept)" }}
                   >
-                    Commission {discipline.label.toLowerCase()}
+                    {t("Commission {name}", { name: label.toLowerCase() })}
                     <ArrowRight size={16} />
                   </Link>
                   {discipline.status === "live" && (
@@ -79,7 +82,7 @@ export function DepartmentPage({
                       to="/gallery"
                       className="glass rounded-sm px-7 py-3.5 text-sm font-medium text-band-foreground transition-colors hover:text-gold"
                     >
-                      Browse the archive
+                      {t("Browse the archive")}
                     </Link>
                   )}
                 </div>
@@ -93,7 +96,7 @@ export function DepartmentPage({
                     icon={Icon}
                     accent={discipline.accent}
                     className="h-auto w-full text-ink/90"
-                    title={`${discipline.label} — MillerArtz`}
+                    title={`${label} — MillerArtz`}
                   />
                 </div>
               </div>
@@ -105,7 +108,7 @@ export function DepartmentPage({
         <section className="border-t border-ink/5 bg-paper py-12 md:py-20">
           <div className="mx-auto max-w-7xl px-6">
             <h2 className="font-display text-3xl italic text-ink">
-              What we take on
+              {t("What we take on")}
             </h2>
             <ul className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
               {discipline.offerings.map((item) => (
@@ -118,7 +121,7 @@ export function DepartmentPage({
                     className="mt-1 shrink-0"
                     style={{ color: "var(--dept-on)" }}
                   />
-                  <span className="font-light">{item}</span>
+                  <span className="font-light">{t(item)}</span>
                 </li>
               ))}
             </ul>
@@ -133,11 +136,10 @@ export function DepartmentPage({
         <section className="py-12 md:py-20">
           <div className="mx-auto max-w-7xl px-6">
             <h2 className="font-display text-3xl italic text-ink">
-              The other four
+              {t("The other four")}
             </h2>
             <p className="mt-2 max-w-xl text-sm font-light text-ink/60">
-              One threshold, five disciplines. A commission can cross between
-              them — a score for a film, a sculpture for a stage.
+              {t("One threshold, five disciplines. A commission can cross between them — a score for a film, a sculpture for a stage.")}
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -157,10 +159,10 @@ export function DepartmentPage({
                     />
                     <span className="min-w-0">
                       <span className="block font-display text-lg text-ink">
-                        {d.label}
+                        {t(d.label)}
                       </span>
                       <span className="block truncate text-xs font-light text-ink/55">
-                        {d.tagline}
+                        {t(d.tagline)}
                       </span>
                     </span>
                   </Link>
@@ -177,6 +179,7 @@ export function DepartmentPage({
 /** Shown by the four departments that take commissions but have no archive on
  *  the site yet. Saying so is better than a grid of placeholders. */
 function NotYetArchived({ discipline }: { discipline: Discipline }) {
+  const t = useT();
   return (
     <section className="grain relative bg-band py-14 text-band-foreground md:py-24">
       <div className="mx-auto max-w-3xl px-6 text-center">
@@ -184,16 +187,13 @@ function NotYetArchived({ discipline }: { discipline: Discipline }) {
           className="text-[11px] font-bold uppercase tracking-[0.3em]"
           style={{ color: "var(--dept-bright)" }}
         >
-          Open for commission
+          {t("Open for commission")}
         </p>
         <h2 className="mt-5 font-display text-3xl italic md:text-4xl">
-          The work is happening. The archive isn't online yet.
+          {t("The work is happening. The archive isn't online yet.")}
         </h2>
         <p className="mx-auto mt-5 max-w-xl font-light leading-relaxed text-band-foreground/70">
-          {discipline.label} commissions are open now and briefs are answered
-          the same way as any other department — a conversation first, then a
-          quotation. Recordings, footage and photographs of past work are shared
-          on request while this page fills out.
+          {t("{name} commissions are open now and briefs are answered the same way as any other department — a conversation first, then a quotation. Recordings, footage and photographs of past work are shared on request while this page fills out.", { name: t(discipline.label) })}
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-4">
           <Link
@@ -202,13 +202,13 @@ function NotYetArchived({ discipline }: { discipline: Discipline }) {
             className="rounded-sm px-7 py-3.5 text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
             style={{ backgroundColor: "var(--dept)" }}
           >
-            Start a conversation
+            {t("Start a conversation")}
           </Link>
           <Link
             to="/subscription"
             className="glass rounded-sm px-7 py-3.5 text-sm font-medium text-band-foreground transition-colors hover:text-gold"
           >
-            Get told when it lands
+            {t("Get told when it lands")}
           </Link>
         </div>
       </div>

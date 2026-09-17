@@ -4,16 +4,23 @@ import { Check, Loader2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { subscribe } from "@/lib/data/subscribers";
 import { canonical, seoMeta } from "@/lib/seo";
+import { translator, useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/subscription")({
-  head: () => ({
-    meta: seoMeta(
-      "Subscribe — MillerArtz Collector's Circle",
-      "Join the MillerArtz Collector's Circle for early access to new work by Tanzanian artist Miller S.K., exclusive previews and studio updates.",
-      "/subscription",
-    ),
-    links: [canonical("/subscription")],
-  }),
+  head: ({ match }) => {
+    const { lang } = match.context;
+    const t = translator(lang);
+    return {
+      meta: seoMeta(
+        t("Subscribe — MillerArtz Collector's Circle"),
+        t("Join the MillerArtz Collector's Circle for early access to new work by Tanzanian artist Miller S.K., exclusive previews and studio updates."),
+        "/subscription",
+        undefined,
+        lang,
+      ),
+      links: [canonical("/subscription", lang)],
+    };
+  },
   component: Subscription,
 });
 
@@ -48,6 +55,7 @@ const plans = [
 ];
 
 function Subscription() {
+  const t = useT();
   const [email, setEmail] = useState("");
   const [tier, setTier] = useState<"free" | "premium">("free");
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
@@ -63,7 +71,7 @@ function Subscription() {
       setEmail("");
     } catch (err) {
       setStatus("idle");
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setError(err instanceof Error ? err.message : t("Something went wrong. Please try again."));
     }
   }
 
@@ -72,15 +80,13 @@ function Subscription() {
       <section className="pt-16 pb-8">
         <div className="mx-auto max-w-7xl px-6 text-center">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            The Collector's Circle
+            {t("The Collector's Circle")}
           </span>
           <h1 className="mx-auto mt-6 max-w-3xl font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
-            Be the first to <span className="">see</span> what's next.
+            {t("Be the first to see what's next.")}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg font-light text-ink/70">
-            Subscribe to receive newsletters, artwork drops, and previews from
-            MillerArtz. Two ways to follow the work — pick the one that suits
-            you.
+            {t("Subscribe to receive newsletters, artwork drops, and previews from MillerArtz. Two ways to follow the work — pick the one that suits you.")}
           </p>
         </div>
       </section>
@@ -98,23 +104,23 @@ function Subscription() {
               }`}
             >
               <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-                {p.tag}
+                {t(p.tag)}
               </span>
               <h2 className="mt-6 font-display font-bold text-3xl md:text-4xl">
-                {p.name}
+                {t(p.name)}
               </h2>
               <p
                 className={`mt-4 font-display text-2xl font-bold ${
                   p.highlight ? "text-band-foreground/80" : "text-ink/60"
                 }`}
               >
-                {p.price}
+                {t(p.price)}
               </p>
               <ul className="mt-8 space-y-3 text-sm font-light">
                 {p.features.map((f) => (
                   <li key={f} className="flex items-start gap-3">
                     <Check size={16} className="mt-0.5 shrink-0 text-gold" />
-                    <span>{f}</span>
+                    <span>{t(f)}</span>
                   </li>
                 ))}
               </ul>
@@ -127,7 +133,7 @@ function Subscription() {
                 }}
                 className="mt-10 rounded-sm bg-gold px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
               >
-                {p.cta}
+                {t(p.cta)}
               </button>
             </div>
           ))}
@@ -142,11 +148,10 @@ function Subscription() {
         <div className="mx-auto max-w-2xl px-6">
           <div className="text-center">
             <h2 className="font-display font-bold text-4xl text-ink md:text-5xl">
-              Join the list
+              {t("Join the list")}
             </h2>
             <p className="mt-4 text-ink/60">
-              We only send email when there's something worth showing.
-              Unsubscribe any time.
+              {t("We only send email when there's something worth showing. Unsubscribe any time.")}
             </p>
           </div>
 
@@ -163,14 +168,14 @@ function Subscription() {
                       : "text-ink/60 hover:text-ink"
                   }`}
                 >
-                  {v === "free" ? "Free" : "Premium"}
+                  {t(v === "free" ? "Free" : "Premium")}
                 </button>
               ))}
             </div>
 
             <label className="block">
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/60">
-                Email
+                {t("Email")}
               </span>
               <input
                 type="email"
@@ -178,7 +183,7 @@ function Subscription() {
                 maxLength={255}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("you@example.com")}
                 className="mt-2 w-full border-b border-ink/20 bg-transparent py-3 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
               />
             </label>
@@ -189,16 +194,18 @@ function Subscription() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gold px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft disabled:opacity-60"
             >
               {status === "sending" && <Loader2 size={14} className="animate-spin" />}
-              {tier === "free" ? "Subscribe for free" : "Request an invitation"}
+              {t(tier === "free" ? "Subscribe for free" : "Request an invitation")}
             </button>
 
             {error && <p className="text-center text-sm text-red-400">{error}</p>}
 
             {status === "sent" && (
               <p className="text-center text-sm text-gold">
-                {tier === "free"
-                  ? "You're on the list — thank you."
-                  : "Thank you — we'll be in touch about the Collector's Circle."}
+                {t(
+                  tier === "free"
+                    ? "You're on the list — thank you."
+                    : "Thank you — we'll be in touch about the Collector's Circle.",
+                )}
               </p>
             )}
           </form>

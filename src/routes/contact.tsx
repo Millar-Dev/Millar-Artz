@@ -17,6 +17,7 @@ import { savedProfiles } from "@/lib/social";
 import { SocialIcon } from "@/components/site/SocialIcon";
 import { StudioMap } from "@/components/site/StudioMap";
 import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
+import { translator, useT } from "@/lib/i18n";
 
 const contactSearchSchema = z.object({
   type: z.string().optional(),
@@ -26,14 +27,20 @@ const contactSearchSchema = z.object({
 
 export const Route = createFileRoute("/contact")({
   validateSearch: contactSearchSchema,
-  head: () => ({
-    meta: seoMeta(
-      "Commission Art from Arusha, Tanzania — MillerArtz",
-      "Commission a painting, portrait or mural from Arusha-based artist Miller S.K. by WhatsApp, phone or email. Delivery across Tanzania and worldwide.",
-      "/contact",
-    ),
-    links: [canonical("/contact")],
-  }),
+  head: ({ match }) => {
+    const { lang } = match.context;
+    const t = translator(lang);
+    return {
+      meta: seoMeta(
+        t("Commission Art from Arusha, Tanzania — MillerArtz"),
+        t("Commission a painting, portrait or mural from Arusha-based artist Miller S.K. by WhatsApp, phone or email. Delivery across Tanzania and worldwide."),
+        "/contact",
+        undefined,
+        lang,
+      ),
+      links: [canonical("/contact", lang)],
+    };
+  },
   loader: () => getSiteSettings(),
   component: Contact,
 });
@@ -52,6 +59,7 @@ const timelineOptions = [
 ];
 
 function Contact() {
+  const t = useT();
   const search = Route.useSearch();
   const settings = Route.useLoaderData();
   // Budget bands are set in shillings in the Studio and shown in whatever
@@ -66,9 +74,9 @@ function Contact() {
     phone: "",
     style: search.type ?? "",
     subject: search.piece
-      ? `Enquiry about “${search.piece}”`
+      ? t("Enquiry about “{piece}”", { piece: search.piece })
       : search.type
-        ? `Commission inquiry — ${search.type}`
+        ? t("Commission inquiry — {type}", { type: t(search.type) })
         : "",
     budget: "",
     timeline: "",
@@ -82,7 +90,9 @@ function Contact() {
       style: search.type ?? f.style,
       subject:
         f.subject ||
-        (search.piece ? `Enquiry about “${search.piece}”` : `Commission inquiry — ${search.type}`),
+        (search.piece
+          ? t("Enquiry about “{piece}”", { piece: search.piece })
+          : t("Commission inquiry — {type}", { type: t(search.type ?? "") })),
     }));
   }, [search.type]);
 
@@ -98,12 +108,14 @@ function Contact() {
       : form.budget;
   }
 
+  /** Written in the visitor's language: it goes out from their own email or
+   *  WhatsApp. What's saved to the Studio stays in English. */
   function composeDetails() {
     const budget = budgetText();
     return [
-      form.style && `Style: ${form.style}`,
-      budget && `Budget: ${budget}`,
-      form.timeline && `Timeline: ${form.timeline}`,
+      form.style && `${t("Style")}: ${t(form.style)}`,
+      budget && `${t("Budget")}: ${budget}`,
+      form.timeline && `${t("Timeline")}: ${t(form.timeline)}`,
     ]
       .filter(Boolean)
       .join("\n");
@@ -125,7 +137,7 @@ function Contact() {
       setError(
         err instanceof Error
           ? err.message
-          : "Couldn't reach the studio inbox — please use WhatsApp instead.",
+          : t("Couldn't reach the studio inbox — please use WhatsApp instead."),
       );
     }
 
@@ -134,7 +146,7 @@ function Contact() {
       details ? `\n${details}\n` : ""
     }\n${form.message}`;
     const mailto = `mailto:${settings.email}?subject=${encodeURIComponent(
-      form.subject || "Commission inquiry",
+      form.subject || t("Commission inquiry"),
     )}&body=${encodeURIComponent(body)}`;
     window.location.href = mailto;
 
@@ -145,9 +157,10 @@ function Contact() {
   function openWhatsApp() {
     const details = composeDetails();
     const text = encodeURIComponent(
-      `Hello MillerArtz,\n\nMy name is ${form.fullName || "..."} and I'd like to inquire about: ${
-        form.subject || "an artwork"
-      }.\n${details ? `\n${details}\n` : ""}\n${form.message}`,
+      `${t("Hello MillerArtz,\n\nMy name is {name} and I'd like to inquire about: {subject}.", {
+        name: form.fullName || "...",
+        subject: form.subject || t("an artwork"),
+      })}\n${details ? `\n${details}\n` : ""}\n${form.message}`,
     );
     window.open(
       `https://wa.me/${settings.whatsapp_number}?text=${text}`,
@@ -162,15 +175,13 @@ function Contact() {
         <div className="glow-teal pointer-events-none absolute -right-40 top-0 h-[420px] w-[420px] rounded-full opacity-[0.12] blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-            Contact
+            {t("Contact")}
           </span>
           <h1 className="mt-6 max-w-3xl font-display font-bold text-5xl leading-[1.05] text-ink md:text-7xl">
-            Let's <span className="">talk</span>.
+            {t("Let's talk.")}
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-light text-ink/70">
-            Whether it's a commission, a question about a piece, or an idea for
-            a discipline that isn't in the gallery yet — share the details below
-            and a quotation follows within days.
+            {t("Whether it's a commission, a question about a piece, or an idea for a discipline that isn't in the gallery yet — share the details below and a quotation follows within days.")}
           </p>
         </div>
       </section>
@@ -179,13 +190,13 @@ function Contact() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           {/* Info column */}
           <aside className="md:col-span-4">
-            <h2 className="font-display font-bold text-2xl text-ink">Studio</h2>
+            <h2 className="font-display font-bold text-2xl text-ink">{t("Studio")}</h2>
             <div className="mt-8 space-y-6 text-sm text-ink/70">
               <div className="flex items-start gap-3">
                 <Phone size={16} className="mt-0.5 shrink-0 text-gold" />
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-ink">
-                    Phone
+                    {t("Phone")}
                   </p>
                   {settings.phone_primary && (
                     <a
@@ -209,7 +220,7 @@ function Contact() {
                 <Mail size={16} className="mt-0.5 shrink-0 text-gold" />
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-ink">
-                    Email
+                    {t("Email")}
                   </p>
                   <a
                     href={`mailto:${settings.email}`}
@@ -223,7 +234,7 @@ function Contact() {
                 <MapPin size={16} className="mt-0.5 shrink-0 text-gold" />
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-ink">
-                    Location
+                    {t("Location")}
                   </p>
                   <p className="mt-1">{settings.location}</p>
                 </div>
@@ -267,7 +278,7 @@ function Contact() {
               className="space-y-6 border border-ink/10 bg-paper p-8 md:p-12"
             >
               <div className="grid gap-6 md:grid-cols-2">
-                <Field label="Full Name" required>
+                <Field label={t("Full Name")} required>
                   <input
                     required
                     value={form.fullName}
@@ -276,7 +287,7 @@ function Contact() {
                     className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                   />
                 </Field>
-                <Field label="Email" required>
+                <Field label={t("Email")} required>
                   <input
                     required
                     type="email"
@@ -286,7 +297,7 @@ function Contact() {
                     className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                   />
                 </Field>
-                <Field label="Phone Number">
+                <Field label={t("Phone Number")}>
                   <input
                     value={form.phone}
                     onChange={(e) => update("phone", e.target.value)}
@@ -294,51 +305,51 @@ function Contact() {
                     className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                   />
                 </Field>
-                <Field label="Style / Discipline">
+                <Field label={t("Style / Discipline")}>
                   <select
                     value={form.style}
                     onChange={(e) => update("style", e.target.value)}
                     className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                   >
-                    <option value="">Select one...</option>
+                    <option value="">{t("Select one...")}</option>
                     {styleOptions.map((s) => (
                       <option key={s} value={s}>
-                        {s}
+                        {t(s)}
                       </option>
                     ))}
                   </select>
                 </Field>
-                <Field label="Budget range">
+                <Field label={t("Budget range")}>
                   <select
                     value={form.budget}
                     onChange={(e) => update("budget", e.target.value)}
                     className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                   >
-                    <option value="">Select one...</option>
+                    <option value="">{t("Select one...")}</option>
                     {budgets().map((b) => (
                       <option key={b.value} value={b.value}>
-                        {b.label}
+                        {budgetLabel(b.label, t)}
                       </option>
                     ))}
                   </select>
                   <CurrencySelect className="mt-3" />
                   <RateNote className="mt-2 text-ink/50" />
                 </Field>
-                <Field label="Timeline">
+                <Field label={t("Timeline")}>
                   <select
                     value={form.timeline}
                     onChange={(e) => update("timeline", e.target.value)}
                     className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                   >
-                    <option value="">Select one...</option>
-                    {timelineOptions.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
+                    <option value="">{t("Select one...")}</option>
+                    {timelineOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {t(option)}
                       </option>
                     ))}
                   </select>
                 </Field>
-                <Field label="Subject" required>
+                <Field label={t("Subject")} required>
                   <input
                     required
                     value={form.subject}
@@ -348,14 +359,14 @@ function Contact() {
                   />
                 </Field>
               </div>
-              <Field label="Message" required>
+              <Field label={t("Message")} required>
                 <textarea
                   required
                   rows={6}
                   value={form.message}
                   onChange={(e) => update("message", e.target.value)}
                   maxLength={2000}
-                  placeholder="Describe the piece you're imagining, or attach reference photos when you follow up by email or WhatsApp."
+                  placeholder={t("Describe the piece you're imagining, or attach reference photos when you follow up by email or WhatsApp.")}
                   className="w-full resize-none border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
                 />
               </Field>
@@ -369,19 +380,18 @@ function Contact() {
                   {status === "sending" && (
                     <Loader2 size={14} className="animate-spin" />
                   )}
-                  Send message
+                  {t("Send message")}
                 </button>
                 <button
                   type="button"
                   onClick={openWhatsApp}
                   className="rounded-sm border border-ink/20 px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] text-ink hover:border-gold hover:text-gold"
                 >
-                  Send via WhatsApp
+                  {t("Send via WhatsApp")}
                 </button>
                 {status === "sent" && (
                   <p className="text-sm text-gold">
-                    Received — your message is with the studio. Your email app
-                    should also be opening with a copy.
+                    {t("Received — your message is with the studio. Your email app should also be opening with a copy.")}
                   </p>
                 )}
                 {error && <p className="text-sm text-red-400">{error}</p>}
@@ -392,6 +402,14 @@ function Contact() {
       </section>
     </Layout>
   );
+}
+
+/** Budget options arrive as "Under …" / "Over …" — only those words change. */
+function budgetLabel(label: string, t: (s: string) => string) {
+  return label
+    .replace(/\bUnder\b/g, t("Under"))
+    .replace(/\bOver\b/g, t("Over"))
+    .replace("Let's discuss", t("Let's discuss"));
 }
 
 function Field({

@@ -8,6 +8,7 @@ import { fromArtworkRow, type Artwork } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { artworkGraph, artworkPath, absoluteUrl, canonical, jsonLd, seoMeta } from "@/lib/seo";
 import { shareImage, sized, srcSetFor } from "@/lib/images";
+import { localizePath, translator, useLang, useT } from "@/lib/i18n";
 
 /**
  * A page for one painting.
@@ -40,22 +41,36 @@ export const Route = createFileRoute("/gallery_/$id")({
       next: all[index + 1] ?? null,
     };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, match }) => {
     if (!loaderData) return {};
+    const { lang } = match.context;
+    const t = translator(lang);
     const { artwork: a } = loaderData;
-    const title = `${a.title} — ${a.categoryLabel} by Miller S.K. | MillerArtz`.slice(0, 70);
+    const medium = t(a.medium).trim();
+    const title = t("{title} — {category} by Miller S.K. | MillerArtz", {
+      title: a.title,
+      category: t(a.categoryLabel),
+    }).slice(0, 70);
+    // The description is written in the Studio, in English; the Swahili page
+    // keeps it and says the rest in Swahili.
     const summary = a.description?.trim()
       ? a.description.trim()
-      : `${a.medium} by Tanzanian artist Miller S.K.`;
-    const description = `${summary} ${a.medium}${a.dimensions ? `, ${a.dimensions}` : ""}, ${a.year}. MillerArtz, Arusha, Tanzania.`
+      : t("{medium} by Tanzanian artist Miller S.K.", { medium });
+    const description = `${summary} ${medium}${a.dimensions ? `, ${a.dimensions}` : ""}, ${a.year}. MillerArtz, Arusha, Tanzania.`
       .replace(/\s+/g, " ")
       .slice(0, 158);
     return {
-      meta: seoMeta(title, description, artworkPath(a.id), {
-        url: shareImage(a.image),
-        alt: `${a.title} — ${a.medium} by Miller S.K.`,
-      }),
-      links: [canonical(artworkPath(a.id))],
+      meta: seoMeta(
+        title,
+        description,
+        artworkPath(a.id),
+        {
+          url: shareImage(a.image),
+          alt: t("{title} — {medium} by Miller S.K.", { title: a.title, medium }),
+        },
+        lang,
+      ),
+      links: [canonical(artworkPath(a.id), lang)],
       scripts: [jsonLd(artworkGraph(a))],
     };
   },
@@ -64,6 +79,7 @@ export const Route = createFileRoute("/gallery_/$id")({
 
 function ArtworkPage() {
   const { artwork: a, related, previous, next } = Route.useLoaderData();
+  const t = useT();
   const { price } = useCurrency();
   const view = a.price != null ? price(a.price, a.currency) : null;
 
@@ -72,11 +88,11 @@ function ArtworkPage() {
       <section className="mx-auto max-w-7xl px-6 pb-14 pt-10 md:pb-20 md:pt-14">
         <nav aria-label="Breadcrumb" className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/50">
           <Link to="/gallery" className="hover:text-ink">
-            Gallery
+            {t("Gallery")}
           </Link>
           <span className="mx-2 text-ink/30">/</span>
           <Link to="/gallery" search={{ category: a.category }} className="hover:text-ink">
-            {a.categoryLabel}
+            {t(a.categoryLabel)}
           </Link>
         </nav>
 
@@ -89,7 +105,7 @@ function ArtworkPage() {
                 src={a.image}
                 srcSet={srcSetFor(a.image, [480, 720, 960, 1280], 82)}
                 sizes="(min-width: 1024px) 58vw, 100vw"
-                alt={`${a.title} — ${a.medium} by Miller S.K.`}
+                alt={t("{title} — {medium} by Miller S.K.", { title: a.title, medium: t(a.medium).trim() })}
                 className="block w-full rounded-[1px] bg-paper object-contain"
               />
             </div>
@@ -98,12 +114,12 @@ function ArtworkPage() {
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-28">
               <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-gold">
-                {a.categoryLabel}
+                {t(a.categoryLabel)}
               </p>
               <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-ink md:text-5xl">
                 {a.title}
               </h1>
-              <p className="mt-2 text-sm text-ink/60">by Miller S.K., Arusha, Tanzania</p>
+              <p className="mt-2 text-sm text-ink/60">{t("by Miller S.K., Arusha, Tanzania")}</p>
 
               {a.description && (
                 <p className="mt-6 text-base font-light leading-relaxed text-ink/75">
@@ -112,22 +128,22 @@ function ArtworkPage() {
               )}
 
               <dl className="mt-8 space-y-3 text-sm text-ink/75">
-                <Row label="Medium" value={a.medium} />
-                {a.dimensions && <Row label="Dimensions" value={a.dimensions} />}
-                <Row label="Year" value={String(a.year)} />
+                <Row label={t("Medium")} value={t(a.medium)} />
+                {a.dimensions && <Row label={t("Dimensions")} value={a.dimensions} />}
+                <Row label={t("Year")} value={String(a.year)} />
                 <div className="flex items-center justify-between border-t border-ink/10 pt-3">
-                  <dt className="text-[10px] uppercase tracking-widest text-ink/50">Status</dt>
+                  <dt className="text-[10px] uppercase tracking-widest text-ink/50">{t("Status")}</dt>
                   <dd>
                     <StatusPill status={a.status} />
                   </dd>
                 </div>
                 <div className="flex items-start justify-between border-t border-ink/10 pt-3">
-                  <dt className="text-[10px] uppercase tracking-widest text-ink/50">Price</dt>
+                  <dt className="text-[10px] uppercase tracking-widest text-ink/50">{t("Price")}</dt>
                   <dd className="text-right">
                     {a.status === "sold" ? (
-                      <span className="font-display text-xl font-bold text-gold">Sold</span>
+                      <span className="font-display text-xl font-bold text-gold">{t("Sold")}</span>
                     ) : !view ? (
-                      <span className="font-display text-xl font-bold text-gold">On request</span>
+                      <span className="font-display text-xl font-bold text-gold">{t("On request")}</span>
                     ) : (
                       <>
                         <span className="block font-display text-xl font-bold text-gold">
@@ -155,7 +171,7 @@ function ArtworkPage() {
                   search={{ type: a.categoryLabel, piece: a.title }}
                   className="rounded-sm bg-gold px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
                 >
-                  {a.status === "sold" ? "Commission something similar" : "Enquire about this piece"}
+                  {t(a.status === "sold" ? "Commission something similar" : "Enquire about this piece")}
                 </Link>
                 <ShareButtons artwork={a} />
               </div>
@@ -195,7 +211,7 @@ function ArtworkPage() {
       {related.length > 0 && (
         <section className="border-t border-ink/5 bg-paper py-12 md:py-16">
           <div className="mx-auto max-w-7xl px-6">
-            <h2 className="font-display text-2xl font-bold text-ink md:text-3xl">More to see</h2>
+            <h2 className="font-display text-2xl font-bold text-ink md:text-3xl">{t("More to see")}</h2>
             <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
               {related.map((r: Artwork) => (
                 <Link key={r.id} to="/gallery/$id" params={{ id: r.id }} className="group block">
@@ -210,7 +226,7 @@ function ArtworkPage() {
                     />
                   </div>
                   <p className="mt-3 truncate font-display text-base font-bold text-ink">{r.title}</p>
-                  <p className="truncate text-xs text-ink/50">{r.categoryLabel}</p>
+                  <p className="truncate text-xs text-ink/50">{t(r.categoryLabel)}</p>
                 </Link>
               ))}
             </div>
@@ -236,8 +252,12 @@ function Row({ label, value }: { label: string; value: string }) {
  */
 function ShareButtons({ artwork: a }: { artwork: Artwork }) {
   const [copied, setCopied] = useState(false);
-  const url = absoluteUrl(artworkPath(a.id));
-  const text = `${a.title} by Miller S.K. — ${url}`;
+  const lang = useLang();
+  const t = translator(lang);
+  // Shared in the language it was viewed in.
+  const url = absoluteUrl(localizePath(artworkPath(a.id), lang));
+  const byline = t("{title} by Miller S.K.", { title: a.title });
+  const text = `${byline} — ${url}`;
   // Decided after load: the server can't know, and guessing during render
   // would make the button change as the page hydrates.
   const [canShare, setCanShare] = useState(false);
@@ -245,7 +265,7 @@ function ShareButtons({ artwork: a }: { artwork: Artwork }) {
 
   async function share() {
     try {
-      await navigator.share({ title: `${a.title} — MillerArtz`, text: `${a.title} by Miller S.K.`, url });
+      await navigator.share({ title: `${a.title} — MillerArtz`, text: byline, url });
     } catch {
       /* dismissed */
     }
@@ -269,18 +289,18 @@ function ShareButtons({ artwork: a }: { artwork: Artwork }) {
         target="_blank"
         rel="noopener"
         className={btn}
-        aria-label="Share on WhatsApp"
+        aria-label={t("Share on WhatsApp")}
       >
-        <MessageCircle size={14} /> Share
+        <MessageCircle size={14} /> {t("Share")}
       </a>
       {canShare ? (
-        <button type="button" onClick={share} className={btn} aria-label="More ways to share">
+        <button type="button" onClick={share} className={btn} aria-label={t("More ways to share")}>
           <Share2 size={14} />
         </button>
       ) : (
-        <button type="button" onClick={copy} className={btn} aria-label="Copy link">
+        <button type="button" onClick={copy} className={btn} aria-label={t("Copy link")}>
           {copied ? <Check size={14} /> : <Link2 size={14} />}
-          {copied ? "Copied" : ""}
+          {copied ? t("Copied") : ""}
         </button>
       )}
     </>

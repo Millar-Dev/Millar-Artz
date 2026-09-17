@@ -3,6 +3,7 @@ import type {} from "@tanstack/react-start";
 import { disciplines } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { artworkPath, SITE_URL } from "@/lib/seo";
+import { LANGS, localizePath } from "@/lib/i18n";
 
 const escapeXml = (v: string) =>
   v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -54,24 +55,37 @@ export const Route = createFileRoute("/sitemap.xml")({
           })),
         ];
 
-        const urls = entries.map((e) =>
-          [
-            `  <url>`,
-            `    <loc>${BASE_URL}${e.path}</loc>`,
-            e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
-            e.priority ? `    <priority>${e.priority}</priority>` : null,
-            ...(e.images ?? []).map(
-              (src) => `    <image:image><image:loc>${escapeXml(src)}</image:loc></image:image>`,
+        // Every page in both languages. Each entry names its twin, the
+        // sitemap form of the hreflang links in the page head. Images are
+        // listed once, on the English page, since they're the same files.
+        const urls = entries.flatMap((e) => {
+          const alternates = [
+            ...LANGS.map(
+              (l) =>
+                `    <xhtml:link rel="alternate" hreflang="${l.code}" href="${BASE_URL}${localizePath(e.path, l.code)}"/>`,
             ),
-            `  </url>`,
-          ]
-            .filter(Boolean)
-            .join("\n"),
-        );
+            `    <xhtml:link rel="alternate" hreflang="x-default" href="${BASE_URL}${e.path}"/>`,
+          ];
+          return LANGS.map((l) =>
+            [
+              `  <url>`,
+              `    <loc>${BASE_URL}${localizePath(e.path, l.code)}</loc>`,
+              ...alternates,
+              e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
+              e.priority ? `    <priority>${e.priority}</priority>` : null,
+              ...(l.code === "en" ? (e.images ?? []) : []).map(
+                (src) => `    <image:image><image:loc>${escapeXml(src)}</image:loc></image:image>`,
+              ),
+              `  </url>`,
+            ]
+              .filter(Boolean)
+              .join("\n"),
+          );
+        });
 
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
-          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`,
+          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml">`,
           ...urls,
           `</urlset>`,
         ].join("\n");
