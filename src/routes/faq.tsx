@@ -53,7 +53,7 @@ const groups: { heading: string; items: { q: string; a: string }[] }[] = [
       },
       {
         q: "What currency are prices in?",
-        a: "Prices are set in Tanzanian shillings (TSh). On the Gallery and Contact pages you can switch to US dollars, euros, British pounds or Kenyan shillings; those figures are converted at the studio's current rate and are a guide. Your quotation confirms the exact amount.",
+        a: "Prices are set in Tanzanian shillings (TSh). On the Gallery and Contact pages you can switch to about twenty other currencies — East African shillings and francs, US dollars, euros and pounds, yuan, yen, won, rupees, dirhams, riyals and more. Those figures are converted at the studio's current rate and are a guide. Your quotation confirms the exact amount.",
       },
       {
         q: "How is payment handled?",

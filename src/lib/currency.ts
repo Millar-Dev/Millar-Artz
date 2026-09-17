@@ -17,12 +17,33 @@
 
 export const BASE_CURRENCY = "TZS";
 
+/**
+ * Grouped by region so a long list stays scannable in the visitor's switch.
+ * East Africa first: neighbouring buyers are the most frequent after local
+ * ones. Symbols are the ones readers in each place actually use; the yuan and
+ * yen are prefixed so their shared ¥ can't be confused.
+ */
 export const CURRENCIES = [
-  { code: "TZS", name: "Tanzanian shilling", symbol: "TSh" },
-  { code: "USD", name: "US dollar", symbol: "US$" },
-  { code: "EUR", name: "Euro", symbol: "€" },
-  { code: "GBP", name: "British pound", symbol: "£" },
-  { code: "KES", name: "Kenyan shilling", symbol: "KSh" },
+  { code: "TZS", name: "Tanzanian shilling", symbol: "TSh", region: "East Africa" },
+  { code: "KES", name: "Kenyan shilling", symbol: "KSh", region: "East Africa" },
+  { code: "UGX", name: "Ugandan shilling", symbol: "USh", region: "East Africa" },
+  { code: "RWF", name: "Rwandan franc", symbol: "FRw", region: "East Africa" },
+  { code: "BIF", name: "Burundian franc", symbol: "FBu", region: "East Africa" },
+  { code: "USD", name: "US dollar", symbol: "US$", region: "Americas, Europe & Oceania" },
+  { code: "EUR", name: "Euro", symbol: "€", region: "Americas, Europe & Oceania" },
+  { code: "GBP", name: "British pound", symbol: "£", region: "Americas, Europe & Oceania" },
+  { code: "CHF", name: "Swiss franc", symbol: "CHF", region: "Americas, Europe & Oceania" },
+  { code: "CAD", name: "Canadian dollar", symbol: "CA$", region: "Americas, Europe & Oceania" },
+  { code: "AUD", name: "Australian dollar", symbol: "A$", region: "Americas, Europe & Oceania" },
+  { code: "CNY", name: "Chinese yuan", symbol: "CN¥", region: "Asia" },
+  { code: "JPY", name: "Japanese yen", symbol: "JP¥", region: "Asia" },
+  { code: "KRW", name: "South Korean won", symbol: "₩", region: "Asia" },
+  { code: "INR", name: "Indian rupee", symbol: "₹", region: "Asia" },
+  { code: "PKR", name: "Pakistani rupee", symbol: "Rs", region: "Asia" },
+  { code: "AED", name: "UAE dirham", symbol: "AED", region: "Middle East" },
+  { code: "SAR", name: "Saudi riyal", symbol: "SAR", region: "Middle East" },
+  { code: "QAR", name: "Qatari riyal", symbol: "QAR", region: "Middle East" },
+  { code: "ZAR", name: "South African rand", symbol: "R", region: "Southern Africa" },
 ] as const;
 
 export type CurrencyCode = (typeof CURRENCIES)[number]["code"];
@@ -33,13 +54,29 @@ export type Rates = Record<Exclude<CurrencyCode, "TZS">, number>;
 /**
  * Starting rates, taken from market rates on 17 September 2026. The owner is
  * expected to replace these from the Studio; they exist so conversion works
- * from the first deploy rather than showing nothing.
+ * from the first deploy rather than showing nothing. A saved rate set that
+ * predates a currency falls back to its entry here.
  */
 export const DEFAULT_RATES: Rates = {
+  KES: 20.41,
+  UGX: 0.6951,
+  RWF: 1.789,
+  BIF: 0.8859,
   USD: 2645.5,
   EUR: 3048.78,
   GBP: 3558.72,
-  KES: 20.41,
+  CHF: 3236.25,
+  CAD: 1930.5,
+  AUD: 1908.4,
+  CNY: 393.7,
+  JPY: 16.83,
+  KRW: 1.964,
+  INR: 27.94,
+  PKR: 9.55,
+  AED: 720.98,
+  SAR: 705.72,
+  QAR: 727.27,
+  ZAR: 163.48,
 };
 
 /**
@@ -49,6 +86,20 @@ export const DEFAULT_RATES: Rates = {
  * used to carry, which put nearly the whole catalogue under the first option.
  */
 export const DEFAULT_BUDGET_BANDS = [150_000, 400_000, 1_000_000, 3_000_000];
+
+/**
+ * How a rate reads in a sentence. A unit worth less than a shilling reads
+ * badly as "1 UGX = TSh 0.70", so small currencies are quoted per 100 or
+ * 1,000: "1,000 UGX = TSh 695", "100 KRW = TSh 196".
+ */
+export function describeRate(code: CurrencyCode, rates: Rates) {
+  if (code === BASE_CURRENCY) return "";
+  const rate = rates[code as keyof Rates];
+  const per = rate < 1 ? 1000 : rate < 10 ? 100 : 1;
+  const tsh = rate * per;
+  const shown = tsh.toLocaleString("en-US", { maximumFractionDigits: tsh < 100 ? 2 : 0 });
+  return `${per.toLocaleString("en-US")} ${code} = TSh ${shown}`;
+}
 
 export const isCurrency = (v: unknown): v is CurrencyCode =>
   CURRENCIES.some((c) => c.code === v);
@@ -96,33 +147,25 @@ export function convert(amount: number, from: CurrencyCode, to: CurrencyCode, ra
 }
 
 /**
- * Rounds a converted figure to something a person would actually say. An
- * exact conversion like US$94.51 implies a precision the rate doesn't have.
+ * Rounds a converted figure to something a person would actually say — three
+ * significant figures, never below a whole unit. An exact conversion like
+ * US$94.51 implies a precision the rate doesn't have. Magnitude-based rather
+ * than per currency, so it holds for yen and won as well as dollars:
+ * US$95, US$151, KSh 12,200, ₩127,000, TSh 1,190,000.
  */
-export function roundForDisplay(amount: number, code: CurrencyCode) {
-  const step =
-    code === "TZS"
-      ? amount >= 1_000_000
-        ? 10_000
-        : 1_000
-      : code === "KES"
-        ? amount >= 10_000
-          ? 100
-          : 50
-        : amount >= 1_000
-          ? 10
-          : amount >= 100
-            ? 5
-            : 1;
+export function roundForDisplay(amount: number) {
+  if (!Number.isFinite(amount) || amount <= 0) return 0;
+  const step = Math.max(1, 10 ** (Math.floor(Math.log10(amount)) - 2));
   return Math.max(step, Math.round(amount / step) * step);
 }
 
-/** "TSh 250,000", "US$95", "€80". */
+/** "TSh 250,000", "US$95", "€80", "AED 350". */
 export function formatMoney(amount: number, code: CurrencyCode) {
   const { symbol } = currencyInfo(code);
   const n = Math.round(amount).toLocaleString("en-US");
-  // Shilling symbols read with a space; single-glyph symbols sit tight.
-  return /^[A-Za-z]/.test(symbol) && !symbol.endsWith("$") ? `${symbol} ${n}` : `${symbol}${n}`;
+  // Symbols ending in a letter read with a space (TSh 250,000, AED 350);
+  // ones ending in a sign sit tight (US$95, ₹2,700, CN¥640).
+  return /[A-Za-z]$/.test(symbol) ? `${symbol} ${n}` : `${symbol}${n}`;
 }
 
 export interface PriceView {
@@ -143,7 +186,7 @@ export function viewPrice(
   const source: CurrencyCode = isCurrency(from) ? from : BASE_CURRENCY;
   const original = formatMoney(amount, source);
   if (source === to) return { display: original, approximate: false, original };
-  const converted = roundForDisplay(convert(amount, source, to, rates), to);
+  const converted = roundForDisplay(convert(amount, source, to, rates));
   return { display: `≈ ${formatMoney(converted, to)}`, approximate: true, original };
 }
 
@@ -153,7 +196,7 @@ export function viewPrice(
  */
 export function budgetOptions(bands: number[], to: CurrencyCode, rates: Rates) {
   const num = (n: number) => Math.round(n).toLocaleString("en-US");
-  const inCurrency = (n: number) => roundForDisplay(convert(n, "TZS", to, rates), to);
+  const inCurrency = (n: number) => roundForDisplay(convert(n, "TZS", to, rates));
   const foreign = to !== "TZS";
 
   const options: { value: string; label: string }[] = [];

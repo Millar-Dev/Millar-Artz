@@ -5,6 +5,7 @@ import { BrandMark } from "@/components/site/BrandLogo";
 import { getSiteImage } from "@/lib/data/site-images";
 import { getSiteSettings } from "@/lib/data/site-settings";
 import { canonical, seoMeta } from "@/lib/seo";
+import { StudioMap } from "@/components/site/StudioMap";
 import { MapPin, Clock, Palette, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
@@ -197,6 +198,7 @@ function About() {
                     <dd className="mt-1 text-sm text-ink/65">
                       {settings.location}
                     </dd>
+                    <StudioMap settings={settings} compact className="mt-3" />
                   </div>
                 </div>
                 <div className="flex items-start gap-3">

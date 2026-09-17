@@ -1,4 +1,5 @@
 import { savedProfiles } from "./social";
+import { parseCoords, pinUrl } from "./map";
 
 /**
  * Canonical URL + structured-data helpers.
@@ -99,6 +100,8 @@ interface SiteContact {
   facebook_url?: string;
   tiktok_url?: string;
   youtube_url?: string;
+  map_url?: string;
+  map_coords?: string;
   email?: string;
   phone_primary?: string;
 }
@@ -116,7 +119,9 @@ interface SiteContact {
 export function siteGraph(contact?: SiteContact) {
   const sameAs = savedProfiles(contact).map((p) => p.href);
   const country = { "@type": "Country", name: "Tanzania" };
-  // City-level only — deliberately no street address or coordinates.
+  // City-level address. The exact pin is added below only when the owner has
+  // saved a map link — publishing it is their choice, made in the Studio.
+  const pin = parseCoords(contact?.map_coords);
   const arusha = {
     "@type": "Place",
     name: "Arusha, Tanzania",
@@ -188,6 +193,12 @@ export function siteGraph(contact?: SiteContact) {
         founder: { "@id": `${SITE_URL}/#artist` },
         address: arusha.address,
         location: arusha,
+        ...(pin
+          ? {
+              geo: { "@type": "GeoCoordinates", latitude: pin.lat, longitude: pin.lng },
+              hasMap: contact?.map_url?.trim() || pinUrl(pin),
+            }
+          : {}),
         areaServed: served,
         knowsAbout: disciplines,
         ...(contact?.email ? { email: contact.email } : {}),

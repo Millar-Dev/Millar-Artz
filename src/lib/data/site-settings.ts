@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { BASE_CURRENCY, DEFAULT_BUDGET_BANDS, DEFAULT_RATES } from "../currency";
+import { coordsFromMapsUrl, formatCoords, isGoogleMapsUrl, pinUrl } from "../map";
 import { requireAdmin } from "./admin-session";
 import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";
 
@@ -14,6 +15,10 @@ export const SETTING_KEYS = [
   "phone_primary",
   "phone_secondary",
   "location",
+  /** Google Maps share link to the studio, as pasted by the owner. */
+  "map_url",
+  /** "lat,lng" resolved from map_url when it is saved. Pages read this. */
+  "map_coords",
   /** Currency a first-time visitor sees prices in. */
   "display_currency",
   /** JSON: shillings per unit of each foreign currency, e.g. {"USD":2645.5}. */
@@ -46,6 +51,9 @@ export const SETTING_DEFAULTS: SiteSettings = {
   phone_primary: "+255 616 110 100",
   phone_secondary: "+255 754 300 543",
   location: "Arusha, Tanzania — visits by appointment.",
+  // The studio in Arusha, from the owner's share link.
+  map_url: "https://maps.app.goo.gl/9mpr5uzms4CnQDMX7",
+  map_coords: "-3.311128,36.639965",
   display_currency: BASE_CURRENCY,
   currency_rates: JSON.stringify(DEFAULT_RATES),
   rates_updated: "2026-09-17",
@@ -81,6 +89,12 @@ export const updateSiteSettings = createServerFn({ method: "POST" })
   .validator((input: Partial<SiteSettings>) => input)
   .handler(async ({ data }) => {
     await requireAdmin();
+    // A map link is saved together with the coordinates it points to, found
+    // here once rather than on every page view. A link that can't be read is
+    // refused, so a bad paste never leaves the Contact page without a map.
+    if (data.map_url !== undefined) {
+      Object.assign(data, await resolveMapLink(data.map_url));
+    }
     const rows = Object.entries(data)
       .filter(([key]) => (SETTING_KEYS as readonly string[]).includes(key))
       .map(([key, value]) => ({
@@ -95,3 +109,39 @@ export const updateSiteSettings = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+/** Share link → the pin's coordinates, following Google's short-link redirect. */
+async function resolveMapLink(raw: string) {
+  const link = raw.trim();
+  if (!link) return { map_url: "", map_coords: "" };
+  if (!isGoogleMapsUrl(link)) {
+    throw new Error(
+      "That isn't a Google Maps link. In Google Maps, open the studio's pin, tap Share, and paste the link it gives you.",
+    );
+  }
+
+  let coords = coordsFromMapsUrl(link);
+  if (!coords) {
+    try {
+      const res = await fetch(link, {
+        redirect: "follow",
+        headers: { "user-agent": "Mozilla/5.0 (MillerArtz studio settings)" },
+        signal: AbortSignal.timeout(10_000),
+      });
+      coords = coordsFromMapsUrl(res.url);
+    } catch {
+      throw new Error("Couldn't reach Google Maps to read that link. Try saving again in a moment.");
+    }
+  }
+  if (!coords) {
+    throw new Error(
+      "Couldn't find a location in that link. Open the studio's pin in Google Maps, tap Share, and paste that link.",
+    );
+  }
+  return {
+    // Very long URLs would be cut at the 500-character setting limit and stop
+    // working, so keep a short canonical link to the pin in that case.
+    map_url: link.length <= 500 ? link : pinUrl(coords),
+    map_coords: formatCoords(coords),
+  };
+}

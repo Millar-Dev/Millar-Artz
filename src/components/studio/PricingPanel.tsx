@@ -21,6 +21,9 @@ import {
  */
 
 const FOREIGN = CURRENCIES.filter((c) => c.code !== BASE_CURRENCY);
+const REGIONS = [...new Set(CURRENCIES.map((c) => c.region))];
+/** A live example beside each rate, so its effect shows before saving. */
+const example = 250_000;
 
 /** Today in Tanzania, as YYYY-MM-DD. */
 const today = () =>
@@ -101,12 +104,6 @@ export function PricingPanel({ initial }: { initial: SiteSettings }) {
     }
   }
 
-  // A live example, so the effect of a rate is visible before saving.
-  const example = 250_000;
-  const preview = parsedRates
-    ? FOREIGN.map((c) => viewPrice(example, "TZS", c.code, parsedRates).display).join("  ·  ")
-    : "";
-
   return (
     <section className="mt-16 border-t border-ink/10 pt-10">
       <h2 className="font-display font-bold text-2xl text-ink">Prices &amp; currency</h2>
@@ -127,10 +124,14 @@ export function PricingPanel({ initial }: { initial: SiteSettings }) {
               onChange={(e) => isCurrency(e.target.value) && setDisplay(e.target.value)}
               className="mt-2 w-full border-b border-ink/20 bg-transparent py-2 text-sm text-ink focus:border-gold focus:outline-none"
             >
-              {CURRENCIES.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.code} — {c.name}
-                </option>
+              {REGIONS.map((region) => (
+                <optgroup key={region} label={region}>
+                  {CURRENCIES.filter((c) => c.region === region).map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.code} — {c.name}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </label>
@@ -146,21 +147,37 @@ export function PricingPanel({ initial }: { initial: SiteSettings }) {
                   : "Not set yet"}
               </span>
             </div>
-            <div className="mt-3 space-y-3">
-              {FOREIGN.map((c) => (
-                <label key={c.code} className="flex items-center gap-3 text-sm text-ink/75">
-                  <span className="w-16 shrink-0 tabular-nums">1 {c.code}</span>
-                  <span className="text-ink/40">=</span>
-                  <span className="text-ink/50">TSh</span>
-                  <input
-                    inputMode="decimal"
-                    value={rates[c.code]}
-                    onChange={(e) => setRates((r) => ({ ...r, [c.code]: e.target.value }))}
-                    className="w-32 border-b border-ink/20 bg-transparent py-1 text-right tabular-nums text-ink focus:border-gold focus:outline-none"
-                    aria-label={`Shillings per ${c.name}`}
-                  />
-                  <span className="hidden text-xs text-ink/40 sm:inline">{c.name}</span>
-                </label>
+            <p className="mt-1 text-[11px] text-ink/45">
+              How many shillings one unit of each currency is worth. The grey figure
+              is what a TSh 250,000 painting would show as.
+            </p>
+            <div className="mt-3 max-h-[26rem] space-y-5 overflow-y-auto pr-1">
+              {REGIONS.filter((r) => FOREIGN.some((c) => c.region === r)).map((region) => (
+                <div key={region}>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-ink/40">
+                    {region}
+                  </p>
+                  <div className="mt-2 space-y-2.5">
+                    {FOREIGN.filter((c) => c.region === region).map((c) => (
+                      <label key={c.code} className="flex items-center gap-2 text-sm text-ink/75">
+                        <span className="w-14 shrink-0 tabular-nums" title={c.name}>
+                          1 {c.code}
+                        </span>
+                        <span className="text-ink/40">= TSh</span>
+                        <input
+                          inputMode="decimal"
+                          value={rates[c.code]}
+                          onChange={(e) => setRates((r) => ({ ...r, [c.code]: e.target.value }))}
+                          className="w-24 border-b border-ink/20 bg-transparent py-1 text-right tabular-nums text-ink focus:border-gold focus:outline-none"
+                          aria-label={`Shillings per ${c.name}`}
+                        />
+                        <span className="min-w-0 truncate text-xs tabular-nums text-ink/40">
+                          {parsedRates ? viewPrice(example, "TZS", c.code, parsedRates).display : ""}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
             <button
@@ -192,11 +209,6 @@ export function PricingPanel({ initial }: { initial: SiteSettings }) {
                 <li key={o.value}>{o.label}</li>
               ))}
             </ul>
-            {preview && (
-              <p className="mt-4 border-t border-ink/10 pt-3 text-ink/55">
-                A TSh 250,000 painting shows as: {preview}
-              </p>
-            )}
           </div>
         </div>
       </div>

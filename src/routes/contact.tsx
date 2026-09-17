@@ -15,6 +15,7 @@ import { getSiteSettings } from "@/lib/data/site-settings";
 import { canonical, seoMeta } from "@/lib/seo";
 import { savedProfiles } from "@/lib/social";
 import { SocialIcon } from "@/components/site/SocialIcon";
+import { StudioMap } from "@/components/site/StudioMap";
 import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
 
 const contactSearchSchema = z.object({
@@ -248,14 +249,7 @@ function Contact() {
               ))}
             </div>
 
-            <div className="mt-10 border border-dashed border-ink/15 bg-paper p-5 text-xs text-ink/50">
-              <p className="font-display font-bold text-sm text-ink">
-                Map preview
-              </p>
-              <p className="mt-2">
-                Studio location map integration reserved for a future update.
-              </p>
-            </div>
+            <StudioMap settings={settings} className="mt-10" />
           </aside>
 
           {/* Form column */}

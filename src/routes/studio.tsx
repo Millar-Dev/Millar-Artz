@@ -665,16 +665,19 @@ const CONTACT_FIELDS = [
   ["phone_primary", "Phone (primary)", "+255 616 110 100"],
   ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
   ["location", "Location", "Arusha, Tanzania — visits by appointment."],
+  ["map_url", "Studio map link (Google Maps → Share)", "https://maps.app.goo.gl/…"],
 ] as const;
 
 function SettingsPanel({ initial }: { initial: SiteSettings }) {
   const [form, setForm] = useState(initial);
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
   function update(key: keyof SiteSettings, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
     setSaved(false);
+    setError("");
   }
 
   async function save() {
@@ -688,6 +691,9 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
       ) as Partial<SiteSettings>;
       await updateSiteSettings({ data });
       setSaved(true);
+    } catch (err) {
+      // e.g. a map link that isn't Google Maps — say so rather than failing silently.
+      setError(err instanceof Error ? err.message : "Couldn't save these details.");
     } finally {
       setBusy(false);
     }
@@ -698,7 +704,8 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
       <h2 className="font-display font-bold text-2xl text-ink">Contact &amp; social</h2>
       <p className="mt-1 text-xs text-ink/50">
         Shown in the footer and on the Contact page. Social icons stay hidden
-        until you add a real profile link.
+        until you add a real profile link. For the map, open your studio's pin in
+        Google Maps, tap Share, and paste the link — leave it empty to hide the map.
       </p>
 
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -723,6 +730,7 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
           {busy && <Loader2 size={14} className="animate-spin" />} Save details
         </button>
         {saved && <span className="text-sm text-gold">Saved.</span>}
+        {error && <span className="text-sm text-red-700">{error}</span>}
       </div>
     </section>
   );

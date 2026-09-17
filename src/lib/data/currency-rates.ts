@@ -35,7 +35,9 @@ export const fetchMarketRates = createServerFn({ method: "GET" }).handler(
       if (!perShilling || perShilling <= 0) {
         throw new Error(`No rate available for ${code}. Enter it by hand.`);
       }
-      rates[code] = Math.round((1 / perShilling) * 100) / 100;
+      // Four significant figures: 2645.5 for the dollar, but 0.6951 for the
+      // Ugandan shilling, where rounding to cents would lose 1%.
+      rates[code] = Number((1 / perShilling).toPrecision(4));
     }
     return { rates, asOf: body.time_last_update_utc ?? "" };
   },

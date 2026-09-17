@@ -3,6 +3,7 @@ import {
   BASE_CURRENCY,
   budgetOptions,
   CURRENCIES,
+  describeRate,
   isCurrency,
   parseBands,
   parseRates,
@@ -93,6 +94,9 @@ export function useCurrency() {
   return ctx;
 }
 
+/** Regions in list order, for grouping the switch. */
+export const REGIONS = [...new Set(CURRENCIES.map((c) => c.region))];
+
 /** The visitor's switch. Labelled with the code and a name, since "KSh" alone
  *  means nothing to someone outside East Africa. */
 export function CurrencySelect({ className = "" }: { className?: string }) {
@@ -105,21 +109,24 @@ export function CurrencySelect({ className = "" }: { className?: string }) {
         onChange={(e) => isCurrency(e.target.value) && setCurrency(e.target.value)}
         className="rounded-sm border border-ink/15 bg-paper px-2 py-1.5 text-xs font-medium text-ink focus:border-gold focus:outline-none"
       >
-        {CURRENCIES.map((c) => (
-          <option key={c.code} value={c.code}>
-            {c.code} — {c.name}
-          </option>
+        {REGIONS.map((region) => (
+          <optgroup key={region} label={region}>
+            {CURRENCIES.filter((c) => c.region === region).map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.code} — {c.name}
+              </option>
+            ))}
+          </optgroup>
         ))}
       </select>
     </label>
   );
 }
 
-/** "1 USD = TSh 2,646 · rates set 17 Sep 2026". */
+/** "1 USD = TSh 2,646 (set 17 Sep 2026)" — or per 1,000 for small units. */
 export function RateNote({ className = "text-ink/50" }: { className?: string }) {
   const { currency, rates, ratesUpdated } = useCurrency();
   if (currency === BASE_CURRENCY) return null;
-  const rate = rates[currency as keyof Rates];
   const when = ratesUpdated
     ? new Date(`${ratesUpdated}T12:00:00`).toLocaleDateString("en-GB", {
         day: "numeric",
@@ -129,9 +136,8 @@ export function RateNote({ className = "text-ink/50" }: { className?: string }) 
     : "";
   return (
     <p className={`text-[11px] leading-snug ${className}`}>
-      Prices are set in Tanzanian shillings and converted at the studio's rate of 1 {currency} ={" "}
-      TSh{" "}
-      {rate.toLocaleString("en-US", { maximumFractionDigits: rate < 100 ? 2 : 0 })}
+      Prices are set in Tanzanian shillings and converted at the studio's rate of{" "}
+      {describeRate(currency, rates)}
       {when && ` (set ${when})`}. Converted figures are a guide — your quotation confirms the
       exact amount.
     </p>
