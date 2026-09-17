@@ -150,3 +150,17 @@ export async function alertRecipientMasked() {
   const [user, domain] = to.split("@");
   return user && domain ? `${user.slice(0, 3)}…@${domain}` : "";
 }
+
+/**
+ * A short security notice to the owner — sent when the Studio login locks
+ * after repeated wrong passwords. Never throws.
+ */
+export async function sendOwnerNotice(subject: string, lines: string[]) {
+  const text = lines.join("\n");
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#2e1620;font-size:14px;line-height:1.55">${lines
+    .map((l) => `<p style="margin:0 0 10px">${esc(l)}</p>`)
+    .join("")}</div>`;
+  const result = await send({ subject, html, text });
+  if (!result.ok && alertsConfigured()) console.error("owner notice failed:", result.reason);
+  return result;
+}

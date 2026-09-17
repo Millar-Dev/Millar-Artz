@@ -70,7 +70,11 @@ export const HERO_MOBILE_SLOTS = 5;
 export const getSiteSettings = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteSettings> => {
     if (!isSupabaseConfigured()) return SETTING_DEFAULTS;
-    const { data, error } = await getSupabaseAdmin().from("site_settings").select("*");
+    // Private rows (login attempt records) share this table; leave them out.
+    const { data, error } = await getSupabaseAdmin()
+      .from("site_settings")
+      .select("*")
+      .not("key", "like", "login_guard:%");
     if (error) {
       console.error("getSiteSettings failed:", error.message);
       return SETTING_DEFAULTS;

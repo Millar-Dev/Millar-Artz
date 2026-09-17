@@ -113,7 +113,17 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
     try {
       const res = await adminLogin({ data: password });
       if (!res.ok) {
-        setError("Wrong password.");
+        if (res.lockedMinutes > 0) {
+          setError(
+            `Too many wrong attempts. Try again in ${res.lockedMinutes} minute${res.lockedMinutes === 1 ? "" : "s"}.`,
+          );
+        } else if (res.remaining <= 2) {
+          setError(
+            `Wrong password. ${res.remaining} attempt${res.remaining === 1 ? "" : "s"} left before a 15-minute lock.`,
+          );
+        } else {
+          setError("Wrong password.");
+        }
         return;
       }
       onSuccess();
