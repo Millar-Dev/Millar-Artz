@@ -61,6 +61,9 @@ function interactionFor(href: string) {
   const h = href.toLowerCase();
   if (h.startsWith("tel:")) return "call_click";
   if (h.startsWith("mailto:")) return "email_click";
+  // A WhatsApp link with no number is someone sharing a painting, not
+  // messaging the studio — count it separately.
+  if (/wa\.me\/\?text=|whatsapp\.com\/send\/?\?text=/.test(h)) return "share_click";
   if (/wa\.me|whatsapp\.com|^whatsapp:/.test(h)) return "whatsapp_click";
   if (h.includes("instagram.com")) return "instagram_click";
   if (/facebook\.com|fb\.com|fb\.me/.test(h)) return "facebook_click";

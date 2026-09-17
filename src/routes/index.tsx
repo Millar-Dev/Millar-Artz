@@ -280,8 +280,8 @@ function Home() {
               {featured.map((a: Artwork) => (
                 <Link
                   key={a.id}
-                  to="/gallery"
-                  search={{ category: a.category }}
+                  to="/gallery/$id"
+                  params={{ id: a.id }}
                   className="group relative aspect-[3/4] overflow-hidden rounded-sm ring-1 ring-ink/10"
                 >
                   <img

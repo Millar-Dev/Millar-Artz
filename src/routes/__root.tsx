@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { getSiteSettings } from "@/lib/data/site-settings";
-import { jsonLd, OG_IMAGE, SEARCH_TERMS, siteGraph } from "@/lib/seo";
+import { jsonLd, SEARCH_TERMS, siteGraph } from "@/lib/seo";
 import { VisitTracker } from "@/components/site/VisitTracker";
 import { CurrencyProvider } from "@/components/site/CurrencyProvider";
 
@@ -98,12 +98,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "MillerArtz" },
         { property: "og:locale", content: "en_GB" },
-        { property: "og:image", content: OG_IMAGE.url },
-        { property: "og:image:width", content: String(OG_IMAGE.width) },
-        { property: "og:image:height", content: String(OG_IMAGE.height) },
-        { property: "og:image:alt", content: OG_IMAGE.alt },
+        // The share image itself is set per page by seoMeta().
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:image", content: OG_IMAGE.url },
         // ISO 3166-2 code for Arusha region.
         { name: "geo.region", content: "TZ-01" },
         { name: "geo.placename", content: "Arusha, Tanzania" },

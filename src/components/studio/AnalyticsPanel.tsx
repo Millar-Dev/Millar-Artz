@@ -37,6 +37,7 @@ const INTERACTION_LABELS: Record<string, string> = {
   call_click: "Phone call taps",
   email_click: "Email taps",
   commission_click: "“Commission” button",
+  share_click: "Paintings shared",
   instagram_click: "Instagram taps",
   facebook_click: "Facebook taps",
   tiktok_click: "TikTok taps",
@@ -51,6 +52,7 @@ const INTERACTION_VERBS: Record<string, string> = {
   call_click: "tapped to call",
   email_click: "tapped to email",
   commission_click: "clicked Commission",
+  share_click: "shared a painting",
   instagram_click: "opened Instagram",
   facebook_click: "opened Facebook",
   tiktok_click: "opened TikTok",
@@ -70,6 +72,18 @@ const PAGE_LABELS: Record<string, string> = {
   "/faq": "FAQ",
   "/contact": "Contact",
   "/subscription": "Subscribe",
+};
+
+/** "/gallery/woman-of-the-savanna" -> "Painting: Woman Of The Savanna". */
+const pageLabel = (path: string) => {
+  if (PAGE_LABELS[path]) return PAGE_LABELS[path];
+  const m = path.match(/^\/gallery\/([^/]+)$/);
+  if (!m) return path;
+  const name = decodeURIComponent(m[1])
+    .replace(/-[a-z0-9]{4}$/, "")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return `Painting: ${name}`;
 };
 
 const regionNames =
@@ -237,7 +251,7 @@ function Report({ report }: { report: AnalyticsReport }) {
               title="Most viewed pages"
               rows={report.pages.map((p) => ({
                 key: p.path,
-                label: PAGE_LABELS[p.path] ?? p.path,
+                label: pageLabel(p.path),
                 value: p.views,
               }))}
               unit="views"
@@ -607,7 +621,7 @@ function Recent({ rows }: { rows: AnalyticsReport["recent"] }) {
           // Country only: the city is a network guess, and in Tanzania it is
           // usually Dar es Salaam regardless of where the person actually is.
           const where = r.country ? countryName(r.country) : "";
-          const page = PAGE_LABELS[r.path] ?? r.path;
+          const page = pageLabel(r.path);
           const via = SOURCE_LABELS[r.source] ?? r.source;
           const action =
             r.kind === "pageview"

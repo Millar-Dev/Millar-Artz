@@ -351,8 +351,8 @@ function Paintings() {
                   {items.map((a) => (
                     <Link
                       key={a.id}
-                      to="/gallery"
-                      search={{ category: a.category }}
+                      to="/gallery/$id"
+                      params={{ id: a.id }}
                       className="gradient-stroke group relative w-[220px] shrink-0 overflow-hidden rounded-sm p-px shadow-lg shadow-black/25 sm:w-[260px]"
                     >
                       <div className="relative overflow-hidden rounded-[1px]">
@@ -578,8 +578,8 @@ function HeroCard({
   if (!artwork) return null;
   return (
     <Link
-      to="/gallery"
-      search={{ category: artwork.category }}
+      to="/gallery/$id"
+      params={{ id: artwork.id }}
       className={`group absolute overflow-hidden rounded-lg shadow-2xl ring-1 ring-white/10 transition-all duration-500 ease-out hover:z-50 hover:rotate-0 hover:scale-110 ${className}`}
       style={{ zIndex: z }}
     >

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { disciplines } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
-import { SITE_URL } from "@/lib/seo";
+import { artworkPath, SITE_URL } from "@/lib/seo";
 
 const escapeXml = (v: string) =>
   v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -27,7 +27,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         const BASE_URL = SITE_URL;
         // The archive's images, attached to the pages that show them. People
         // searching for "Tanzanian painting" often start in image search.
-        const artworkImages = (await listArtworks())
+        const artworks = await listArtworks();
+        const artworkImages = artworks
           .map((a) => a.image_path)
           .filter((u): u is string => Boolean(u))
           .slice(0, 1000);
@@ -44,6 +45,13 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/contact", changefreq: "monthly", priority: "0.7" },
           { path: "/faq", changefreq: "monthly", priority: "0.6" },
           { path: "/subscription", changefreq: "monthly", priority: "0.6" },
+          // One page per painting, each carrying its own image.
+          ...artworks.map((a) => ({
+            path: artworkPath(a.id),
+            changefreq: "monthly" as const,
+            priority: "0.7",
+            images: a.image_path ? [a.image_path] : undefined,
+          })),
         ];
 
         const urls = entries.map((e) =>

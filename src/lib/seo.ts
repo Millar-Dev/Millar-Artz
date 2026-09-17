@@ -81,8 +81,18 @@ export const SEARCH_TERMS = [
  * which is roughly where Google truncates them. Each carries the studio name
  * and, where it reads naturally, "Tanzania" or the artist's name: those are
  * the terms people will actually type.
+ *
+ * The share image is set here, per page, rather than once site-wide: a page
+ * can't remove a tag its parent route set, so a painting page would otherwise
+ * inherit the default image's 1200x630 dimensions for a photo of a different
+ * size. Dimensions are only stated when they're known to be exact.
  */
-export function seoMeta(title: string, description: string, path: string) {
+export function seoMeta(
+  title: string,
+  description: string,
+  path: string,
+  image: { url: string; alt: string; width?: number; height?: number } = OG_IMAGE,
+) {
   const url = absoluteUrl(path);
   return [
     { title },
@@ -90,8 +100,17 @@ export function seoMeta(title: string, description: string, path: string) {
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:url", content: url },
+    { property: "og:image", content: image.url },
+    { property: "og:image:alt", content: image.alt },
+    ...(image.width && image.height
+      ? [
+          { property: "og:image:width", content: String(image.width) },
+          { property: "og:image:height", content: String(image.height) },
+        ]
+      : []),
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image.url },
   ];
 }
 
@@ -243,6 +262,59 @@ interface ArtworkLike {
   categoryLabel: string;
 }
 
+/** A painting's own address. */
+export const artworkPath = (id: string) => `/gallery/${encodeURIComponent(id)}`;
+
+/**
+ * One painting, for its own page: the artwork, who made it, where it sits in
+ * the site, and — only when it is actually for sale at a stated price — an
+ * offer. "On request" and sold pieces carry no offer rather than a made-up one.
+ */
+export function artworkGraph(
+  a: ArtworkLike & { price: number | null; currency: string; status: string; dimensions?: string },
+) {
+  const url = absoluteUrl(artworkPath(a.id));
+  const forSale = a.price != null && a.status !== "sold";
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "VisualArtwork",
+        "@id": `${url}#artwork`,
+        name: a.title,
+        url,
+        image: a.image,
+        description: a.description,
+        artMedium: a.medium,
+        artform: a.categoryLabel,
+        dateCreated: String(a.year),
+        ...(a.dimensions ? { size: a.dimensions } : {}),
+        creator: { "@id": `${SITE_URL}/#artist` },
+        ...(forSale
+          ? {
+              offers: {
+                "@type": "Offer",
+                price: a.price,
+                priceCurrency: a.currency || "TZS",
+                availability: "https://schema.org/InStock",
+                url,
+                seller: { "@id": `${SITE_URL}/#studio` },
+              },
+            }
+          : {}),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+          { "@type": "ListItem", position: 2, name: "Gallery", item: absoluteUrl("/gallery") },
+          { "@type": "ListItem", position: 3, name: a.title, item: url },
+        ],
+      },
+    ],
+  };
+}
+
 /** A gallery listing, so individual pieces can surface in image search. */
 export function artworkListGraph(artworks: ArtworkLike[]) {
   return {
@@ -260,6 +332,8 @@ export function artworkListGraph(artworks: ArtworkLike[]) {
         position: i + 1,
         item: {
           "@type": "VisualArtwork",
+          "@id": `${absoluteUrl(artworkPath(a.id))}#artwork`,
+          url: absoluteUrl(artworkPath(a.id)),
           name: a.title,
           description: a.description,
           artMedium: a.medium,

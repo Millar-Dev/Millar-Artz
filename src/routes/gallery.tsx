@@ -6,6 +6,7 @@ import { Layout } from "@/components/site/Layout";
 import { DisciplineMark } from "@/components/site/BrandLogo";
 import { disciplineIcons } from "@/components/site/discipline-icons";
 import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
+import { StatusPill } from "@/components/site/StatusPill";
 import {
   categories,
   disciplines,
@@ -175,12 +176,14 @@ function Gallery() {
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((a) => (
-                <figure
-                  key={a.id}
-                  className="group cursor-zoom-in"
-                  onClick={() => setViewing(a)}
-                >
-                  <div className="gradient-stroke mb-4 rounded-sm p-px shadow-lg shadow-black/25">
+                <figure key={a.id} className="group">
+                  {/* A real link, so each painting's page is reachable and
+                      crawlable from the grid. */}
+                  <Link
+                    to="/gallery/$id"
+                    params={{ id: a.id }}
+                    className="gradient-stroke mb-4 block rounded-sm p-px shadow-lg shadow-black/25"
+                  >
                     <div className="relative overflow-hidden rounded-[1px] bg-paper">
                       <img
                         src={a.image}
@@ -188,17 +191,28 @@ function Gallery() {
                         loading="lazy"
                         className="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 flex items-end justify-end p-4 opacity-0 transition-opacity group-hover:opacity-100">
-                        <div className="rounded-full bg-canvas/90 p-2 text-ink">
-                          <ZoomIn size={16} />
-                        </div>
-                      </div>
+                      {/* Quick view stays available without leaving the grid.
+                          Always shown on touch screens, which have no hover. */}
+                      <button
+                        type="button"
+                        aria-label={`Quick view of ${a.title}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setViewing(a);
+                        }}
+                        className="absolute bottom-4 right-4 rounded-full bg-canvas/90 p-2 text-ink transition-opacity md:opacity-0 md:group-hover:opacity-100"
+                      >
+                        <ZoomIn size={16} />
+                      </button>
                     </div>
-                  </div>
+                  </Link>
                   <figcaption className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <h3 className="truncate font-display font-bold text-xl text-ink">
-                        {a.title}
+                        <Link to="/gallery/$id" params={{ id: a.id }} className="hover:text-gold">
+                          {a.title}
+                        </Link>
                       </h3>
                       <p className="mt-1 text-xs uppercase tracking-tighter text-ink/50">
                         {a.medium}
@@ -393,37 +407,24 @@ function Lightbox({
           {artwork.status !== "sold" && artwork.price != null && (
             <RateNote className="mt-3 text-band-foreground/50" />
           )}
-          <Link
-            to="/contact"
-            search={{ type: artwork.categoryLabel }}
-            className="mt-8 inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
-          >
-            Inquire about this piece
-          </Link>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              to="/contact"
+              search={{ type: artwork.categoryLabel, piece: artwork.title }}
+              className="inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
+            >
+              Inquire about this piece
+            </Link>
+            <Link
+              to="/gallery/$id"
+              params={{ id: artwork.id }}
+              className="inline-block rounded-sm border border-band-foreground/20 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band-foreground/85 hover:text-band-foreground"
+            >
+              View full page
+            </Link>
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function StatusPill({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    available: "bg-green-500/15 text-green-600 dark:text-green-400",
-    sold: "bg-ink/10 text-ink/50",
-    featured: "bg-band text-band-foreground",
-    commission: "border border-ink/10 text-ink/60",
-  };
-  const label: Record<string, string> = {
-    available: "Available",
-    sold: "Sold",
-    featured: "Featured",
-    commission: "Commissioned",
-  };
-  return (
-    <span
-      className={`shrink-0 px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${map[status] ?? ""}`}
-    >
-      {label[status] ?? status}
-    </span>
   );
 }

@@ -20,6 +20,8 @@ import { CurrencySelect, RateNote, useCurrency } from "@/components/site/Currenc
 
 const contactSearchSchema = z.object({
   type: z.string().optional(),
+  /** A painting's title, when arriving from its page. */
+  piece: z.string().max(160).optional(),
 });
 
 export const Route = createFileRoute("/contact")({
@@ -63,7 +65,11 @@ function Contact() {
     email: "",
     phone: "",
     style: search.type ?? "",
-    subject: search.type ? `Commission inquiry — ${search.type}` : "",
+    subject: search.piece
+      ? `Enquiry about “${search.piece}”`
+      : search.type
+        ? `Commission inquiry — ${search.type}`
+        : "",
     budget: "",
     timeline: "",
     message: "",
@@ -74,7 +80,9 @@ function Contact() {
     setForm((f) => ({
       ...f,
       style: search.type ?? f.style,
-      subject: f.subject || `Commission inquiry — ${search.type}`,
+      subject:
+        f.subject ||
+        (search.piece ? `Enquiry about “${search.piece}”` : `Commission inquiry — ${search.type}`),
     }));
   }, [search.type]);
 
