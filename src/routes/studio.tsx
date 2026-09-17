@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/site/Layout";
 import { AnalyticsPanel } from "@/components/studio/AnalyticsPanel";
 import { SOCIAL_PROFILES } from "@/lib/social";
@@ -17,8 +17,10 @@ import {
 import { getSiteImage, updateSiteImage, uploadSiteImage } from "@/lib/data/site-images";
 import {
   deleteInquiry,
+  getAlertStatus,
   listInquiries,
   setInquiryHandled,
+  triggerTestAlert,
   type InquiryRow,
 } from "@/lib/data/inquiries";
 import {
@@ -487,6 +489,64 @@ function HeroPicker({
   );
 }
 
+/**
+ * Whether a new enquiry emails the owner. Off until RESEND_API_KEY is set on
+ * Vercel — the line says so plainly, with the one step that turns it on.
+ */
+function AlertStatus() {
+  const [status, setStatus] = useState<{ configured: boolean; to: string } | null>(null);
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState("");
+
+  useEffect(() => {
+    getAlertStatus()
+      .then(setStatus)
+      .catch(() => setStatus(null));
+  }, []);
+
+  if (!status) return null;
+
+  async function test() {
+    setSending(true);
+    setResult("");
+    try {
+      const r = await triggerTestAlert();
+      setResult(r.ok ? "Test sent — check your inbox (and spam, the first time)." : r.reason);
+    } catch {
+      setResult("Couldn't send the test.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="mt-4 border border-ink/10 bg-paper px-4 py-3 text-xs text-ink/65">
+      {status.configured ? (
+        <div className="flex flex-wrap items-center gap-3">
+          <span>
+            <span className="font-semibold text-ink">Email alerts are on.</span> Each new
+            enquiry is emailed to {status.to} as it arrives.
+          </span>
+          <button
+            onClick={test}
+            disabled={sending}
+            className="inline-flex items-center gap-1.5 rounded-sm border border-ink/15 px-3 py-1.5 font-medium text-ink/75 hover:text-ink disabled:opacity-50"
+          >
+            {sending && <Loader2 size={12} className="animate-spin" />} Send test alert
+          </button>
+          {result && <span className="italic text-gold">{result}</span>}
+        </div>
+      ) : (
+        <span>
+          <span className="font-semibold text-ink">Email alerts are off.</span> Add a
+          RESEND_API_KEY in Vercel → Settings → Environment Variables to be emailed
+          whenever an enquiry arrives.
+        </span>
+      )}
+    </div>
+  );
+}
+
 /** Commission/contact enquiries submitted through the Contact page. */
 function InquiriesPanel({ initial }: { initial: InquiryRow[] }) {
   const [rows, setRows] = useState(initial);
@@ -527,6 +587,8 @@ function InquiriesPanel({ initial }: { initial: InquiryRow[] }) {
           Show handled
         </label>
       </div>
+
+      <AlertStatus />
 
       <div className="mt-5 space-y-3">
         {visible.map((r) => (

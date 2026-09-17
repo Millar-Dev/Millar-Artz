@@ -1,5 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { recordServerInteraction } from "./analytics-record";
+import {
+  alertNewEnquiry,
+  alertRecipientMasked,
+  alertsConfigured,
+  sendTestAlert,
+} from "./enquiry-alerts";
 import { requireAdmin } from "./admin-session";
 import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";
 
@@ -57,6 +63,19 @@ export const submitInquiry = createServerFn({ method: "POST" })
     });
     if (error) throw new Error(error.message);
     await recordServerInteraction("enquiry_sent", "/contact");
+    // Awaited, not fired-and-forgotten: a serverless function can be frozen
+    // the moment it responds, which would drop an unsent alert. It never
+    // throws and times out after a few seconds.
+    await alertNewEnquiry({
+      fullName: data.fullName.trim(),
+      email,
+      phone: data.phone?.trim(),
+      style: data.style?.trim(),
+      budget: data.budget?.trim(),
+      timeline: data.timeline?.trim(),
+      subject: data.subject?.trim(),
+      message: data.message.trim(),
+    });
     return { ok: true as const };
   });
 
@@ -92,3 +111,18 @@ export const deleteInquiry = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+/** Owner-only: whether enquiry emails are switched on, and where they go. */
+export const getAlertStatus = createServerFn({ method: "GET" }).handler(async () => {
+  await requireAdmin();
+  return {
+    configured: alertsConfigured(),
+    to: alertsConfigured() ? await alertRecipientMasked() : "",
+  };
+});
+
+/** Owner-only: send a test alert to confirm the setup works. */
+export const triggerTestAlert = createServerFn({ method: "POST" }).handler(async () => {
+  await requireAdmin();
+  return sendTestAlert();
+});
