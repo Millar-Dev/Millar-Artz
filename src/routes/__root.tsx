@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { getSiteSettings } from "@/lib/data/site-settings";
 import { jsonLd, OG_IMAGE, SEARCH_TERMS, siteGraph } from "@/lib/seo";
 import { VisitTracker } from "@/components/site/VisitTracker";
+import { CurrencyProvider } from "@/components/site/CurrencyProvider";
 
 function NotFoundComponent() {
   return (
@@ -169,10 +170,14 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const settings = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      {/* One set of exchange rates and one currency choice for every page. */}
+      <CurrencyProvider settings={settings}>
+        <Outlet />
+      </CurrencyProvider>
       <VisitTracker />
     </QueryClientProvider>
   );

@@ -60,24 +60,11 @@ export function fromArtworkRow(row: ArtworkDbRow): Artwork {
     year: row.year,
     sortOrder: row.sort_order,
     price: row.price ?? null,
-    currency: row.currency ?? "USD",
+    // Prices are set in shillings unless a piece says otherwise.
+    currency: row.currency ?? "TZS",
   };
 }
 
-/** "$450" / "TZS 1,200,000" — or null when the piece is priced on request. */
-export function formatPrice(artwork: Pick<Artwork, "price" | "currency">): string | null {
-  if (artwork.price == null) return null;
-  try {
-    return new Intl.NumberFormat("en", {
-      style: "currency",
-      currency: artwork.currency || "USD",
-      maximumFractionDigits: 0,
-    }).format(artwork.price);
-  } catch {
-    // Unknown currency code — fall back to a plain formatted number.
-    return `${artwork.currency || ""} ${artwork.price.toLocaleString()}`.trim();
-  }
-}
 
 export const categories: {
   value: ArtworkCategory | "all";

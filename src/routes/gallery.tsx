@@ -5,10 +5,10 @@ import { Search, X, ZoomIn } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { DisciplineMark } from "@/components/site/BrandLogo";
 import { disciplineIcons } from "@/components/site/discipline-icons";
+import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
 import {
   categories,
   disciplines,
-  formatPrice,
   fromArtworkRow,
   type ArtworkCategory,
   type Artwork,
@@ -57,6 +57,7 @@ export const Route = createFileRoute("/gallery")({
 function Gallery() {
   const search = Route.useSearch();
   const { artworks } = Route.useLoaderData();
+  const { price } = useCurrency();
   const [category, setCategory] = useState<ArtworkCategory | "all">(
     search.category ?? "all",
   );
@@ -115,6 +116,8 @@ function Gallery() {
               </button>
             ))}
           </div>
+          <div className="flex w-full flex-wrap items-center gap-3 md:w-auto">
+          <CurrencySelect />
           <div className="relative w-full max-w-xs">
             <Search
               size={14}
@@ -126,6 +129,7 @@ function Gallery() {
               placeholder="Search artworks..."
               className="w-full rounded-sm border border-ink/10 bg-paper py-2 pl-9 pr-3 text-sm text-ink placeholder:text-ink/40 focus:border-gold focus:outline-none"
             />
+          </div>
           </div>
         </div>
       </section>
@@ -200,9 +204,9 @@ function Gallery() {
                         {a.medium}
                         {a.dimensions ? ` · ${a.dimensions}` : ""}
                       </p>
-                      {a.status !== "sold" && formatPrice(a) && (
+                      {a.status !== "sold" && a.price != null && (
                         <p className="mt-1 font-display font-bold text-base text-gold">
-                          {formatPrice(a)}
+                          {price(a.price, a.currency).display}
                         </p>
                       )}
                     </div>
@@ -304,6 +308,7 @@ function Lightbox({
   artwork: Artwork;
   onClose: () => void;
 }) {
+  const { price } = useCurrency();
   return (
     <div
       className="animate-fade fixed inset-0 z-[100] flex items-center justify-center bg-band/95 p-4 backdrop-blur-sm"
@@ -364,13 +369,30 @@ function Lightbox({
               <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
                 Price
               </dt>
-              <dd className="font-display font-bold text-lg text-gold">
-                {artwork.status === "sold"
-                  ? "Sold"
-                  : (formatPrice(artwork) ?? "On request")}
+              <dd className="text-right">
+                {artwork.status === "sold" ? (
+                  <span className="font-display font-bold text-lg text-gold">Sold</span>
+                ) : artwork.price == null ? (
+                  <span className="font-display font-bold text-lg text-gold">On request</span>
+                ) : (
+                  <>
+                    <span className="block font-display font-bold text-lg text-gold">
+                      {price(artwork.price, artwork.currency).display}
+                    </span>
+                    {/* The set price stays visible beside any conversion. */}
+                    {price(artwork.price, artwork.currency).approximate && (
+                      <span className="block text-xs text-band-foreground/60">
+                        {price(artwork.price, artwork.currency).original}
+                      </span>
+                    )}
+                  </>
+                )}
               </dd>
             </div>
           </dl>
+          {artwork.status !== "sold" && artwork.price != null && (
+            <RateNote className="mt-3 text-band-foreground/50" />
+          )}
           <Link
             to="/contact"
             search={{ type: artwork.categoryLabel }}

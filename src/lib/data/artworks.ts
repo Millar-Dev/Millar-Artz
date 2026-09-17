@@ -72,7 +72,7 @@ export const upsertArtwork = createServerFn({ method: "POST" })
         image_path: input.imagePath,
         sort_order: input.sortOrder ?? 0,
         price: input.price ?? null,
-        currency: input.currency || "USD",
+        currency: input.currency || "TZS",
         updated_at: new Date().toISOString(),
       });
     if (error) throw new Error(error.message);

@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 import { Layout } from "@/components/site/Layout";
 import { AnalyticsPanel } from "@/components/studio/AnalyticsPanel";
 import { SOCIAL_PROFILES } from "@/lib/social";
+import { PricingPanel } from "@/components/studio/PricingPanel";
+import { CURRENCIES } from "@/lib/currency";
 import { categories, fromArtworkRow, type Artwork, type ArtworkStatus } from "@/lib/gallery-data";
 import { adminLogin, adminLogout, checkAdminSession } from "@/lib/data/admin-auth";
 import {
@@ -151,7 +153,7 @@ const emptyDraft = (): Partial<Artwork> => ({
   category: "hyperrealism",
   status: "available",
   year: new Date().getFullYear(),
-  currency: "USD",
+  currency: "TZS",
 });
 
 function Dashboard({
@@ -356,6 +358,7 @@ function Dashboard({
       />
       <InquiriesPanel initial={initialInquiries} />
       <SubscribersPanel initial={initialSubscribers} />
+      <PricingPanel initial={initialSettings} />
       <SettingsPanel initial={initialSettings} />
 
       {editing && (
@@ -654,6 +657,16 @@ function SubscribersPanel({ initial }: { initial: SubscriberRow[] }) {
 }
 
 /** Contact details and social links — editable without a deploy. */
+/** The fields the Contact & social panel owns — and the only ones it saves. */
+const CONTACT_FIELDS = [
+  ...SOCIAL_PROFILES.map((p) => [p.key, `${p.label} URL`, p.placeholder] as const),
+  ["whatsapp_number", "WhatsApp number", "255616110100"],
+  ["email", "Email", "millarkitumi04@gmail.com"],
+  ["phone_primary", "Phone (primary)", "+255 616 110 100"],
+  ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
+  ["location", "Location", "Arusha, Tanzania — visits by appointment."],
+] as const;
+
 function SettingsPanel({ initial }: { initial: SiteSettings }) {
   const [form, setForm] = useState(initial);
   const [busy, setBusy] = useState(false);
@@ -667,7 +680,13 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
   async function save() {
     setBusy(true);
     try {
-      await updateSiteSettings({ data: form });
+      // Only this panel's fields. Sending the whole settings object would
+      // write back the values from page load over anything saved since by
+      // another panel — a re-picked hero bouquet, new exchange rates.
+      const data = Object.fromEntries(
+        CONTACT_FIELDS.map(([key]) => [key, form[key] ?? ""]),
+      ) as Partial<SiteSettings>;
+      await updateSiteSettings({ data });
       setSaved(true);
     } finally {
       setBusy(false);
@@ -683,18 +702,7 @@ function SettingsPanel({ initial }: { initial: SiteSettings }) {
       </p>
 
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
-        {(
-          [
-            ...SOCIAL_PROFILES.map(
-              (p) => [p.key, `${p.label} URL`, p.placeholder] as const,
-            ),
-            ["whatsapp_number", "WhatsApp number", "255616110100"],
-            ["email", "Email", "millarkitumi04@gmail.com"],
-            ["phone_primary", "Phone (primary)", "+255 616 110 100"],
-            ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
-            ["location", "Location", "Arusha, Tanzania — visits by appointment."],
-          ] as const
-        ).map(([key, label, placeholder]) => (
+        {CONTACT_FIELDS.map(([key, label, placeholder]) => (
           <Field key={key} label={label}>
             <input
               value={form[key] ?? ""}
@@ -846,7 +854,7 @@ function ArtworkEditor({
           medium: form.medium,
           dimensions: form.dimensions,
           price: form.price ?? null,
-          currency: form.currency || "USD",
+          currency: form.currency || "TZS",
           status: form.status,
           description: form.description ?? "",
           year: form.year,
@@ -987,14 +995,15 @@ function ArtworkEditor({
           </Field>
           <Field label="Currency">
             <select
-              value={form.currency ?? "USD"}
+              value={form.currency ?? "TZS"}
               onChange={(e) => update("currency", e.target.value)}
               className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
             >
-              <option value="USD">USD ($)</option>
-              <option value="TZS">TZS (Tanzanian shilling)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.code} — {c.name}
+                </option>
+              ))}
             </select>
           </Field>
           <Field label="Year" required>

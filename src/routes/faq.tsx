@@ -52,6 +52,10 @@ const groups: { heading: string; items: { q: string; a: string }[] }[] = [
         a: "Availability changes, and some pieces are held for exhibitions or existing collectors. If a piece interests you, ask — you'll get a straight answer on whether it's available and what it costs.",
       },
       {
+        q: "What currency are prices in?",
+        a: "Prices are set in Tanzanian shillings (TSh). On the Gallery and Contact pages you can switch to US dollars, euros, British pounds or Kenyan shillings; those figures are converted at the studio's current rate and are a guide. Your quotation confirms the exact amount.",
+      },
+      {
         q: "How is payment handled?",
         a: "Commissions are normally split: a deposit to begin, the balance on completion before delivery. Payment details are arranged directly when you approve the quotation.",
       },

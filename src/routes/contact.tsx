@@ -15,6 +15,7 @@ import { getSiteSettings } from "@/lib/data/site-settings";
 import { canonical, seoMeta } from "@/lib/seo";
 import { savedProfiles } from "@/lib/social";
 import { SocialIcon } from "@/components/site/SocialIcon";
+import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
 
 const contactSearchSchema = z.object({
   type: z.string().optional(),
@@ -40,13 +41,6 @@ const styleOptions = [
   "Not sure yet",
 ];
 
-const budgetOptions = [
-  "Under $150",
-  "$150 – $400",
-  "$400 – $1,000",
-  "$1,000+",
-  "Let's discuss",
-];
 const timelineOptions = [
   "Flexible",
   "Within a month",
@@ -57,6 +51,10 @@ const timelineOptions = [
 function Contact() {
   const search = Route.useSearch();
   const settings = Route.useLoaderData();
+  // Budget bands are set in shillings in the Studio and shown in whatever
+  // currency the visitor has chosen; the stored value is always the shilling
+  // range, so the studio reads every enquiry in the same currency.
+  const { budgets, currency } = useCurrency();
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState("");
   const [form, setForm] = useState({
@@ -83,10 +81,19 @@ function Contact() {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
+  /** The shilling range, plus the currency the client was thinking in. */
+  function budgetText() {
+    if (!form.budget) return "";
+    return currency !== "TZS" && form.budget !== "Let's discuss"
+      ? `${form.budget} (client viewing prices in ${currency})`
+      : form.budget;
+  }
+
   function composeDetails() {
+    const budget = budgetText();
     return [
       form.style && `Style: ${form.style}`,
-      form.budget && `Budget: ${form.budget}`,
+      budget && `Budget: ${budget}`,
       form.timeline && `Timeline: ${form.timeline}`,
     ]
       .filter(Boolean)
@@ -103,7 +110,7 @@ function Contact() {
     // which is common on phones).
     let saved = false;
     try {
-      await submitInquiry({ data: form });
+      await submitInquiry({ data: { ...form, budget: budgetText() } });
       saved = true;
     } catch (err) {
       setError(
@@ -306,12 +313,14 @@ function Contact() {
                     className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                   >
                     <option value="">Select one...</option>
-                    {budgetOptions.map((b) => (
-                      <option key={b} value={b}>
-                        {b}
+                    {budgets().map((b) => (
+                      <option key={b.value} value={b.value}>
+                        {b.label}
                       </option>
                     ))}
                   </select>
+                  <CurrencySelect className="mt-3" />
+                  <RateNote className="mt-2 text-ink/50" />
                 </Field>
                 <Field label="Timeline">
                   <select

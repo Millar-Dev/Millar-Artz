@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { BASE_CURRENCY, DEFAULT_BUDGET_BANDS, DEFAULT_RATES } from "../currency";
 import { requireAdmin } from "./admin-session";
 import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";
 
@@ -13,6 +14,15 @@ export const SETTING_KEYS = [
   "phone_primary",
   "phone_secondary",
   "location",
+  /** Currency a first-time visitor sees prices in. */
+  "display_currency",
+  /** JSON: shillings per unit of each foreign currency, e.g. {"USD":2645.5}. */
+  "currency_rates",
+  /** When the owner last set the rates — shown in the Studio and beside
+   *  converted prices, so nobody mistakes an old rate for today's. */
+  "rates_updated",
+  /** Comma-separated upper bounds, in shillings, for the enquiry budget field. */
+  "budget_bands",
   /** Comma-separated artwork ids shown in the home hero bouquet, in order
    *  from the left petal round to the right. */
   "hero_collage_ids",
@@ -36,6 +46,10 @@ export const SETTING_DEFAULTS: SiteSettings = {
   phone_primary: "+255 616 110 100",
   phone_secondary: "+255 754 300 543",
   location: "Arusha, Tanzania — visits by appointment.",
+  display_currency: BASE_CURRENCY,
+  currency_rates: JSON.stringify(DEFAULT_RATES),
+  rates_updated: "2026-09-17",
+  budget_bands: DEFAULT_BUDGET_BANDS.join(","),
   hero_collage_ids: "",
   hero_mobile_ids: "",
 };
