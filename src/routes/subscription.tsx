@@ -3,24 +3,15 @@ import { useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { subscribe } from "@/lib/data/subscribers";
-import { canonical } from "@/lib/seo";
+import { canonical, seoMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/subscription")({
   head: () => ({
-    meta: [
-      { title: "Subscription — MillerArtz" },
-      {
-        name: "description",
-        content:
-          "Join the MillerArtz Collector's Circle for early access to new collections, exclusive previews, and studio updates.",
-      },
-      { property: "og:title", content: "MillerArtz Subscription" },
-      {
-        property: "og:description",
-        content:
-          "Free and premium memberships for early access to MillerArtz collections and exclusive previews.",
-      },
-    ],
+    meta: seoMeta(
+      "Subscribe — MillerArtz Collector's Circle",
+      "Join the MillerArtz Collector's Circle for early access to new work by Tanzanian artist Miller S.K., exclusive previews and studio updates.",
+      "/subscription",
+    ),
     links: [canonical("/subscription")],
   }),
   component: Subscription,

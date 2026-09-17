@@ -30,3 +30,14 @@ export async function requireAdmin() {
     throw new Error("Not authorized.");
   }
 }
+
+/** Non-throwing check, for code that should simply behave differently for the
+ *  owner — analytics skips their own visits so the numbers reflect the public. */
+export async function isAdminRequest() {
+  try {
+    const session = await getSession<AdminSessionData>(adminSessionConfig());
+    return Boolean(session.data.isAdmin);
+  } catch {
+    return false;
+  }
+}

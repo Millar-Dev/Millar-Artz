@@ -2,24 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
-import { canonical, faqGraph, jsonLd } from "@/lib/seo";
+import { canonical, faqGraph, jsonLd, seoMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
-    meta: [
-      { title: "FAQ — MillerArtz" },
-      {
-        name: "description",
-        content:
-          "Commission process, pricing, timelines, delivery and payment — common questions about ordering original artwork from MillerArtz.",
-      },
-      { property: "og:title", content: "FAQ — MillerArtz" },
-      {
-        property: "og:description",
-        content:
-          "How commissions work at MillerArtz: process, pricing, timelines, delivery and payment.",
-      },
-    ],
+    meta: seoMeta(
+      "FAQ — Commissioning Art from MillerArtz",
+      "How commissions work at MillerArtz, the Tanzanian art studio of Miller S.K.: process, pricing, timelines, delivery and payment.",
+      "/faq",
+    ),
     links: [canonical("/faq")],
     // FAQPage markup — these can surface as expandable answers in search.
     scripts: [jsonLd(faqGraph(groups.flatMap((g) => g.items)))],

@@ -11,6 +11,8 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { getSiteSettings } from "@/lib/data/site-settings";
+import { jsonLd, OG_IMAGE, SEARCH_TERMS, siteGraph } from "@/lib/seo";
+import { VisitTracker } from "@/components/site/VisitTracker";
 
 function NotFoundComponent() {
   return (
@@ -79,16 +81,34 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
-    head: () => ({
+    head: ({ loaderData }) => ({
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "author", content: "MillerArtz" },
+        { name: "author", content: "Miller S.K." },
+        { name: "keywords", content: SEARCH_TERMS.join(", ") },
         { name: "theme-color", content: "#2E1620" },
+        // Explicitly allow large image previews — the work is the point, and
+        // Google otherwise defaults to a small thumbnail in results.
+        {
+          name: "robots",
+          content: "index, follow, max-image-preview:large",
+        },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "MillerArtz" },
+        { property: "og:locale", content: "en_GB" },
+        { property: "og:image", content: OG_IMAGE.url },
+        { property: "og:image:width", content: String(OG_IMAGE.width) },
+        { property: "og:image:height", content: String(OG_IMAGE.height) },
+        { property: "og:image:alt", content: OG_IMAGE.alt },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: OG_IMAGE.url },
+        { name: "geo.region", content: "TZ" },
+        { name: "geo.placename", content: "Tanzania" },
       ],
+      // Who the studio is, once, on every page. Built from the saved settings
+      // so the Instagram and Facebook links count as the same identity.
+      scripts: [jsonLd(siteGraph(loaderData))],
       links: [
         { rel: "stylesheet", href: appCss },
         /* SVG first for browsers that take it, PNG as the fallback. */
@@ -152,6 +172,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <VisitTracker />
     </QueryClientProvider>
   );
 }

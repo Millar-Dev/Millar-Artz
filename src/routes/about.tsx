@@ -4,7 +4,7 @@ import fallbackPortrait from "@/assets/me-portrait.jpg";
 import { BrandMark } from "@/components/site/BrandLogo";
 import { getSiteImage } from "@/lib/data/site-images";
 import { getSiteSettings } from "@/lib/data/site-settings";
-import { canonical } from "@/lib/seo";
+import { canonical, seoMeta } from "@/lib/seo";
 import { MapPin, Clock, Palette, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
@@ -27,19 +27,11 @@ export const Route = createFileRoute("/about")({
     };
   },
   head: () => ({
-    meta: [
-      { title: "About — MillerArtz" },
-      {
-        name: "description",
-        content:
-          "MillerArtz is a Tanzania-based studio working across hyperrealism, wildlife, portraiture, traditional and cultural commissions, murals, and more.",
-      },
-      { property: "og:title", content: "About MillerArtz" },
-      {
-        property: "og:description",
-        content: "The story, mission and vision behind MillerArtz.",
-      },
-    ],
+    meta: seoMeta(
+      "About Miller S.K. — Tanzanian Artist | MillerArtz",
+      "Miller S.K. is a Tanzanian visual artist and the founder of MillerArtz, a studio working across painting, music, dance, sculpture and acrobatics.",
+      "/about",
+    ),
     links: [canonical("/about")],
   }),
   component: About,
@@ -97,8 +89,8 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:grid-cols-12">
           <div className="md:col-span-7 space-y-6 text-lg font-light leading-relaxed text-ink/75">
             <p>
-              MillerArtz is a Tanzania-based studio built around one artist's
-              hand: hyperrealistic graphite and charcoal work developed over
+              MillerArtz is the Tanzanian art studio of Miller S.K., built
+              around one artist's hand: hyperrealistic graphite and charcoal work developed over
               hundreds of hours of observation, acrylic and oil wildlife
               painting rooted in East Africa, and commissioned portraits and
               cultural scenes for clients and community organisations.

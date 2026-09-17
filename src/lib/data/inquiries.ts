@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { recordServerInteraction } from "./analytics-record";
 import { requireAdmin } from "./admin-session";
 import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";
 
@@ -55,6 +56,7 @@ export const submitInquiry = createServerFn({ method: "POST" })
       message: data.message.trim().slice(0, MAX.message),
     });
     if (error) throw new Error(error.message);
+    await recordServerInteraction("enquiry_sent", "/contact");
     return { ok: true as const };
   });
 

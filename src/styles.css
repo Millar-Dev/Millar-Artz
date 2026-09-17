@@ -101,6 +101,10 @@
      ratios below differ between light and dark, the hue never does, so a
      department reads as the same colour warmed up or cooled down rather than
      becoming a different one. */
+  /* Data marks in the Studio charts. Validated, not eyeballed: berry sits
+     inside the light-mode lightness band with >= 3:1 against warm paper. */
+  --chart-mark: #8a3350;
+
   --dept: #8a3350;
   --dept-h: 358;
   /* Lightness and chroma of the page ground, per theme. The hue comes from
@@ -168,6 +172,11 @@
   --veil-ground: #2e1620;
   --brand-accent: #d98ba8;
   --brand-ground: #2e1620;
+
+  /* The site's night rose (#d98ba8) is too pale for a data mark — it falls
+     outside the dark-mode lightness band. One step deeper on the same hue
+     passes both the band and 3:1 against the plum card. */
+  --chart-mark: #c9789a;
 
   /* Same hue, the light taken out of it rather than swapped for plum.
      Chroma stays modest so deep values don't clip out of sRGB and skew. */

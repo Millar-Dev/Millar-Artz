@@ -1,6 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Layout } from "@/components/site/Layout";
+import { AnalyticsPanel } from "@/components/studio/AnalyticsPanel";
 import { categories, fromArtworkRow, type Artwork, type ArtworkStatus } from "@/lib/gallery-data";
 import { adminLogin, adminLogout, checkAdminSession } from "@/lib/data/admin-auth";
 import {
@@ -230,8 +231,11 @@ function Dashboard({
         </div>
       </div>
 
+      {/* First thing on sign-in: is the site being seen? */}
+      <AnalyticsPanel />
+
       {/* About portrait */}
-      <div className="mt-10 flex flex-wrap items-center gap-6 border border-ink/10 bg-paper p-6">
+      <div className="mt-16 flex flex-wrap items-center gap-6 border border-ink/10 bg-paper p-6">
         <img
           src={portrait.image_path || undefined}
           alt=""

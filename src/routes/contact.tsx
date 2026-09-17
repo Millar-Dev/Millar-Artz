@@ -14,7 +14,7 @@ import { Layout } from "@/components/site/Layout";
 import { categories, disciplines } from "@/lib/gallery-data";
 import { submitInquiry } from "@/lib/data/inquiries";
 import { getSiteSettings } from "@/lib/data/site-settings";
-import { canonical } from "@/lib/seo";
+import { canonical, seoMeta } from "@/lib/seo";
 
 const contactSearchSchema = z.object({
   type: z.string().optional(),
@@ -23,19 +23,11 @@ const contactSearchSchema = z.object({
 export const Route = createFileRoute("/contact")({
   validateSearch: contactSearchSchema,
   head: () => ({
-    meta: [
-      { title: "Contact — MillerArtz" },
-      {
-        name: "description",
-        content:
-          "Request a commission or get in touch with MillerArtz. Phone, WhatsApp and email — a quotation follows within days.",
-      },
-      { property: "og:title", content: "Contact MillerArtz" },
-      {
-        property: "og:description",
-        content: "Reach the MillerArtz studio for commissions and inquiries.",
-      },
-    ],
+    meta: seoMeta(
+      "Commission Art in Tanzania — Contact MillerArtz",
+      "Commission a painting, portrait or mural from Tanzanian artist Miller S.K. Reach MillerArtz by WhatsApp, phone or email — a quotation follows within days.",
+      "/contact",
+    ),
     links: [canonical("/contact")],
   }),
   loader: () => getSiteSettings(),

@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { recordServerInteraction } from "./analytics-record";
 import { requireAdmin } from "./admin-session";
 import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";
 
@@ -30,6 +31,7 @@ export const subscribe = createServerFn({ method: "POST" })
         { onConflict: "email" },
       );
     if (error) throw new Error(error.message);
+    await recordServerInteraction("subscribed", "/subscription");
     return { ok: true as const };
   });
 

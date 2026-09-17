@@ -4,7 +4,7 @@ import { BrandMark, DisciplineMark } from "@/components/site/BrandLogo";
 import { disciplineIcons } from "@/components/site/discipline-icons";
 import { disciplines, fromArtworkRow } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
-import { artistGraph, canonical, jsonLd } from "@/lib/seo";
+import { canonical, seoMeta } from "@/lib/seo";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Artwork } from "@/lib/gallery-data";
 
@@ -22,25 +22,12 @@ export const Route = createFileRoute("/")({
     return { artworks: rows.map(fromArtworkRow) };
   },
   head: () => ({
-    meta: [
-      { title: "MillerArtz — The threshold to what's possible" },
-      {
-        name: "description",
-        content:
-          "MillerArtz is a Tanzania-based studio across five disciplines — painting, music, dance, sculpture and acrobatics. One threshold, and whatever you bring us next.",
-      },
-      {
-        property: "og:title",
-        content: "MillerArtz — The threshold to what's possible",
-      },
-      {
-        property: "og:description",
-        content:
-          "Five disciplines under one roof: painting, music, dance, sculpture and acrobatics. Commissions open.",
-      },
-    ],
+    meta: seoMeta(
+      "MillerArtz — Tanzanian Art Studio of Miller S.K.",
+      "The Tanzanian art studio of artist Miller S.K. — hyperrealistic paintings, portraits and wildlife art, plus music, dance, sculpture and acrobatics.",
+      "/",
+    ),
     links: [canonical("/")],
-    scripts: [jsonLd(artistGraph())],
   }),
   component: Home,
 });
@@ -140,9 +127,9 @@ function Home() {
             className="animate-float-in mt-6 max-w-xl text-base font-light leading-relaxed text-band-foreground/75 md:text-lg"
             style={{ animationDelay: "1.24s" }}
           >
-            A Tanzania-based studio across five disciplines — painting, music,
-            dance, sculpture and acrobatics. Step through whichever doorway you
-            came for.
+            The Tanzanian art studio of Miller S.K., across five disciplines —
+            painting, music, dance, sculpture and acrobatics. Step through
+            whichever doorway you came for.
           </p>
 
           <div

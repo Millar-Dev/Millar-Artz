@@ -15,7 +15,7 @@ import {
   type DisciplineId,
 } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
-import { artworkListGraph, canonical, jsonLd } from "@/lib/seo";
+import { artworkListGraph, canonical, jsonLd, seoMeta } from "@/lib/seo";
 
 const gallerySearchSchema = z.object({
   category: z
@@ -41,20 +41,11 @@ export const Route = createFileRoute("/gallery")({
     return { artworks: rows.map(fromArtworkRow) };
   },
   head: ({ loaderData }) => ({
-    meta: [
-      { title: "Gallery — MillerArtz" },
-      {
-        name: "description",
-        content:
-          "Browse hyperrealism, wildlife, portraits, traditional, abstract, mural, modern and cartoon works by MillerArtz.",
-      },
-      { property: "og:title", content: "Gallery — MillerArtz" },
-      {
-        property: "og:description",
-        content:
-          "The MillerArtz collection across painting, wildlife, portraiture and more, plus custom commissions.",
-      },
-    ],
+    meta: seoMeta(
+      "Art Gallery — Tanzanian Paintings & Portraits | MillerArtz",
+      "Browse the MillerArtz gallery: hyperrealistic portraits, wildlife paintings, murals and abstract works by Tanzanian artist Miller S.K.",
+      "/gallery",
+    ),
     links: [canonical("/gallery")],
     // Each piece described as a VisualArtwork so the collection can surface
     // in image and rich results rather than as one opaque page.

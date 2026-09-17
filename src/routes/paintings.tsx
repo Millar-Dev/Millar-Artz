@@ -12,7 +12,7 @@ import { listArtworks } from "@/lib/data/artworks";
 import { getSiteSettings, HERO_MOBILE_SLOTS } from "@/lib/data/site-settings";
 import { getSiteImage } from "@/lib/data/site-images";
 import artistPortraitFallback from "@/assets/me-portrait.jpg";
-import { artistGraph, canonical, jsonLd } from "@/lib/seo";
+import { canonical, seoMeta } from "@/lib/seo";
 import type { Artwork, ArtworkCategory, DisciplineId } from "@/lib/gallery-data";
 
 /** This page is the painting department, so it takes painting's colour. */
@@ -30,22 +30,12 @@ export const Route = createFileRoute("/paintings")({
     return { artworks: rows.map(fromArtworkRow), settings, portrait };
   },
   head: () => ({
-    meta: [
-      { title: "Paintings — MillerArtz" },
-      {
-        name: "description",
-        content:
-          "The MillerArtz painting department: hyperrealism, wildlife, portraits, traditional and cultural work, murals, abstract, modern and cartoon art, plus commissions.",
-      },
-      { property: "og:title", content: "Paintings — MillerArtz" },
-      {
-        property: "og:description",
-        content:
-          "Hyperrealistic drawings, wildlife paintings, murals and bespoke commissions from the MillerArtz painting department.",
-      },
-    ],
+    meta: seoMeta(
+      "Paintings by Miller S.K. — Tanzanian Artist | MillerArtz",
+      "Original paintings by Tanzanian artist Miller S.K. — hyperrealism, portraits, wildlife, murals, traditional and abstract art. Commissions open.",
+      "/paintings",
+    ),
     links: [canonical("/paintings")],
-    scripts: [jsonLd(artistGraph())],
   }),
   component: Paintings,
 });
