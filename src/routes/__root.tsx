@@ -116,14 +116,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         // The same page in each language, so search engines show Swahili
         // speakers the Swahili page. The Studio is English-only.
         ...alternates(matches[matches.length - 1]?.pathname ?? "/"),
-        /* SVG first for browsers that take it, PNG as the fallback. */
+        /* Google only shows a site's icon beside its search results when the
+           icon is square and a multiple of 48px, so those sizes lead. The
+           .ico also answers at /favicon.ico, the address crawlers try first;
+           the SVG is for browser tabs, which scale it cleanly. */
+        { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
+        { rel: "icon", href: "/favicon-48.png", type: "image/png", sizes: "48x48" },
+        { rel: "icon", href: "/favicon-96.png", type: "image/png", sizes: "96x96" },
+        { rel: "icon", href: "/favicon-192.png", type: "image/png", sizes: "192x192" },
         { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-        {
-          rel: "icon",
-          href: "/favicon-32.png",
-          type: "image/png",
-          sizes: "32x32",
-        },
         {
           rel: "apple-touch-icon",
           href: "/apple-touch-icon.png",
