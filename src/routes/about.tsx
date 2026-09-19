@@ -9,6 +9,7 @@ import { canonical, seoMeta } from "@/lib/seo";
 import { StudioMap } from "@/components/site/StudioMap";
 import { MapPin, Clock, Palette, Mail } from "lucide-react";
 import { translator, useT } from "@/lib/i18n";
+import { filled } from "@/lib/about-record";
 
 export const Route = createFileRoute("/about")({
   loader: async () => {
@@ -358,14 +359,94 @@ function About() {
             <p className="mt-8 text-band-foreground/70">
               {t("Recent work includes a commissioned piece for the Embuan Children & Youth Foundation and a commissioned exterior mural. As exhibitions, features and honours accumulate, they'll be added here.")}
             </p>
-            <div className="mt-10 border-t border-band-foreground/10 pt-6 text-sm text-band-foreground/60">
-              <p className="">
-                {t("Featured spaces & press listings — coming soon.")}
-              </p>
-            </div>
+            {/* Exhibitions and press from src/lib/about-record.ts — shown
+                only once there are real entries. */}
+            {filled.exhibitions.length + filled.press.length > 0 ? (
+              <div className="mt-10 space-y-8 border-t border-band-foreground/10 pt-6">
+                {filled.exhibitions.length > 0 && (
+                  <RecordList
+                    heading={t("Exhibitions")}
+                    items={filled.exhibitions.map((e) => ({
+                      title: e.title,
+                      detail: [e.venue, e.date].filter(Boolean).join(" · "),
+                      url: e.url,
+                    }))}
+                  />
+                )}
+                {filled.press.length > 0 && (
+                  <RecordList
+                    heading={t("Press")}
+                    items={filled.press.map((p) => ({
+                      title: p.title,
+                      detail: [p.outlet, p.date].filter(Boolean).join(" · "),
+                      url: p.url,
+                    }))}
+                  />
+                )}
+              </div>
+            ) : (
+              <div className="mt-10 border-t border-band-foreground/10 pt-6 text-sm text-band-foreground/60">
+                <p className="">{t("Featured spaces & press listings — coming soon.")}</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
+
+      {/* What clients say, and where the work lives — from about-record.ts,
+          and absent entirely until there's something true to show. */}
+      {(filled.testimonials.length > 0 || filled.collectors.length > 0) && (
+        <section className="py-14 md:py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            {filled.testimonials.length > 0 && (
+              <>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+                  {t("Testimonials")}
+                </span>
+                <h2 className="mt-6 font-display font-bold text-4xl text-ink md:text-5xl">
+                  {t("In their words.")}
+                </h2>
+                <div className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+                  {filled.testimonials.map((q) => (
+                    <figure key={q.name + q.quote.slice(0, 20)} className="border-t border-ink/10 pt-6">
+                      <blockquote className="font-display text-xl italic leading-snug text-ink">
+                        “{q.quote.trim()}”
+                      </blockquote>
+                      <figcaption className="mt-4 text-sm text-ink/60">
+                        {q.name}
+                        {q.place ? `, ${q.place}` : ""}
+                        {q.artworkId && (
+                          <>
+                            {" · "}
+                            <Link to="/gallery/$id" params={{ id: q.artworkId }} className="text-gold hover:underline">
+                              {t("the piece")}
+                            </Link>
+                          </>
+                        )}
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </>
+            )}
+            {filled.collectors.length > 0 && (
+              <div className={filled.testimonials.length > 0 ? "mt-16" : ""}>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
+                  {t("In collections")}
+                </span>
+                <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-ink/75">
+                  {filled.collectors.map((c) => (
+                    <li key={c.name}>
+                      {c.name}
+                      {c.place && <span className="text-ink/45"> · {c.place}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="py-12 md:py-20">
         <div className="mx-auto max-w-3xl px-6 text-center">
@@ -390,5 +471,36 @@ function About() {
         </div>
       </section>
     </Layout>
+  );
+}
+
+/** A short titled list for the dark "record" column. */
+function RecordList({
+  heading,
+  items,
+}: {
+  heading: string;
+  items: { title: string; detail: string; url?: string }[];
+}) {
+  return (
+    <div>
+      <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold">{heading}</p>
+      <ul className="mt-4 space-y-3">
+        {items.map((it) => (
+          <li key={it.title + it.detail}>
+            <p className="font-display font-bold text-lg text-band-foreground">
+              {it.url ? (
+                <a href={it.url} target="_blank" rel="noopener" className="hover:text-gold">
+                  {it.title}
+                </a>
+              ) : (
+                it.title
+              )}
+            </p>
+            <p className="text-sm text-band-foreground/60">{it.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

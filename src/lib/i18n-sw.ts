@@ -492,4 +492,12 @@ export const sw: Record<string, string> = {
   "Invoice from {name}, sent after you confirm": "Ankara kutoka kwa {name}, hutumwa baada ya kuthibitisha",
   "or pay by link": "au lipa kwa kiungo",
   "For a finished piece, tap “Buy this piece” to confirm on WhatsApp that it's still available, then pay in full before delivery — by M-Pesa or other mobile money, Equity Bank Lipa Namba, or from abroad by a PayPal invoice, which can be paid by card. The details are listed under every piece for sale. Commissions are normally split: a deposit to begin, the balance on completion before delivery. Payment details are arranged directly when you approve the quotation.": "Kwa kazi iliyokamilika, bonyeza “Nunua kazi hii” kuthibitisha kwenye WhatsApp kwamba bado inapatikana, kisha lipa kiasi chote kabla ya kukabidhiwa — kwa M-Pesa au mitandao mingine ya simu, Lipa Namba ya Equity Bank, au ukiwa nje ya nchi kwa ankara ya PayPal, inayoweza kulipwa kwa kadi. Maelezo yako chini ya kila kazi inayouzwa. Kazi za kuagiza kwa kawaida hulipwa kwa awamu: kianzio ili kazi ianze, na kiasi kilichobaki kazi ikikamilika kabla ya kukabidhiwa. Taratibu za malipo hupangwa moja kwa moja unapokubali makadirio ya bei.",
+
+  // ── About — record ──────────────────────────────────────────────────────────
+  "Exhibitions": "Maonyesho",
+  "Press": "Vyombo vya habari",
+  "Testimonials": "Shuhuda",
+  "In their words.": "Kwa maneno yao.",
+  "the piece": "kazi husika",
+  "In collections": "Katika mikusanyiko",
 };

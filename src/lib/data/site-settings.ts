@@ -68,6 +68,10 @@ export const SETTING_DEFAULTS: SiteSettings = {
   payment_lipa_name: "MILLER S.K.",
   paypal_name: "Miller Kitumi",
   paypal_link: "",
+  // TODO(miller): switch to miller@millerartz.com once that mailbox exists and a test
+  // message has arrived — create it at Hostinger (or Zoho) first; a dead
+  // address here would silently lose enquiries.
+  // The live value is the Email field in the Studio (Contact & social).
   email: "millarkitumi04@gmail.com",
   phone_primary: "+255 616 110 100",
   phone_secondary: "+255 754 300 543",

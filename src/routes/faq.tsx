@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { canonical, faqGraph, jsonLd, seoMeta } from "@/lib/seo";
@@ -149,30 +149,27 @@ function Faq() {
   );
 }
 
+/**
+ * One question. A native <details>, so the answer is in the page's HTML from
+ * the server — readable by search engines and by anyone without JavaScript —
+ * and only visually collapsed until opened.
+ */
 function FaqItem({ question, answer, id }: { question: string; answer: string; id?: string }) {
-  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDetailsElement>(null);
   // Arriving from a link like /faq#payment opens that answer.
   useEffect(() => {
-    if (id && window.location.hash === `#${id}`) setOpen(true);
+    if (id && window.location.hash === `#${id}` && ref.current) ref.current.open = true;
   }, [id]);
   return (
-    <div id={id} className="scroll-mt-32">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 py-5 text-left"
-      >
+    <details ref={ref} id={id} className="group scroll-mt-32">
+      <summary className="flex w-full cursor-pointer list-none items-center justify-between gap-4 py-5 text-left [&::-webkit-details-marker]:hidden">
         <span className="text-base font-medium text-ink">{question}</span>
         <ChevronDown
           size={18}
-          className={`shrink-0 text-gold transition-transform ${open ? "rotate-180" : ""}`}
+          className="shrink-0 text-gold transition-transform group-open:rotate-180"
         />
-      </button>
-      {open && (
-        <p className="animate-fade pb-5 text-sm leading-relaxed text-ink/70">
-          {answer}
-        </p>
-      )}
-    </div>
+      </summary>
+      <p className="animate-fade pb-5 text-sm leading-relaxed text-ink/70">{answer}</p>
+    </details>
   );
 }

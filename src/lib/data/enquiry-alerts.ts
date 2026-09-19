@@ -44,6 +44,8 @@ async function recipient() {
       .maybeSingle();
     if (data?.value?.trim()) return data.value.trim();
   }
+  // TODO(miller): keep this a mailbox that is actually read. If alerts should
+  // move to miller@millerartz.com, do it only after that mailbox exists.
   return "millarkitumi04@gmail.com";
 }
 
