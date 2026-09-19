@@ -124,3 +124,15 @@ create index if not exists analytics_events_created_at_idx
 -- Same rule as every other table: the server writes and reads with the
 -- service role key; with RLS on and no policies, nothing else can.
 alter table public.analytics_events enable row level security;
+
+-- 2026-09-19: sizes as numbers, featured as its own flag, a tidier status set
+-- and 301s for renamed paintings. See supabase/migrations/20260919_artwork_integrity.sql.
+alter table artworks add column if not exists width_cm numeric check (width_cm > 0);
+alter table artworks add column if not exists height_cm numeric check (height_cm > 0);
+alter table artworks add column if not exists featured boolean not null default false;
+create table if not exists artwork_redirects (
+  old_id text primary key,
+  new_id text not null references artworks(id) on update cascade on delete cascade,
+  created_at timestamptz not null default now()
+);
+alter table artwork_redirects enable row level security;

@@ -59,7 +59,7 @@ const quickCategories = categories.filter((c) =>
   ["wildlife", "hyperrealism", "traditional", "abstract"].includes(c.value),
 );
 const marqueeIds = [
-  "bee-eaters-in-flight",
+  "mother-and-child",
   "giraffe-nocturne",
   "one-love-tribute",
   "technicolor-zebra",
@@ -73,17 +73,17 @@ const DEFAULT_MOBILE_IDS = [
   "woman-of-the-savanna",
   "kindred-bee-eaters",
   "the-storyteller",
-  "uprising",
-  "prism-dancer",
+  "lion-roar",
+  "golden-mane",
 ];
 
 /** Used when the Studio hasn't chosen a hero selection yet. */
 const DEFAULT_HERO_IDS = [
-  "uprising",
+  "lion-roar",
   "kindred-bee-eaters",
   "woman-of-the-savanna",
   "the-storyteller",
-  "prism-dancer",
+  "golden-mane",
 ];
 
 /** The bouquet: five stems fanning out of one point low-centre. Outer petals

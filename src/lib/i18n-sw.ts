@@ -471,4 +471,10 @@ export const sw: Record<string, string> = {
   "Have we worked together?": "Tumewahi kufanya kazi pamoja?",
   "A few words on Google help other people in Arusha — and further afield — find the studio.": "Maneno machache kwenye Google husaidia watu wengine Arusha — na kwingineko — kuipata studio.",
   "Leave a review": "Andika maoni",
+
+  // ── Artwork status and size ─────────────────────────────────────────────────
+  "Not for sale": "Haiuzwi",
+  "Available to buy": "Zinazouzwa",
+  "cm": "sm",
+  "in": "inchi",
 };

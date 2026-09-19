@@ -287,10 +287,17 @@ export const artworkPath = (id: string) => `/gallery/${encodeURIComponent(id)}`;
  * offer. "On request" and sold pieces carry no offer rather than a made-up one.
  */
 export function artworkGraph(
-  a: ArtworkLike & { price: number | null; currency: string; status: string; dimensions?: string },
+  a: ArtworkLike & {
+    price: number | null;
+    currency: string;
+    status: string;
+    widthCm?: number | null;
+    heightCm?: number | null;
+  },
 ) {
   const url = absoluteUrl(artworkPath(a.id));
-  const forSale = a.price != null && a.status !== "sold";
+  const forSale = a.price != null && a.status === "available";
+  const cm = (value: number) => ({ "@type": "QuantitativeValue", value, unitCode: "CMT" });
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -304,7 +311,7 @@ export function artworkGraph(
         artMedium: a.medium,
         artform: a.categoryLabel,
         dateCreated: String(a.year),
-        ...(a.dimensions ? { size: a.dimensions } : {}),
+        ...(a.widthCm && a.heightCm ? { width: cm(a.widthCm), height: cm(a.heightCm) } : {}),
         creator: { "@id": `${SITE_URL}/#artist` },
         ...(forSale
           ? {

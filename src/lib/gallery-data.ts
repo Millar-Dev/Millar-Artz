@@ -1,4 +1,17 @@
-export type ArtworkStatus = "available" | "sold" | "commission" | "featured";
+import { parseLegacyDimensions } from "./artwork-size";
+
+/**
+ * Whether a piece can be bought. "Featured" used to be a status too, which
+ * mixed two questions; it is now its own flag. "Commissioned" pieces became
+ * not_for_sale — they belong to the client who asked for them.
+ */
+export type ArtworkStatus = "available" | "sold" | "not_for_sale";
+export const ARTWORK_STATUSES: ArtworkStatus[] = ["available", "sold", "not_for_sale"];
+export const STATUS_LABEL: Record<ArtworkStatus, string> = {
+  available: "Available",
+  sold: "Sold",
+  not_for_sale: "Not for sale",
+};
 
 export type ArtworkCategory =
   | "hyperrealism"
@@ -17,13 +30,17 @@ export interface Artwork {
   category: ArtworkCategory;
   categoryLabel: string;
   medium: string;
-  dimensions?: string;
+  /** Centimetres. Null when the size isn't recorded. */
+  widthCm: number | null;
+  heightCm: number | null;
   status: ArtworkStatus;
+  /** Shown first where the site picks a handful of pieces. */
+  featured: boolean;
   image: string;
   description: string;
   year: number;
   sortOrder: number;
-  /** Null when the piece is priced on request. */
+  /** Always set when available; optional (and never shown) otherwise. */
   price: number | null;
   currency: string;
 }
@@ -37,6 +54,9 @@ export interface ArtworkDbRow {
   category_label: string;
   medium: string;
   dimensions: string | null;
+  width_cm?: number | string | null;
+  height_cm?: number | string | null;
+  featured?: boolean | null;
   status: string;
   description: string;
   year: number;
@@ -46,17 +66,39 @@ export interface ArtworkDbRow {
   currency: string | null;
 }
 
+/** Status as stored before the 2026-09-19 migration, mapped onto the new set,
+ *  so the site reads correctly whether or not the migration has run yet. */
+function normalizeStatus(row: ArtworkDbRow): ArtworkStatus {
+  switch (row.status) {
+    case "available":
+    case "sold":
+    case "not_for_sale":
+      return row.status;
+    case "featured":
+      return row.price != null ? "available" : "not_for_sale";
+    default: // "commission" and anything unexpected: not for sale
+      return "not_for_sale";
+  }
+}
+
+const num = (v: number | string | null | undefined) =>
+  v == null || v === "" ? null : Number(v);
+
 export function fromArtworkRow(row: ArtworkDbRow): Artwork {
+  const legacy = parseLegacyDimensions(row.dimensions);
+  const migrated = row.width_cm !== undefined;
   return {
     id: row.id,
-    title: row.title,
+    title: row.title.trim(),
     category: row.category as ArtworkCategory,
     categoryLabel: row.category_label,
-    medium: row.medium,
-    dimensions: row.dimensions ?? undefined,
-    status: row.status as ArtworkStatus,
+    medium: row.medium.trim(),
+    widthCm: migrated ? num(row.width_cm) : legacy.width,
+    heightCm: migrated ? num(row.height_cm) : legacy.height,
+    status: normalizeStatus(row),
+    featured: row.featured ?? row.status === "featured",
     image: row.image_path,
-    description: row.description,
+    description: row.description.trim(),
     year: row.year,
     sortOrder: row.sort_order,
     price: row.price ?? null,

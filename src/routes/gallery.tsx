@@ -12,6 +12,7 @@ import {
   categories,
   disciplines,
   fromArtworkRow,
+  STATUS_LABEL,
   type ArtworkCategory,
   type Artwork,
   type DisciplineId,
@@ -19,6 +20,7 @@ import {
 import { listArtworks } from "@/lib/data/artworks";
 import { artworkListGraph, canonical, jsonLd, seoMeta } from "@/lib/seo";
 import { translate, useT } from "@/lib/i18n";
+import { formatSize, formatSizeShort } from "@/lib/artwork-size";
 
 const gallerySearchSchema = z.object({
   category: z
@@ -68,6 +70,8 @@ function Gallery() {
     search.category ?? "all",
   );
   const [query, setQuery] = useState("");
+  // Buyers mostly want to know what they can actually take home.
+  const [forSaleOnly, setForSaleOnly] = useState(false);
   const [viewing, setViewing] = useState<Artwork | null>(null);
 
   const filtered = useMemo(() => {
@@ -82,9 +86,10 @@ function Gallery() {
         // Swahili searches match the translated category and medium too.
         t(a.categoryLabel).toLowerCase().includes(q) ||
         t(a.medium).toLowerCase().includes(q);
-      return matchesCat && matchesQuery;
+      const matchesSale = !forSaleOnly || a.status === "available";
+      return matchesCat && matchesQuery && matchesSale;
     });
-  }, [artworks, category, query, t]);
+  }, [artworks, category, query, forSaleOnly, t]);
 
   const activeCategory = categories.find((c) => c.value === category);
 
@@ -128,6 +133,18 @@ function Gallery() {
             ))}
           </div>
           <div className="flex w-full flex-wrap items-center gap-3 md:w-auto">
+          <button
+            type="button"
+            onClick={() => setForSaleOnly((v) => !v)}
+            aria-pressed={forSaleOnly}
+            className={`rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors ${
+              forSaleOnly
+                ? "border-ink bg-ink text-canvas"
+                : "border-ink/15 text-ink/60 hover:text-ink"
+            }`}
+          >
+            {t("Available to buy")}
+          </button>
           <CurrencySelect />
           <div className="relative w-full max-w-xs">
             <Search
@@ -229,9 +246,9 @@ function Gallery() {
                       </h3>
                       <p className="mt-1 text-xs uppercase tracking-tighter text-ink/50">
                         {t(a.medium)}
-                        {a.dimensions ? ` · ${a.dimensions}` : ""}
+                        {a.widthCm ? ` · ${formatSizeShort(a.widthCm, a.heightCm, t("cm"))}` : ""}
                       </p>
-                      {a.status !== "sold" && a.price != null && (
+                      {a.status === "available" && a.price != null && (
                         <p className="mt-1 font-display font-bold text-base text-gold">
                           {price(a.price, a.currency).display}
                         </p>
@@ -371,12 +388,14 @@ function Lightbox({
               </dt>
               <dd className="text-right">{t(artwork.medium)}</dd>
             </div>
-            {artwork.dimensions && (
+            {artwork.widthCm && (
               <div className="flex justify-between border-t border-band-foreground/10 pt-3">
                 <dt className="text-[10px] uppercase tracking-widest text-band-foreground/50">
                   {t("Dimensions")}
                 </dt>
-                <dd>{artwork.dimensions}</dd>
+                <dd className="text-right">
+                  {formatSize(artwork.widthCm, artwork.heightCm, { cm: t("cm"), in: t("in") })}
+                </dd>
               </div>
             )}
             <div className="flex justify-between border-t border-band-foreground/10 pt-3">
@@ -390,7 +409,7 @@ function Lightbox({
                 {t("Status")}
               </dt>
               <dd className="uppercase tracking-wider">
-                {t({ available: "Available", sold: "Sold", featured: "Featured", commission: "Commissioned" }[artwork.status] ?? artwork.status)}
+                {t(STATUS_LABEL[artwork.status])}
               </dd>
             </div>
             <div className="flex justify-between border-t border-band-foreground/10 pt-3">
@@ -398,10 +417,10 @@ function Lightbox({
                 {t("Price")}
               </dt>
               <dd className="text-right">
-                {artwork.status === "sold" ? (
-                  <span className="font-display font-bold text-lg text-gold">{t("Sold")}</span>
-                ) : artwork.price == null ? (
-                  <span className="font-display font-bold text-lg text-gold">{t("On request")}</span>
+                {artwork.status !== "available" || artwork.price == null ? (
+                  <span className="font-display font-bold text-lg text-gold">
+                    {t(STATUS_LABEL[artwork.status])}
+                  </span>
                 ) : (
                   <>
                     <span className="block font-display font-bold text-lg text-gold">
@@ -418,7 +437,7 @@ function Lightbox({
               </dd>
             </div>
           </dl>
-          {artwork.status !== "sold" && artwork.price != null && (
+          {artwork.status === "available" && artwork.price != null && (
             <RateNote className="mt-3 text-band-foreground/50" />
           )}
           <div className="mt-8 flex flex-wrap gap-3">
@@ -427,7 +446,7 @@ function Lightbox({
               search={{ type: artwork.categoryLabel, piece: artwork.title }}
               className="inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
             >
-              {t("Inquire about this piece")}
+              {t(artwork.status === "available" ? "Inquire about this piece" : "Commission something similar")}
             </Link>
             <Link
               to="/gallery/$id"

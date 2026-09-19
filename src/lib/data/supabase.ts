@@ -47,7 +47,8 @@ export interface Database {
         category: string;
         category_label: string;
         medium: string;
-        dimensions: string | null;
+        /** Legacy free-text size, kept for rollback; the site reads width_cm/height_cm. */
+        dimensions?: string | null;
         status: string;
         description: string;
         year: number;
@@ -55,8 +56,18 @@ export interface Database {
         sort_order: number;
         price: number | null;
         currency: string | null;
+        /** Added 2026-09-19; the size in cm, replacing `dimensions` text. */
+        width_cm?: number | null;
+        height_cm?: number | null;
+        featured?: boolean;
         created_at?: string;
         updated_at?: string;
+      }>;
+      /** Retired painting slugs and where they now live (301). */
+      artwork_redirects: TableConfig<{
+        old_id: string;
+        new_id: string;
+        created_at?: string;
       }>;
       site_images: TableConfig<{
         id: string;

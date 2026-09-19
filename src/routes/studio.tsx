@@ -6,7 +6,15 @@ import { AnalyticsPanel } from "@/components/studio/AnalyticsPanel";
 import { SOCIAL_PROFILES } from "@/lib/social";
 import { PricingPanel } from "@/components/studio/PricingPanel";
 import { CURRENCIES } from "@/lib/currency";
-import { categories, fromArtworkRow, type Artwork, type ArtworkStatus } from "@/lib/gallery-data";
+import {
+  ARTWORK_STATUSES,
+  categories,
+  fromArtworkRow,
+  STATUS_LABEL,
+  type Artwork,
+  type ArtworkStatus,
+} from "@/lib/gallery-data";
+import { formatSizeShort } from "@/lib/artwork-size";
 import { adminLogin, adminLogout, checkAdminSession } from "@/lib/data/admin-auth";
 import {
   deleteArtwork,
@@ -317,7 +325,10 @@ function Dashboard({
             <div className="min-w-0 flex-1">
               <p className="truncate font-display font-bold text-lg text-ink">{a.title}</p>
               <p className="text-xs uppercase tracking-widest text-ink/50">
-                {a.categoryLabel} · {a.medium} · {a.status}
+                {a.categoryLabel} · {a.medium}
+                {a.widthCm ? ` · ${formatSizeShort(a.widthCm, a.heightCm)}` : ""} ·{" "}
+                {STATUS_LABEL[a.status]}
+                {a.featured ? " · ★ featured" : ""}
               </p>
             </div>
             <button
@@ -879,7 +890,6 @@ function PortraitEditor({
   );
 }
 
-const statusOptions: ArtworkStatus[] = ["available", "sold", "commission", "featured"];
 
 function ArtworkEditor({
   draft,
@@ -920,8 +930,12 @@ function ArtworkEditor({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.title || !form.category || !form.medium || !form.image || !form.year || !form.status) {
+    if (!form.title?.trim() || !form.category || !form.medium?.trim() || !form.image || !form.year || !form.status) {
       setError("Title, category, medium, year, status and an image are all required.");
+      return;
+    }
+    if (form.status === "available" && form.price == null) {
+      setError("A piece that's available needs a price — or set it to “Not for sale”.");
       return;
     }
     setBusy(true);
@@ -930,12 +944,16 @@ function ArtworkEditor({
       const category = categories.find((c) => c.value === form.category);
       await upsertArtwork({
         data: {
-          id: form.id ?? slugify(form.title),
+          // New pieces get their slug from the title on the server; renaming
+          // an existing piece moves its slug and leaves a redirect.
+          id: form.id,
           title: form.title,
           category: form.category,
           categoryLabel: category?.label ?? form.category,
           medium: form.medium,
-          dimensions: form.dimensions,
+          widthCm: form.widthCm ?? null,
+          heightCm: form.heightCm ?? null,
+          featured: form.featured ?? false,
           price: form.price ?? null,
           currency: form.currency || "TZS",
           status: form.status,
@@ -948,8 +966,8 @@ function ArtworkEditor({
         },
       });
       onSaved();
-    } catch {
-      setError("Save failed.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed.");
     } finally {
       setBusy(false);
     }
@@ -1032,14 +1050,23 @@ function ArtworkEditor({
                   onChange={(e) => update("status", e.target.value as ArtworkStatus)}
                   className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
                 >
-                  {statusOptions.map((s) => (
+                  {ARTWORK_STATUSES.map((s) => (
                     <option key={s} value={s}>
-                      {s}
+                      {STATUS_LABEL[s]}
                     </option>
                   ))}
                 </select>
               </Field>
             </div>
+            <label className="flex items-center gap-2 text-sm text-ink/70">
+              <input
+                type="checkbox"
+                checked={form.featured ?? false}
+                onChange={(e) => update("featured", e.target.checked)}
+                className="accent-[var(--color-gold)]"
+              />
+              Featured — shown first on the home page
+            </label>
           </div>
         </div>
 
@@ -1052,15 +1079,32 @@ function ArtworkEditor({
               className="w-full border-b border-ink/20 bg-transparent py-2 text-ink focus:border-gold focus:outline-none"
             />
           </Field>
-          <Field label="Dimensions">
-            <input
-              value={form.dimensions ?? ""}
-              onChange={(e) => update("dimensions", e.target.value)}
-              placeholder="e.g. 60 × 80 cm"
-              className="w-full border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
-            />
+          <Field label="Size (cm, width × height)">
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min="0"
+                step="0.1"
+                value={form.widthCm ?? ""}
+                onChange={(e) => update("widthCm", e.target.value === "" ? null : Number(e.target.value))}
+                placeholder="W"
+                aria-label="Width in cm"
+                className="w-full border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
+              />
+              <span className="text-ink/40">×</span>
+              <input
+                type="number"
+                min="0"
+                step="0.1"
+                value={form.heightCm ?? ""}
+                onChange={(e) => update("heightCm", e.target.value === "" ? null : Number(e.target.value))}
+                placeholder="H"
+                aria-label="Height in cm"
+                className="w-full border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
+              />
+            </div>
           </Field>
-          <Field label="Price">
+          <Field label="Price" required={form.status === "available"}>
             <input
               type="number"
               min="0"
@@ -1072,7 +1116,7 @@ function ArtworkEditor({
                   e.target.value === "" ? null : Number(e.target.value),
                 )
               }
-              placeholder="Leave blank for “on request”"
+              placeholder={form.status === "available" ? "Required for sale" : "Optional — not shown"}
               className="w-full border-b border-ink/20 bg-transparent py-2 text-ink placeholder:text-ink/30 focus:border-gold focus:outline-none"
             />
           </Field>
@@ -1141,16 +1185,5 @@ function Field({
       </span>
       <div className="mt-1">{children}</div>
     </label>
-  );
-}
-
-function slugify(title: string) {
-  return (
-    title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "") +
-    "-" +
-    Math.random().toString(36).slice(2, 6)
   );
 }

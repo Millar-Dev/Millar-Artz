@@ -60,7 +60,10 @@ function Home() {
   const heroWords = t(HERO_LINE).split(" ");
   const { artworks } = Route.useLoaderData();
   // Real pieces, so the directory opens onto actual work rather than stock.
-  const featured = artworks.slice(0, 6);
+  // Featured pieces first, then the gallery order (the sort is stable).
+  const featured = [...artworks]
+    .sort((a, b) => Number(b.featured) - Number(a.featured))
+    .slice(0, 6);
 
   return (
     <Layout>

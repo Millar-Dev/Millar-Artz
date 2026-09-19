@@ -1,11 +1,12 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Link2, MessageCircle, Share2 } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { StatusPill } from "@/components/site/StatusPill";
 import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
-import { fromArtworkRow, type Artwork } from "@/lib/gallery-data";
-import { listArtworks } from "@/lib/data/artworks";
+import { fromArtworkRow, STATUS_LABEL, type Artwork } from "@/lib/gallery-data";
+import { formatSize, formatSizeShort } from "@/lib/artwork-size";
+import { findArtworkRedirect, listArtworks } from "@/lib/data/artworks";
 import { artworkGraph, artworkPath, absoluteUrl, canonical, jsonLd, seoMeta } from "@/lib/seo";
 import { shareImage, sized, srcSetFor } from "@/lib/images";
 import { localizePath, translator, useLang, useT } from "@/lib/i18n";
@@ -26,7 +27,13 @@ export const Route = createFileRoute("/gallery_/$id")({
   loader: async ({ params }) => {
     const all = (await listArtworks()).map(fromArtworkRow);
     const index = all.findIndex((a) => a.id === params.id);
-    if (index === -1) throw notFound();
+    if (index === -1) {
+      // A retired address (the painting was renamed): move permanently, so
+      // shared links and search results carry over to the new page.
+      const moved = await findArtworkRedirect({ data: params.id });
+      if (moved) throw redirect({ to: "/gallery/$id", params: { id: moved }, statusCode: 301 });
+      throw notFound();
+    }
     const artwork = all[index];
     // Same category first, then anything else, so there are always a few to
     // browse on to.
@@ -56,7 +63,8 @@ export const Route = createFileRoute("/gallery_/$id")({
     const summary = a.description?.trim()
       ? a.description.trim()
       : t("{medium} by Tanzanian artist Miller S.K.", { medium });
-    const description = `${summary} ${medium}${a.dimensions ? `, ${a.dimensions}` : ""}, ${a.year}. MillerArtz, Arusha, Tanzania.`
+    const size = formatSizeShort(a.widthCm, a.heightCm, t("cm"));
+    const description = `${summary} ${medium}${size ? `, ${size}` : ""}, ${a.year}. MillerArtz, Arusha, Tanzania.`
       .replace(/\s+/g, " ")
       .slice(0, 158);
     return {
@@ -81,7 +89,8 @@ function ArtworkPage() {
   const { artwork: a, related, previous, next } = Route.useLoaderData();
   const t = useT();
   const { price } = useCurrency();
-  const view = a.price != null ? price(a.price, a.currency) : null;
+  // Only a piece that can be bought shows a price.
+  const view = a.status === "available" && a.price != null ? price(a.price, a.currency) : null;
 
   return (
     <Layout>
@@ -129,7 +138,12 @@ function ArtworkPage() {
 
               <dl className="mt-8 space-y-3 text-sm text-ink/75">
                 <Row label={t("Medium")} value={t(a.medium)} />
-                {a.dimensions && <Row label={t("Dimensions")} value={a.dimensions} />}
+                {a.widthCm && (
+                  <Row
+                    label={t("Dimensions")}
+                    value={formatSize(a.widthCm, a.heightCm, { cm: t("cm"), in: t("in") })}
+                  />
+                )}
                 <Row label={t("Year")} value={String(a.year)} />
                 <div className="flex items-center justify-between border-t border-ink/10 pt-3">
                   <dt className="text-[10px] uppercase tracking-widest text-ink/50">{t("Status")}</dt>
@@ -140,10 +154,10 @@ function ArtworkPage() {
                 <div className="flex items-start justify-between border-t border-ink/10 pt-3">
                   <dt className="text-[10px] uppercase tracking-widest text-ink/50">{t("Price")}</dt>
                   <dd className="text-right">
-                    {a.status === "sold" ? (
-                      <span className="font-display text-xl font-bold text-gold">{t("Sold")}</span>
-                    ) : !view ? (
-                      <span className="font-display text-xl font-bold text-gold">{t("On request")}</span>
+                    {!view ? (
+                      <span className="font-display text-xl font-bold text-gold">
+                        {t(STATUS_LABEL[a.status])}
+                      </span>
                     ) : (
                       <>
                         <span className="block font-display text-xl font-bold text-gold">
@@ -158,7 +172,7 @@ function ArtworkPage() {
                 </div>
               </dl>
 
-              {a.status !== "sold" && view && (
+              {view && (
                 <div className="mt-4 space-y-2">
                   <CurrencySelect />
                   <RateNote />
@@ -171,7 +185,7 @@ function ArtworkPage() {
                   search={{ type: a.categoryLabel, piece: a.title }}
                   className="rounded-sm bg-gold px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
                 >
-                  {t(a.status === "sold" ? "Commission something similar" : "Enquire about this piece")}
+                  {t(a.status === "available" ? "Enquire about this piece" : "Commission something similar")}
                 </Link>
                 <ShareButtons artwork={a} />
               </div>
