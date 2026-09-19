@@ -183,7 +183,7 @@ export const sw: Record<string, string> = {
   "Whether it's a cherished family portrait, a wildlife piece, a mural for a wall that needs one, or something outside the usual — we specialise in commissions built around what you actually want.": "Iwe ni picha ya familia unayoithamini, mchoro wa wanyamapori, mchoro wa ukutani kwa ukuta unaouhitaji, au kitu nje ya kawaida — tunabobea katika kazi zinazotengenezwa kulingana na kile unachotaka hasa.",
   "Hyperrealistic portraiture from reference photos": "Picha halisi kabisa za watu kutoka kwenye picha za mfano",
   "Custom sizes ranging from A4 to full exterior murals": "Ukubwa wowote, kuanzia A4 hadi michoro mikubwa ya kuta za nje",
-  "Nine disciplines to choose from, plus room for new ideas": "Aina tisa za kuchagua, pamoja na nafasi kwa mawazo mapya",
+  "Five disciplines to choose from, plus room for new ideas": "Fani tano za kuchagua, pamoja na nafasi kwa mawazo mapya",
   "Request a Quotation": "Omba Makadirio ya Bei",
   "The Departments": "Idara",
   "One threshold, five disciplines.": "Mlango mmoja, fani tano.",

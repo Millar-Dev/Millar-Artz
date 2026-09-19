@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { getSiteSettings } from "@/lib/data/site-settings";
-import { absoluteUrl, jsonLd, SEARCH_TERMS, siteGraph } from "@/lib/seo";
+import { absoluteUrl, jsonLd, siteGraph } from "@/lib/seo";
 import { langFromPath, localizePath, useLang, useT } from "@/lib/i18n";
 import { VisitTracker } from "@/components/site/VisitTracker";
 import { CurrencyProvider } from "@/components/site/CurrencyProvider";
@@ -92,7 +92,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "author", content: "Miller S.K." },
-        { name: "keywords", content: SEARCH_TERMS.join(", ") },
         { name: "theme-color", content: "#2E1620" },
         // Explicitly allow large image previews — the work is the point, and
         // Google otherwise defaults to a small thumbnail in results.

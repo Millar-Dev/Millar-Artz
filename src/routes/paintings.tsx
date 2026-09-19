@@ -398,7 +398,7 @@ function Paintings() {
               {[
                 "Hyperrealistic portraiture from reference photos",
                 "Custom sizes ranging from A4 to full exterior murals",
-                "Nine disciplines to choose from, plus room for new ideas",
+                "Five disciplines to choose from, plus room for new ideas",
               ].map((item) => (
                 <li
                   key={item}

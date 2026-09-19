@@ -91,7 +91,7 @@ export function fromArtworkRow(row: ArtworkDbRow): Artwork {
     id: row.id,
     title: row.title.trim(),
     category: row.category as ArtworkCategory,
-    categoryLabel: row.category_label,
+    categoryLabel: row.category_label.trim(),
     medium: row.medium.trim(),
     widthCm: migrated ? num(row.width_cm) : legacy.width,
     heightCm: migrated ? num(row.height_cm) : legacy.height,

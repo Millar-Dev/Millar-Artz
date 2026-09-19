@@ -149,7 +149,7 @@ export const upsertArtwork = createServerFn({ method: "POST" })
       id,
       title,
       category: input.category,
-      category_label: input.categoryLabel,
+      category_label: clean(input.categoryLabel),
       medium,
       width_cm: positive(input.widthCm),
       height_cm: positive(input.heightCm),

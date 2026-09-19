@@ -46,38 +46,6 @@ export const OG_IMAGE = {
 };
 
 /**
- * Terms the studio wants to be found by. Google has ignored the keywords meta
- * tag since 2009 and Bing gives it next to no weight, so this list is not what
- * gets the site ranked — the titles, descriptions, headings and structured
- * data below are. It is kept because a few smaller engines still read it and
- * it documents the intended search terms in one place.
- */
-export const SEARCH_TERMS = [
-  "MillerArtz",
-  "Miller Artz",
-  "Miller S.K.",
-  "Miller Sunday Kitumi",
-  "Miller Kitumi",
-  "Millar Kitumi",
-  "Miller",
-  "Arusha artist",
-  "artist in Arusha",
-  "Arusha",
-  "Tanzanian artist",
-  "Tanzanian painter",
-  "Tanzanian art",
-  "Tanzania",
-  "art",
-  "paintings",
-  "African art",
-  "East African artist",
-  "hyperrealism",
-  "portrait commissions",
-  "wildlife paintings",
-  "murals",
-];
-
-/**
  * Title, description and their social-card twins for one page.
  *
  * Titles stay under about 60 characters and descriptions under about 155,
