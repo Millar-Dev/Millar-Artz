@@ -68,7 +68,7 @@ const groups: { heading: string; items: { q: string; a: string; id?: string }[] 
       {
         id: "payment",
         q: "How is payment handled?",
-        a: "For a finished piece, tap “Buy this piece” to confirm on WhatsApp that it's still available, then pay by M-Pesa or other mobile money, Equity Bank Lipa Namba, or PayPal from abroad — the details are listed under every piece for sale. Commissions are normally split: a deposit to begin, the balance on completion before delivery. Payment details are arranged directly when you approve the quotation.",
+        a: "For a finished piece, tap “Buy this piece” to confirm on WhatsApp that it's still available, then pay in full before delivery — by M-Pesa or other mobile money, Equity Bank Lipa Namba, or from abroad by a PayPal invoice, which can be paid by card. The details are listed under every piece for sale. Commissions are normally split: a deposit to begin, the balance on completion before delivery. Payment details are arranged directly when you approve the quotation.",
       },
     ],
   },

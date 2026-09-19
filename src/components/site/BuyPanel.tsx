@@ -67,16 +67,24 @@ export function PaymentNote({ className = "" }: { className?: string }) {
       t("{bank} Lipa Namba", { bank: s.payment_lipa_bank || "Bank" }),
       [s.payment_lipa_namba, s.payment_lipa_name].filter(Boolean).join(" · "),
     ]);
+  // PayPal the way most independent sellers take it: an invoice sent once the
+  // buyer has confirmed, payable by card or PayPal, with buyer and seller
+  // protection — and no email address published on the page. A PayPal.me link,
+  // if one is ever saved in the Studio, is offered as well.
   if (s.paypal_name || s.paypal_link)
     rows.push([
       t("PayPal (international)"),
-      s.paypal_link ? (
-        <a href={s.paypal_link} target="_blank" rel="noopener" className="underline hover:text-ink">
-          {s.paypal_name || "PayPal"}
-        </a>
-      ) : (
-        s.paypal_name
-      ),
+      <>
+        {t("Invoice from {name}, sent after you confirm", { name: s.paypal_name || "PayPal" })}
+        {s.paypal_link && (
+          <>
+            {" · "}
+            <a href={s.paypal_link} target="_blank" rel="noopener" className="underline hover:text-ink">
+              {t("or pay by link")}
+            </a>
+          </>
+        )}
+      </>,
     ]);
 
   return (
@@ -92,7 +100,7 @@ export function PaymentNote({ className = "" }: { className?: string }) {
         </dl>
       )}
       <p className="mt-3">
-        {t("Confirm the piece is still available on WhatsApp before you pay. Packing and worldwide delivery are arranged per piece.")}{" "}
+        {t("Confirm the piece is still available on WhatsApp, then pay in full before delivery. Packing and worldwide delivery are arranged per piece.")}{" "}
         <Link to="/faq" hash="payment" className="underline hover:text-ink">
           {t("How payment works")}
         </Link>
