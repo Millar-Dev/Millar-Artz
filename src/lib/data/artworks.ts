@@ -163,7 +163,16 @@ export const upsertArtwork = createServerFn({ method: "POST" })
       currency: input.currency || "TZS",
       updated_at: new Date().toISOString(),
     });
-    if (error) throw new Error(error.message);
+    if (error) {
+      // The new columns arrive with the 2026-09-19 migration; until it has
+      // run, say what to do rather than showing Postgres's wording.
+      if (/schema cache|column .* does not exist/i.test(error.message)) {
+        throw new Error(
+          "The database hasn't been updated yet. Run the 19 Sep migration in the Supabase SQL editor, then save again.",
+        );
+      }
+      throw new Error(error.message);
+    }
     return { ok: true as const, id };
   });
 

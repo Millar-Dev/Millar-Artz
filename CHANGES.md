@@ -129,7 +129,7 @@ Rate: US$1.7647 per cm of (width + height). Sold pieces keep the price they sold
 
 - **slug:** `uprising` → `lion-roar` (old address 301-redirects)
 - **category:** “Abstract” → “Wildlife”
-- **medium:** “Charcoal ” → “Charcoal”
+- **medium:** “Charcoal ” → “Charcoal on Canvas”
 - **description:**
   - was: “A Lion roar captured at the moment projecting the power of the Lion and its position in the jungle”
   - now: “A lion mid-roar, drawn in white on a black ground — fangs bared, mane in fine strands, one amber eye the only colour in the piece.”
@@ -198,5 +198,5 @@ Rate: US$1.7647 per cm of (width + height). Sold pieces keep the price they sold
 
 ### Still open (not changed — needs Millar)
 - Sizes: Technicolor Zebra, Rush Hour (see above); missing for The Storyteller, Rhino Study, Twilight Dancer, Cartoon Study — Penguin Salute.
-- Medium to confirm: Rush Hour (“Acrylic” on what?), Rhino Study (photo looks sepia), Bloom (blue-toned), Lion Roar (white on black — charcoal or pastel?), Technicolor Zebra (photo looks like wood).
+- Medium to confirm: Rush Hour (“Acrylic” on what?), Rhino Study (photo looks sepia), Bloom (blue-toned), Technicolor Zebra (photo looks like wood).
 - The legacy `dimensions` text column is left untouched for rollback; the site now reads `width_cm` / `height_cm`.

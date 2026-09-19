@@ -201,7 +201,7 @@ update artworks set
   description = $q$A lion mid-roar, drawn in white on a black ground — fangs bared, mane in fine strands, one amber eye the only colour in the piece.$q$,
   category = $q$wildlife$q$,
   category_label = $q$Wildlife$q$,
-  medium = $q$Charcoal$q$,
+  medium = $q$Charcoal on Canvas$q$,
   featured = false,
   width_cm = 30,
   height_cm = 45,
