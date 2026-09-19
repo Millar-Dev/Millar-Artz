@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { canonical, faqGraph, jsonLd, seoMeta } from "@/lib/seo";
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/faq")({
   component: Faq,
 });
 
-const groups: { heading: string; items: { q: string; a: string }[] }[] = [
+const groups: { heading: string; items: { q: string; a: string; id?: string }[] }[] = [
   {
     heading: "Commissions",
     items: [
@@ -58,16 +58,17 @@ const groups: { heading: string; items: { q: string; a: string }[] }[] = [
         a: "It depends on size, medium and detail — a small graphite study and a full exterior mural are very different pieces of work. Share what you have in mind and you'll get a firm quotation rather than a guess.",
       },
       {
-        q: "Why do some pieces say “on request” instead of a price?",
-        a: "Availability changes, and some pieces are held for exhibitions or existing collectors. If a piece interests you, ask — you'll get a straight answer on whether it's available and what it costs.",
+        q: "Why do some pieces say “Not for sale”?",
+        a: "Some pieces were commissioned by a client, and some aren't offered for sale. If one speaks to you, ask about commissioning something similar.",
       },
       {
         q: "What currency are prices in?",
-        a: "Prices are set in Tanzanian shillings (TSh). On the Gallery and Contact pages you can switch to about twenty other currencies — East African shillings and francs, US dollars, euros and pounds, yuan, yen, won, rupees, dirhams, riyals and more. Those figures are converted at the studio's current rate and are a guide. Your quotation confirms the exact amount.",
+        a: "Pieces for sale are priced in US dollars. On the Gallery, painting and Contact pages you can show prices in Tanzanian shillings or about twenty other currencies — East African shillings and francs, euros and pounds, yuan, yen, won, rupees, dirhams, riyals and more. Those figures are converted at the studio's current rate and are a guide; the listed price, or your quotation for a commission, is what applies.",
       },
       {
+        id: "payment",
         q: "How is payment handled?",
-        a: "Commissions are normally split: a deposit to begin, the balance on completion before delivery. Payment details are arranged directly when you approve the quotation.",
+        a: "For a finished piece, tap “Buy this piece” to confirm on WhatsApp that it's still available, then pay by M-Pesa or other mobile money, Equity Bank Lipa Namba, or PayPal from abroad — the details are listed under every piece for sale. Commissions are normally split: a deposit to begin, the balance on completion before delivery. Payment details are arranged directly when you approve the quotation.",
       },
     ],
   },
@@ -79,10 +80,12 @@ const groups: { heading: string; items: { q: string; a: string }[] }[] = [
         a: "Most commissioned portraits take a few weeks; larger paintings and murals take longer. Hyperrealism in particular is slow by nature — the detail is the work. You'll get a realistic timeline with your quotation, and rush requests are worth asking about.",
       },
       {
+        id: "delivery",
         q: "Do you deliver outside Tanzania?",
         a: "Yes. Local pieces can be collected from the studio or delivered by arrangement. International shipping is quoted per piece, since size and framing change the cost considerably.",
       },
       {
+        id: "packaging",
         q: "How is work packaged?",
         a: "Pieces are prepared for transit — framed, mounted or rolled depending on the medium and destination. Murals are painted on site, so delivery there means scheduling the work rather than shipping it.",
       },
@@ -117,7 +120,7 @@ function Faq() {
               </h2>
               <div className="mt-5 divide-y divide-ink/10 border-y border-ink/10">
                 {group.items.map((item) => (
-                  <FaqItem key={item.q} question={t(item.q)} answer={t(item.a)} />
+                  <FaqItem key={item.q} id={item.id} question={t(item.q)} answer={t(item.a)} />
                 ))}
               </div>
             </div>
@@ -146,10 +149,14 @@ function Faq() {
   );
 }
 
-function FaqItem({ question, answer }: { question: string; answer: string }) {
+function FaqItem({ question, answer, id }: { question: string; answer: string; id?: string }) {
   const [open, setOpen] = useState(false);
+  // Arriving from a link like /faq#payment opens that answer.
+  useEffect(() => {
+    if (id && window.location.hash === `#${id}`) setOpen(true);
+  }, [id]);
   return (
-    <div>
+    <div id={id} className="scroll-mt-32">
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}

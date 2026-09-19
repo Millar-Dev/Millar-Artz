@@ -9,6 +9,7 @@ import { formatSize, formatSizeShort } from "@/lib/artwork-size";
 import { findArtworkRedirect, listArtworks } from "@/lib/data/artworks";
 import { artworkGraph, artworkPath, absoluteUrl, canonical, jsonLd, seoMeta } from "@/lib/seo";
 import { shareImage, sized, srcSetFor } from "@/lib/images";
+import { BuyButton, PaymentNote } from "@/components/site/BuyPanel";
 import { localizePath, translator, useLang, useT } from "@/lib/i18n";
 
 /**
@@ -180,15 +181,31 @@ function ArtworkPage() {
               )}
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  to="/contact"
-                  search={{ type: a.categoryLabel, piece: a.title }}
-                  className="rounded-sm bg-gold px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
-                >
-                  {t(a.status === "available" ? "Enquire about this piece" : "Commission something similar")}
-                </Link>
+                {a.status === "available" ? (
+                  <>
+                    <BuyButton artwork={a} />
+                    {/* Still there for questions before buying, but no longer
+                        the main way forward. */}
+                    <Link
+                      to="/contact"
+                      search={{ type: a.categoryLabel, piece: a.title }}
+                      className="rounded-sm border border-ink/15 px-5 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-ink/70 hover:text-ink"
+                    >
+                      {t("Enquire")}
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    to="/contact"
+                    search={{ type: a.categoryLabel, piece: a.title }}
+                    className="rounded-sm bg-gold px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
+                  >
+                    {t("Commission something similar")}
+                  </Link>
+                )}
                 <ShareButtons artwork={a} />
               </div>
+              {a.status === "available" && <PaymentNote className="mt-6" />}
             </div>
           </div>
         </div>

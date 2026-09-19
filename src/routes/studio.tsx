@@ -750,6 +750,12 @@ const CONTACT_FIELDS = [
   ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
   ["location", "Location", "Arusha, Tanzania — visits by appointment."],
   ["map_url", "Studio map link (Google Maps → Share)", "https://maps.app.goo.gl/…"],
+  ["payment_mobile", "Payment: mobile money number", "+255 793 730 227"],
+  ["payment_lipa_bank", "Payment: Lipa Namba bank", "Equity Bank"],
+  ["payment_lipa_namba", "Payment: Lipa Namba", "80025069"],
+  ["payment_lipa_name", "Payment: Lipa Namba name", "MILLER S.K."],
+  ["paypal_name", "PayPal name", "Miller Kitumi"],
+  ["paypal_link", "PayPal link (optional)", "https://paypal.me/…"],
   ["google_profile_url", "Google Business Profile link", "https://g.page/r/…"],
   ["google_review_url", "Google review link (Ask for reviews)", "https://g.page/r/…/review"],
 ] as const;

@@ -8,6 +8,7 @@ import { DisciplineMark } from "@/components/site/BrandLogo";
 import { disciplineIcons } from "@/components/site/discipline-icons";
 import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
 import { StatusPill } from "@/components/site/StatusPill";
+import { BuyButton } from "@/components/site/BuyPanel";
 import {
   categories,
   disciplines,
@@ -441,12 +442,17 @@ function Lightbox({
             <RateNote className="mt-3 text-band-foreground/50" />
           )}
           <div className="mt-8 flex flex-wrap gap-3">
+            {artwork.status === "available" && <BuyButton artwork={artwork} />}
             <Link
               to="/contact"
               search={{ type: artwork.categoryLabel, piece: artwork.title }}
-              className="inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
+              className={
+                artwork.status === "available"
+                  ? "inline-block rounded-sm border border-band-foreground/20 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band-foreground/85 hover:text-band-foreground"
+                  : "inline-block rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
+              }
             >
-              {t(artwork.status === "available" ? "Inquire about this piece" : "Commission something similar")}
+              {t(artwork.status === "available" ? "Enquire" : "Commission something similar")}
             </Link>
             <Link
               to="/gallery/$id"

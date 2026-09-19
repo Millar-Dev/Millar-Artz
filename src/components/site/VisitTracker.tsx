@@ -41,7 +41,11 @@ export function VisitTracker() {
     const onClick = (e: MouseEvent) => {
       const link = (e.target as Element | null)?.closest?.("a[href]");
       if (!link) return;
-      const name = interactionFor(link.getAttribute("href") ?? "");
+      // A link can name its own interaction (the buy button does); otherwise
+      // it's read from the address.
+      const name =
+        (link.getAttribute("data-track") as Parameters<typeof send>[0]["name"] | null) ||
+        interactionFor(link.getAttribute("href") ?? "");
       if (!name) return;
       send({
         kind: "interaction",

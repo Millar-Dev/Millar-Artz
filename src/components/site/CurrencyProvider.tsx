@@ -141,7 +141,7 @@ export function RateNote({ className = "text-ink/50" }: { className?: string }) 
   return (
     <p className={`text-[11px] leading-snug ${className}`}>
       {t(
-        "Prices are set in Tanzanian shillings and converted at the studio's rate of {rate}{when}. Converted figures are a guide — your quotation confirms the exact amount.",
+        "Converted at the studio's rate of {rate}{when}. Converted figures are a guide — the listed price, or your quotation for a commission, is what applies.",
         { rate: describeRate(currency, rates), when: when ? t(" (set {date})", { date: when }) : "" },
       )}
     </p>

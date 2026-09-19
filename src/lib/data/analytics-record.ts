@@ -23,6 +23,7 @@ export const INTERACTIONS = [
   "commission_click",
   "share_click",
   "review_click",
+  "buy_click",
   "enquiry_sent",
   "subscribed",
 ] as const;
