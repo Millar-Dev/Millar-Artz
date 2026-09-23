@@ -745,7 +745,8 @@ function SubscribersPanel({ initial }: { initial: SubscriberRow[] }) {
 const CONTACT_FIELDS = [
   ...SOCIAL_PROFILES.map((p) => [p.key, `${p.label} URL`, p.placeholder] as const),
   ["whatsapp_number", "WhatsApp number", "255616110100"],
-  ["email", "Email", "millarkitumi04@gmail.com"],
+  ["email", "Email (shown on the site)", "millar@millerartz.com"],
+  ["alert_email", "Enquiry alerts go to", "millarkitumi04@gmail.com"],
   ["phone_primary", "Phone (primary)", "+255 616 110 100"],
   ["phone_secondary", "Phone (secondary)", "+255 754 300 543"],
   ["location", "Location", "Arusha, Tanzania — visits by appointment."],

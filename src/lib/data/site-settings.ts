@@ -11,6 +11,8 @@ export const SETTING_KEYS = [
   "tiktok_url",
   "youtube_url",
   "whatsapp_number",
+  /** Inbox that receives enquiry alerts — see SETTING_DEFAULTS. */
+  "alert_email",
   /** How to pay for a piece, shown under every "Buy this piece" button. */
   "payment_mobile",
   "payment_lipa_bank",
@@ -68,11 +70,14 @@ export const SETTING_DEFAULTS: SiteSettings = {
   payment_lipa_name: "MILLER S.K.",
   paypal_name: "Miller Kitumi",
   paypal_link: "",
-  // TODO(miller): switch to miller@millerartz.com once that mailbox exists and a test
-  // message has arrived — create it at Hostinger (or Zoho) first; a dead
-  // address here would silently lose enquiries.
+  // The address shown to visitors (Zoho mailbox on the domain, 2026-09-23).
   // The live value is the Email field in the Studio (Contact & social).
-  email: "millarkitumi04@gmail.com",
+  email: "millar@millerartz.com",
+  // Where enquiry alerts are sent. Deliberately separate from the public
+  // address: Resend's shared test sender can only deliver to the Resend
+  // account's own mailbox, so alerts would vanish if they simply followed the
+  // address on the site. Change this once millerartz.com is verified in Resend.
+  alert_email: "millarkitumi04@gmail.com",
   phone_primary: "+255 616 110 100",
   phone_secondary: "+255 754 300 543",
   location: "Arusha, Tanzania — visits by appointment.",

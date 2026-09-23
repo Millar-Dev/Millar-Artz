@@ -32,20 +32,27 @@ export interface EnquiryForAlert {
 const SITE = "https://www.millerartz.com";
 const DEFAULT_FROM = "MillerArtz <onboarding@resend.dev>";
 
-/** Where alerts go: an explicit override, else the contact email in settings. */
+/**
+ * Where alerts go: the NOTIFY_EMAIL override, else the Studio's alert address,
+ * else the address shown on the site.
+ *
+ * The alert address is its own setting because the two answer different
+ * questions: the site shows where clients should write, while alerts must go
+ * somewhere Resend can actually deliver — with the shared test sender, only
+ * the Resend account's own mailbox.
+ */
 async function recipient() {
   const override = process.env.NOTIFY_EMAIL?.trim();
   if (override) return override;
   if (isSupabaseConfigured()) {
     const { data } = await getSupabaseAdmin()
       .from("site_settings")
-      .select("value")
-      .eq("key", "email")
-      .maybeSingle();
-    if (data?.value?.trim()) return data.value.trim();
+      .select("key,value")
+      .in("key", ["alert_email", "email"]);
+    const by = Object.fromEntries((data ?? []).map((r) => [r.key, (r.value ?? "").trim()]));
+    if (by.alert_email) return by.alert_email;
+    if (by.email) return by.email;
   }
-  // TODO(miller): keep this a mailbox that is actually read. If alerts should
-  // move to miller@millerartz.com, do it only after that mailbox exists.
   return "millarkitumi04@gmail.com";
 }
 
