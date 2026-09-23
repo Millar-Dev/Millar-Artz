@@ -38,6 +38,7 @@ import {
   type SubscriberRow,
 } from "@/lib/data/subscribers";
 import {
+  getPrivateSettings,
   getSiteSettings,
   updateSiteSettings,
   HERO_COLLAGE_SLOTS,
@@ -68,6 +69,9 @@ export const Route = createFileRoute("/studio")({
         listSubscribers(),
         getSiteSettings(),
       ]);
+    // Private settings (the alert inbox) never travel with the public page
+    // data, so the Studio asks for them separately.
+    const settingsWithPrivate = { ...settings, ...(await getPrivateSettings()) };
     return {
       isAdmin: true as const,
       artworks: rows.map(fromArtworkRow),
@@ -75,7 +79,7 @@ export const Route = createFileRoute("/studio")({
       studioPhoto,
       inquiries,
       subscribers,
-      settings,
+      settings: settingsWithPrivate,
     };
   },
   head: () => ({ meta: [{ title: "Studio — MillerArtz" }, { name: "robots", content: "noindex" }] }),

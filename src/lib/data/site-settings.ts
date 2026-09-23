@@ -100,6 +100,13 @@ export const HERO_COLLAGE_SLOTS = 5;
 /** How many slides the phone/tablet hero cycles through. */
 export const HERO_MOBILE_SLOTS = 5;
 
+/**
+ * Settings that must never be sent to a browser. The alert inbox is the
+ * artist's own mailbox, not a published contact address, and the root loader
+ * ships everything it returns into the page for the footer to use.
+ */
+export const PRIVATE_SETTING_KEYS = ["alert_email"] as const satisfies readonly SettingKey[];
+
 export const getSiteSettings = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteSettings> => {
     if (!isSupabaseConfigured()) return SETTING_DEFAULTS;
@@ -118,6 +125,7 @@ export const getSiteSettings = createServerFn({ method: "GET" }).handler(
         settings[row.key as SettingKey] = row.value;
       }
     }
+    for (const key of PRIVATE_SETTING_KEYS) settings[key] = "";
     return settings;
   },
 );
@@ -182,3 +190,18 @@ async function resolveMapLink(raw: string) {
     map_coords: formatCoords(coords),
   };
 }
+
+/** The private settings, for the Studio's own form. Admin only. */
+export const getPrivateSettings = createServerFn({ method: "GET" }).handler(async () => {
+  await requireAdmin();
+  const out: Record<string, string> = Object.fromEntries(
+    PRIVATE_SETTING_KEYS.map((k) => [k, SETTING_DEFAULTS[k]]),
+  );
+  if (!isSupabaseConfigured()) return out;
+  const { data } = await getSupabaseAdmin()
+    .from("site_settings")
+    .select("key,value")
+    .in("key", [...PRIVATE_SETTING_KEYS]);
+  for (const row of data ?? []) out[row.key] = row.value;
+  return out;
+});
