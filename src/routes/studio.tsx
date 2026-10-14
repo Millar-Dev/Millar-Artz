@@ -5,6 +5,8 @@ import { Layout } from "@/components/site/Layout";
 import { AnalyticsPanel } from "@/components/studio/AnalyticsPanel";
 import { SOCIAL_PROFILES } from "@/lib/social";
 import { PricingPanel } from "@/components/studio/PricingPanel";
+import { LearnPanel } from "@/components/studio/LearnPanel";
+import { listAllLearnPosts, type LearnPostRow } from "@/lib/data/learn";
 import { CURRENCIES } from "@/lib/currency";
 import {
   ARTWORK_STATUSES,
@@ -69,6 +71,8 @@ export const Route = createFileRoute("/studio")({
         listSubscribers(),
         getSiteSettings(),
       ]);
+    // Lessons, drafts included — the panel writes them.
+    const learnPosts = await listAllLearnPosts().catch(() => []);
     // Private settings (the alert inbox) never travel with the public page
     // data, so the Studio asks for them separately.
     const settingsWithPrivate = { ...settings, ...(await getPrivateSettings()) };
@@ -79,6 +83,7 @@ export const Route = createFileRoute("/studio")({
       studioPhoto,
       inquiries,
       subscribers,
+      learnPosts,
       settings: settingsWithPrivate,
     };
   },
@@ -106,6 +111,7 @@ function Studio() {
         initialStudioPhoto={data.studioPhoto}
         initialInquiries={data.inquiries}
         initialSubscribers={data.subscribers}
+        initialLearnPosts={data.learnPosts}
         initialSettings={data.settings}
         onSignedOut={() => router.invalidate()}
       />
@@ -187,6 +193,7 @@ function Dashboard({
   initialStudioPhoto,
   initialInquiries,
   initialSubscribers,
+  initialLearnPosts,
   initialSettings,
   onSignedOut,
 }: {
@@ -195,6 +202,7 @@ function Dashboard({
   initialStudioPhoto: { id: string; image_path: string; caption: string } | null;
   initialInquiries: InquiryRow[];
   initialSubscribers: SubscriberRow[];
+  initialLearnPosts: LearnPostRow[];
   initialSettings: SiteSettings;
   onSignedOut: () => void;
 }) {
@@ -386,6 +394,7 @@ function Dashboard({
       />
       <InquiriesPanel initial={initialInquiries} />
       <SubscribersPanel initial={initialSubscribers} />
+      <LearnPanel initial={initialLearnPosts} />
       <PricingPanel initial={initialSettings} />
       <SettingsPanel initial={initialSettings} />
 

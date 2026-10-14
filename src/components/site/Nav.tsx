@@ -21,6 +21,7 @@ import { useT } from "@/lib/i18n";
 const links = [
   { to: "/", label: "Home" } as const,
   ...disciplines.map((d) => ({ to: d.slug, label: d.label })),
+  { to: "/learn", label: "Learn" } as const,
   { to: "/faq", label: "FAQ" } as const,
   { to: "/contact", label: "Contact" } as const,
 ];

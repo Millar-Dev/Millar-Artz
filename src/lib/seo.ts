@@ -338,6 +338,37 @@ export function artworkListGraph(artworks: ArtworkLike[]) {
   };
 }
 
+/** A lesson's own address. */
+export const learnPath = (id: string) => `/learn/${encodeURIComponent(id)}`;
+
+/**
+ * One lesson or article, so it can surface in search on its own terms —
+ * teaching pages are how people find a studio before they need one.
+ */
+export function articleGraph(a: {
+  id: string;
+  title: string;
+  excerpt: string;
+  cover: string | null;
+  publishedAt: string | null;
+}) {
+  const url = absoluteUrl(learnPath(a.id));
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: a.title.slice(0, 110),
+    description: a.excerpt,
+    url,
+    mainEntityOfPage: url,
+    ...(a.cover ? { image: a.cover } : {}),
+    ...(a.publishedAt ? { datePublished: a.publishedAt } : {}),
+    author: { "@id": `${SITE_URL}/#artist` },
+    publisher: { "@id": `${SITE_URL}/#studio` },
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+  };
+}
+
 /** A department, as its own service offered by the studio. Lets each
  *  discipline surface on its own terms in search rather than every page
  *  competing as "MillerArtz". */

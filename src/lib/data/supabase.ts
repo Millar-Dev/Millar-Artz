@@ -63,6 +63,21 @@ export interface Database {
         created_at?: string;
         updated_at?: string;
       }>;
+      /** Lessons and articles for /learn (added 2026-09-23). */
+      learn_posts: TableConfig<{
+        id: string;
+        title: string;
+        excerpt: string;
+        body: string;
+        discipline: string;
+        cover_path: string | null;
+        youtube_url: string | null;
+        published: boolean;
+        published_at: string | null;
+        sort_order: number;
+        created_at?: string;
+        updated_at?: string;
+      }>;
       /** Retired painting slugs and where they now live (301). */
       artwork_redirects: TableConfig<{
         old_id: string;

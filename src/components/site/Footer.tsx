@@ -91,6 +91,12 @@ export function Footer() {
               >
                 {t("Commission a Piece")}
               </Link>
+              <Link to="/learn" className="block hover:text-gold">
+                {t("Learn")}
+              </Link>
+              <Link to="/learn/training" className="block hover:text-gold">
+                {t("Training & coaching")}
+              </Link>
               <Link to="/faq" className="block hover:text-gold">
                 {t("FAQ")}
               </Link>

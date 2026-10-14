@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DanceRouteImport } from './routes/dance'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as LearnRouteImport } from './routes/learn'
 import { Route as MusicRouteImport } from './routes/music'
 import { Route as PaintingsRouteImport } from './routes/paintings'
 import { Route as SculptingRouteImport } from './routes/sculpting'
@@ -23,6 +24,8 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as GalleryIdRouteImport } from './routes/gallery_.$id'
+import { Route as LearnSlugRouteImport } from './routes/learn_.$slug'
+import { Route as LearnTrainingRouteImport } from './routes/learn_.training'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -57,6 +60,11 @@ const FaqRoute = FaqRouteImport.update({
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoute = LearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MusicRoute = MusicRouteImport.update({
@@ -94,6 +102,16 @@ const GalleryIdRoute = GalleryIdRouteImport.update({
   path: '/gallery/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LearnSlugRoute = LearnSlugRouteImport.update({
+  id: '/learn_/$slug',
+  path: '/learn/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnTrainingRoute = LearnTrainingRouteImport.update({
+  id: '/learn_/training',
+  path: '/learn/training',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -103,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/dance': typeof DanceRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/learn': typeof LearnRoute
   '/music': typeof MusicRoute
   '/paintings': typeof PaintingsRoute
   '/sculpting': typeof SculptingRoute
@@ -110,6 +129,8 @@ export interface FileRoutesByFullPath {
   '/studio': typeof StudioRoute
   '/subscription': typeof SubscriptionRoute
   '/gallery/$id': typeof GalleryIdRoute
+  '/learn/$slug': typeof LearnSlugRoute
+  '/learn/training': typeof LearnTrainingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -119,6 +140,7 @@ export interface FileRoutesByTo {
   '/dance': typeof DanceRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/learn': typeof LearnRoute
   '/music': typeof MusicRoute
   '/paintings': typeof PaintingsRoute
   '/sculpting': typeof SculptingRoute
@@ -126,6 +148,8 @@ export interface FileRoutesByTo {
   '/studio': typeof StudioRoute
   '/subscription': typeof SubscriptionRoute
   '/gallery/$id': typeof GalleryIdRoute
+  '/learn/$slug': typeof LearnSlugRoute
+  '/learn/training': typeof LearnTrainingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -136,6 +160,7 @@ export interface FileRoutesById {
   '/dance': typeof DanceRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/learn': typeof LearnRoute
   '/music': typeof MusicRoute
   '/paintings': typeof PaintingsRoute
   '/sculpting': typeof SculptingRoute
@@ -143,6 +168,8 @@ export interface FileRoutesById {
   '/studio': typeof StudioRoute
   '/subscription': typeof SubscriptionRoute
   '/gallery_/$id': typeof GalleryIdRoute
+  '/learn_/$slug': typeof LearnSlugRoute
+  '/learn_/training': typeof LearnTrainingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -154,6 +181,7 @@ export interface FileRouteTypes {
     | '/dance'
     | '/faq'
     | '/gallery'
+    | '/learn'
     | '/music'
     | '/paintings'
     | '/sculpting'
@@ -161,6 +189,8 @@ export interface FileRouteTypes {
     | '/studio'
     | '/subscription'
     | '/gallery/$id'
+    | '/learn/$slug'
+    | '/learn/training'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -170,6 +200,7 @@ export interface FileRouteTypes {
     | '/dance'
     | '/faq'
     | '/gallery'
+    | '/learn'
     | '/music'
     | '/paintings'
     | '/sculpting'
@@ -177,6 +208,8 @@ export interface FileRouteTypes {
     | '/studio'
     | '/subscription'
     | '/gallery/$id'
+    | '/learn/$slug'
+    | '/learn/training'
   id:
     | '__root__'
     | '/'
@@ -186,6 +219,7 @@ export interface FileRouteTypes {
     | '/dance'
     | '/faq'
     | '/gallery'
+    | '/learn'
     | '/music'
     | '/paintings'
     | '/sculpting'
@@ -193,6 +227,8 @@ export interface FileRouteTypes {
     | '/studio'
     | '/subscription'
     | '/gallery_/$id'
+    | '/learn_/$slug'
+    | '/learn_/training'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -203,6 +239,7 @@ export interface RootRouteChildren {
   DanceRoute: typeof DanceRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
+  LearnRoute: typeof LearnRoute
   MusicRoute: typeof MusicRoute
   PaintingsRoute: typeof PaintingsRoute
   SculptingRoute: typeof SculptingRoute
@@ -210,6 +247,8 @@ export interface RootRouteChildren {
   StudioRoute: typeof StudioRoute
   SubscriptionRoute: typeof SubscriptionRoute
   GalleryIdRoute: typeof GalleryIdRoute
+  LearnSlugRoute: typeof LearnSlugRoute
+  LearnTrainingRoute: typeof LearnTrainingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -263,6 +302,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learn': {
+      id: '/learn'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/music': {
       id: '/music'
       path: '/music'
@@ -312,6 +358,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GalleryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learn_/$slug': {
+      id: '/learn_/$slug'
+      path: '/learn/$slug'
+      fullPath: '/learn/$slug'
+      preLoaderRoute: typeof LearnSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn_/training': {
+      id: '/learn_/training'
+      path: '/learn/training'
+      fullPath: '/learn/training'
+      preLoaderRoute: typeof LearnTrainingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -323,6 +383,7 @@ const rootRouteChildren: RootRouteChildren = {
   DanceRoute: DanceRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
+  LearnRoute: LearnRoute,
   MusicRoute: MusicRoute,
   PaintingsRoute: PaintingsRoute,
   SculptingRoute: SculptingRoute,
@@ -330,6 +391,8 @@ const rootRouteChildren: RootRouteChildren = {
   StudioRoute: StudioRoute,
   SubscriptionRoute: SubscriptionRoute,
   GalleryIdRoute: GalleryIdRoute,
+  LearnSlugRoute: LearnSlugRoute,
+  LearnTrainingRoute: LearnTrainingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

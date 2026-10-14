@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { disciplines } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
+import { listLearnPosts } from "@/lib/data/learn";
 import { artworkPath, SITE_URL } from "@/lib/seo";
 import { LANGS, localizePath } from "@/lib/i18n";
 
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const BASE_URL = SITE_URL;
         // The archive's images, attached to the pages that show them. People
         // searching for "Tanzanian painting" often start in image search.
-        const artworks = await listArtworks();
+        const [artworks, lessons] = await Promise.all([listArtworks(), listLearnPosts()]);
         const artworkImages = artworks
           .map((a) => a.image_path)
           .filter((u): u is string => Boolean(u))
@@ -45,6 +46,14 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/about", changefreq: "monthly", priority: "0.7" },
           { path: "/contact", changefreq: "monthly", priority: "0.7" },
           { path: "/faq", changefreq: "monthly", priority: "0.6" },
+          { path: "/learn", changefreq: "monthly", priority: "0.7" },
+          { path: "/learn/training", changefreq: "monthly", priority: "0.6" },
+          ...lessons.map((l) => ({
+            path: `/learn/${encodeURIComponent(l.id)}`,
+            changefreq: "monthly" as const,
+            priority: "0.6",
+            images: l.cover_path ? [l.cover_path] : undefined,
+          })),
           { path: "/subscription", changefreq: "monthly", priority: "0.6" },
           // One page per painting, each carrying its own image.
           ...artworks.map((a) => ({
