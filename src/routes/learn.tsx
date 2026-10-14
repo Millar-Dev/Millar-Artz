@@ -7,7 +7,7 @@ import { fromLearnRow, listLearnPosts } from "@/lib/data/learn";
 import { canonical, jsonLd, learnPath, seoMeta, SITE_URL } from "@/lib/seo";
 import { srcSetFor, sized } from "@/lib/images";
 import { youtubeId } from "@/lib/youtube";
-import { translator, useT } from "@/lib/i18n";
+import { translator, useT, langOf } from "@/lib/i18n";
 
 /**
  * What the studio knows, given away.
@@ -26,8 +26,8 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/learn")({
   validateSearch: searchSchema,
   loader: async () => ({ posts: (await listLearnPosts()).map(fromLearnRow) }),
-  head: ({ match, loaderData }) => {
-    const { lang } = match.context;
+  head: ({ matches, loaderData }) => {
+    const lang = langOf(matches);
     const t = translator(lang);
     return {
       meta: seoMeta(

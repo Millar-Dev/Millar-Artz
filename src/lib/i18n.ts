@@ -99,3 +99,15 @@ export function useT() {
 export function useInternalPath() {
   return useRouterState({ select: (s) => s.location.pathname + s.location.searchStr });
 }
+
+/**
+ * The language of the page being built, for a route's `head()`.
+ *
+ * head() gets the matched routes, not the URL, so the language rides along in
+ * the root route's loader data — it is derived from the address on the server
+ * and again in the browser, so it never has to be trusted or serialized.
+ */
+export function langOf(matches: ReadonlyArray<{ loaderData?: unknown }> | undefined): Lang {
+  const root = matches?.[0]?.loaderData as { lang?: unknown } | undefined;
+  return root?.lang === "sw" ? "sw" : "en";
+}

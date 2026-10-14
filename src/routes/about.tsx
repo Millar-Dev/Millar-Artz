@@ -8,7 +8,7 @@ import { getSiteSettings } from "@/lib/data/site-settings";
 import { canonical, seoMeta } from "@/lib/seo";
 import { StudioMap } from "@/components/site/StudioMap";
 import { MapPin, Clock, Palette, Mail } from "lucide-react";
-import { translator, useT } from "@/lib/i18n";
+import { translator, useT, langOf } from "@/lib/i18n";
 import { filled } from "@/lib/about-record";
 
 export const Route = createFileRoute("/about")({
@@ -30,8 +30,8 @@ export const Route = createFileRoute("/about")({
       settings,
     };
   },
-  head: ({ match }) => {
-    const { lang } = match.context;
+  head: ({ matches }) => {
+    const lang = langOf(matches);
     const t = translator(lang);
     return {
       meta: seoMeta(

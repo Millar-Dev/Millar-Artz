@@ -10,7 +10,7 @@ import { findArtworkRedirect, listArtworks } from "@/lib/data/artworks";
 import { artworkGraph, artworkPath, absoluteUrl, canonical, jsonLd, seoMeta } from "@/lib/seo";
 import { shareImage, sized, srcSetFor } from "@/lib/images";
 import { BuyButton, PaymentNote } from "@/components/site/BuyPanel";
-import { localizePath, translator, useLang, useT } from "@/lib/i18n";
+import { localizePath, translator, useLang, useT, langOf } from "@/lib/i18n";
 
 /**
  * A page for one painting.
@@ -49,9 +49,9 @@ export const Route = createFileRoute("/gallery_/$id")({
       next: all[index + 1] ?? null,
     };
   },
-  head: ({ loaderData, match }) => {
+  head: ({ loaderData, matches }) => {
     if (!loaderData) return {};
-    const { lang } = match.context;
+    const lang = langOf(matches);
     const t = translator(lang);
     const { artwork: a } = loaderData;
     const medium = t(a.medium).trim();

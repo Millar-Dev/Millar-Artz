@@ -15,7 +15,7 @@ import { getSiteImage } from "@/lib/data/site-images";
 import artistPortraitFallback from "@/assets/me-portrait.jpg";
 import { canonical, seoMeta } from "@/lib/seo";
 import type { Artwork, ArtworkCategory, DisciplineId } from "@/lib/gallery-data";
-import { translator } from "@/lib/i18n";
+import { translator, langOf } from "@/lib/i18n";
 import { useT } from "@/lib/i18n";
 
 /** This page is the painting department, so it takes painting's colour. */
@@ -32,8 +32,8 @@ export const Route = createFileRoute("/paintings")({
     ]);
     return { artworks: rows.map(fromArtworkRow), settings, portrait };
   },
-  head: ({ match }) => {
-    const { lang } = match.context;
+  head: ({ matches }) => {
+    const lang = langOf(matches);
     const t = translator(lang);
     return {
       meta: seoMeta(t("Paintings by Miller S.K. — Tanzanian Artist | MillerArtz"), t("Original paintings by Arusha-based Tanzanian artist Miller S.K. — hyperrealism, portraits, wildlife, murals and abstract art. Commissions open worldwide."), "/paintings", undefined, lang),

@@ -18,7 +18,7 @@ import { SocialIcon } from "@/components/site/SocialIcon";
 import { StudioMap } from "@/components/site/StudioMap";
 import { ReviewLink } from "@/components/site/ReviewLink";
 import { CurrencySelect, RateNote, useCurrency } from "@/components/site/CurrencyProvider";
-import { translator, useT } from "@/lib/i18n";
+import { translator, useT, langOf } from "@/lib/i18n";
 
 const contactSearchSchema = z.object({
   type: z.string().optional(),
@@ -28,8 +28,8 @@ const contactSearchSchema = z.object({
 
 export const Route = createFileRoute("/contact")({
   validateSearch: contactSearchSchema,
-  head: ({ match }) => {
-    const { lang } = match.context;
+  head: ({ matches }) => {
+    const lang = langOf(matches);
     const t = translator(lang);
     return {
       meta: seoMeta(

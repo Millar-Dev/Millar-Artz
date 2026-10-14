@@ -20,7 +20,7 @@ import {
 } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { artworkListGraph, canonical, jsonLd, seoMeta } from "@/lib/seo";
-import { translate, useT } from "@/lib/i18n";
+import { translate, useT, langOf } from "@/lib/i18n";
 import { formatSize, formatSizeShort } from "@/lib/artwork-size";
 
 const gallerySearchSchema = z.object({
@@ -46,15 +46,15 @@ export const Route = createFileRoute("/gallery")({
     const rows = await listArtworks();
     return { artworks: rows.map(fromArtworkRow) };
   },
-  head: ({ loaderData, match }) => ({
+  head: ({ loaderData, matches }) => ({
     meta: seoMeta(
-      translate(match.context.lang, "Art Gallery — Tanzanian Paintings & Portraits | MillerArtz"),
-      translate(match.context.lang, "Browse the MillerArtz gallery: hyperrealistic portraits, wildlife paintings, murals and abstract works by Miller S.K., a Tanzanian artist in Arusha."),
+      translate(langOf(matches), "Art Gallery — Tanzanian Paintings & Portraits | MillerArtz"),
+      translate(langOf(matches), "Browse the MillerArtz gallery: hyperrealistic portraits, wildlife paintings, murals and abstract works by Miller S.K., a Tanzanian artist in Arusha."),
       "/gallery",
       undefined,
-      match.context.lang,
+      langOf(matches),
     ),
-    links: [canonical("/gallery", match.context.lang)],
+    links: [canonical("/gallery", langOf(matches))],
     // Each piece described as a VisualArtwork so the collection can surface
     // in image and rich results rather than as one opaque page.
     scripts: [jsonLd(artworkListGraph(loaderData?.artworks ?? []))],

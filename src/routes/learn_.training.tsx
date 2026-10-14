@@ -3,7 +3,7 @@ import { Layout } from "@/components/site/Layout";
 import { disciplines } from "@/lib/gallery-data";
 import { filledTraining } from "@/lib/training-record";
 import { canonical, jsonLd, seoMeta, SITE_URL } from "@/lib/seo";
-import { translator, useT } from "@/lib/i18n";
+import { translator, useT, langOf } from "@/lib/i18n";
 
 /**
  * Training & coaching — the dance and acrobatics departments teach as well as
@@ -12,8 +12,8 @@ import { translator, useT } from "@/lib/i18n";
  * class that doesn't exist yet.
  */
 export const Route = createFileRoute("/learn_/training")({
-  head: ({ match }) => {
-    const { lang } = match.context;
+  head: ({ matches }) => {
+    const lang = langOf(matches);
     const t = translator(lang);
     return {
       meta: seoMeta(

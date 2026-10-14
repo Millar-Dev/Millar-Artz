@@ -7,7 +7,7 @@ import { fromLearnRow, listLearnPosts } from "@/lib/data/learn";
 import { articleGraph, canonical, jsonLd, learnPath, seoMeta } from "@/lib/seo";
 import { shareImage, sized, srcSetFor } from "@/lib/images";
 import { youtubeEmbedUrl, youtubeId } from "@/lib/youtube";
-import { translator, useT } from "@/lib/i18n";
+import { translator, useT, langOf } from "@/lib/i18n";
 
 /**
  * One lesson. `learn_.$slug` — the trailing underscore keeps it out of the
@@ -24,9 +24,9 @@ export const Route = createFileRoute("/learn_/$slug")({
       next: all[index + 1] ?? null,
     };
   },
-  head: ({ match, loaderData }) => {
+  head: ({ matches, loaderData }) => {
     if (!loaderData) return {};
-    const { lang } = match.context;
+    const lang = langOf(matches);
     const t = translator(lang);
     const p = loaderData.post;
     const description =

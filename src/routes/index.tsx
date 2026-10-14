@@ -8,7 +8,7 @@ import { listArtworks } from "@/lib/data/artworks";
 import { canonical, seoMeta } from "@/lib/seo";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Artwork } from "@/lib/gallery-data";
-import { translator } from "@/lib/i18n";
+import { translator, langOf } from "@/lib/i18n";
 import { useT } from "@/lib/i18n";
 
 /**
@@ -24,8 +24,8 @@ export const Route = createFileRoute("/")({
     const rows = await listArtworks();
     return { artworks: rows.map(fromArtworkRow) };
   },
-  head: ({ match }) => {
-    const { lang } = match.context;
+  head: ({ matches }) => {
+    const lang = langOf(matches);
     const t = translator(lang);
     return {
       meta: seoMeta(t("MillerArtz — Miller S.K., Tanzanian Artist in Arusha"), t("The Arusha studio of Tanzanian artist Miller S.K. (Miller Sunday Kitumi) — hyperrealistic paintings, portraits and wildlife art for collectors worldwide."), "/", undefined, lang),

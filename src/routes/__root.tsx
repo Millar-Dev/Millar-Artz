@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
@@ -46,7 +47,9 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+// The router hands the error over as `unknown` — anything can be thrown — so
+// it is only logged, never rendered.
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   const lang = useLang();
@@ -85,8 +88,6 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
-    // Which language this address is in, for every route's head() below.
-    beforeLoad: ({ location }) => ({ lang: langFromPath(location.publicHref) }),
     head: ({ loaderData, matches }) => ({
       meta: [
         { charSet: "utf-8" },
@@ -143,7 +144,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     }),
     // Loaded once here rather than per-route, since the Footer (on every
     // page) needs the artist's contact details and social links.
-    loader: () => getSiteSettings(),
+    // The language of the address travels with the settings every page
+    // already loads, so each route's head() can read it (see langOf).
+    loader: async ({ location }) => ({
+      ...(await getSiteSettings()),
+      lang: langFromPath(location.publicHref),
+    }),
     shellComponent: RootShell,
     component: RootComponent,
     notFoundComponent: NotFoundComponent,

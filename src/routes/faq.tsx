@@ -3,11 +3,11 @@ import { useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { canonical, faqGraph, jsonLd, seoMeta } from "@/lib/seo";
-import { translator, useT } from "@/lib/i18n";
+import { translator, useT, langOf } from "@/lib/i18n";
 
 export const Route = createFileRoute("/faq")({
-  head: ({ match }) => {
-    const { lang } = match.context;
+  head: ({ matches }) => {
+    const lang = langOf(matches);
     const t = translator(lang);
     return {
       meta: seoMeta(
