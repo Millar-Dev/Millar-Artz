@@ -16,7 +16,6 @@ import { hasPublishedLessons } from "@/lib/data/learn";
 import { absoluteUrl, jsonLd, siteGraph } from "@/lib/seo";
 import { langFromPath, localizePath, useLang, useT } from "@/lib/i18n";
 import { VisitTracker } from "@/components/site/VisitTracker";
-import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { CurrencyProvider } from "@/components/site/CurrencyProvider";
 
 function NotFoundComponent() {
@@ -204,7 +203,6 @@ function RootComponent() {
         <Outlet />
       </CurrencyProvider>
       <VisitTracker />
-      <ScrollToTop />
     </QueryClientProvider>
   );
 }
