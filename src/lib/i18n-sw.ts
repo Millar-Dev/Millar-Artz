@@ -528,4 +528,8 @@ export const sw: Record<string, string> = {
   "Classes are arranged directly for now.": "Kwa sasa madarasa hupangwa moja kwa moja.",
   "Tell the studio what you'd like to learn, your level and when you're free, and you'll get the days, the place and the cost by reply.": "Tuambie unachotaka kujifunza, kiwango chako na muda unaopatikana, nawe utapata siku, mahali na gharama kwa jibu.",
   "Ask about {name} training": "Uliza kuhusu mafunzo ya {name}",
+
+  // ── Navigation chrome ───────────────────────────────────────────────────────
+  "Back to top": "Rudi juu",
+  "Skip to content": "Rukia yaliyomo",
 };

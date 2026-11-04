@@ -12,9 +12,11 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { getSiteSettings } from "@/lib/data/site-settings";
+import { hasPublishedLessons } from "@/lib/data/learn";
 import { absoluteUrl, jsonLd, siteGraph } from "@/lib/seo";
 import { langFromPath, localizePath, useLang, useT } from "@/lib/i18n";
 import { VisitTracker } from "@/components/site/VisitTracker";
+import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { CurrencyProvider } from "@/components/site/CurrencyProvider";
 
 function NotFoundComponent() {
@@ -146,10 +148,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     // page) needs the artist's contact details and social links.
     // The language of the address travels with the settings every page
     // already loads, so each route's head() can read it (see langOf).
-    loader: async ({ location }) => ({
-      ...(await getSiteSettings()),
-      lang: langFromPath(location.publicHref),
-    }),
+    loader: async ({ location }) => {
+      const [settings, hasLessons] = await Promise.all([
+        getSiteSettings(),
+        // The navigation shows Learn only when there is something to read.
+        hasPublishedLessons().catch(() => false),
+      ]);
+      return { ...settings, hasLessons, lang: langFromPath(location.publicHref) };
+    },
     shellComponent: RootShell,
     component: RootComponent,
     notFoundComponent: NotFoundComponent,
@@ -198,6 +204,7 @@ function RootComponent() {
         <Outlet />
       </CurrencyProvider>
       <VisitTracker />
+      <ScrollToTop />
     </QueryClientProvider>
   );
 }

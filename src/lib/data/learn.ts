@@ -72,6 +72,23 @@ export const listLearnPosts = createServerFn({ method: "GET" }).handler(
   },
 );
 
+/**
+ * Is there anything to read yet? Asked on every page so the navigation can
+ * show Learn only once a lesson is published — a count, not the posts, so it
+ * costs a row count rather than a table read.
+ */
+export const hasPublishedLessons = createServerFn({ method: "GET" }).handler(
+  async (): Promise<boolean> => {
+    if (!isSupabaseConfigured()) return false;
+    const { count, error } = await getSupabaseAdmin()
+      .from("learn_posts")
+      .select("id", { count: "exact", head: true })
+      .eq("published", true);
+    // Before the table exists this errors, which simply means "nothing yet".
+    return !error && (count ?? 0) > 0;
+  },
+);
+
 /** Everything, drafts included — the Studio's list. */
 export const listAllLearnPosts = createServerFn({ method: "GET" }).handler(
   async (): Promise<LearnPostRow[]> => {

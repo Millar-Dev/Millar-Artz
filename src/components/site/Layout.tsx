@@ -2,6 +2,8 @@ import type { CSSProperties, ReactNode } from "react";
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { PaintSplashes } from "./PaintSplashes";
+import { BackToTop } from "./BackToTop";
+import { useT } from "@/lib/i18n";
 
 /**
  * The page shell.
@@ -23,6 +25,7 @@ export function Layout({
    *  built from. */
   dept?: { accent: string; hue: number };
 }) {
+  const t = useT();
   return (
     <div
       // `isolate` makes this the stacking context the paint splashes sit in, so
@@ -39,9 +42,18 @@ export function Layout({
           : undefined
       }
     >
+      {/* First stop for anyone using a keyboard or a screen reader: the bar
+          holds a dozen links before the page itself begins. */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:bg-gold focus:px-4 focus:py-2 focus:text-xs focus:font-bold focus:uppercase focus:tracking-[0.2em] focus:text-band"
+      >
+        {t("Skip to content")}
+      </a>
       <Nav />
-      <main>{children}</main>
+      <main id="main">{children}</main>
       <Footer />
+      <BackToTop />
       <PaintSplashes />
     </div>
   );

@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLoaderData, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { categories, disciplines } from "@/lib/gallery-data";
@@ -8,31 +8,39 @@ import { LanguageSwitch } from "./LanguageSwitch";
 import { useT } from "@/lib/i18n";
 
 /**
- * Primary navigation: the five departments, flanked by home, FAQ and contact.
+ * Primary navigation.
  *
- * The departments are the site's spine, so they sit in the bar itself rather
- * than folded into a menu. Painting carries a dropdown of its own disciplines
- * — hyperrealism, abstract, murals and the rest all live under it — which is
- * where the old gallery menu went.
+ * The bar carries only what a visitor can actually use today: home, the
+ * painting department and its archive, the answers, and a way to get in
+ * touch. Music, dance, sculpting and acrobatics have no work to show yet, so
+ * they would be four doors onto empty rooms; they stay one tap away in the
+ * phone menu, on the home directory and in the footer, and return to the bar
+ * when they have something behind them. Learn appears by itself as soon as a
+ * lesson is published.
  *
- * Eight items don't fit a tablet bar, so the full set appears at lg and the
- * sheet takes over below it.
+ * Painting carries a dropdown of its own disciplines — hyperrealism, murals
+ * and the rest — which is where the old gallery menu went.
  */
-const links = [
-  { to: "/", label: "Home" } as const,
-  ...disciplines.map((d) => ({ to: d.slug, label: d.label })),
-  { to: "/learn", label: "Learn" } as const,
-  { to: "/faq", label: "FAQ" } as const,
-  { to: "/contact", label: "Contact" } as const,
-];
+const primaryLinks = [
+  { to: "/", label: "Home" },
+  { to: "/paintings", label: "Paintings" },
+  { to: "/gallery", label: "Full archive" },
+  { to: "/faq", label: "FAQ" },
+  { to: "/contact", label: "Contact" },
+] as const;
 
-/** Reachable but no longer top-level: the archive, the story, the mailing
- *  list. Kept in the mobile sheet and the footer. */
+/** Open for commission, but with no archive on the site yet. */
+const departmentLinks = disciplines
+  .filter((d) => d.id !== "painting")
+  .map((d) => ({ to: d.slug, label: d.label }));
+
+/** Reachable, just not the first thing anyone needs. */
 const minorLinks = [
-  { to: "/gallery", label: "Full archive" } as const,
-  { to: "/about", label: "About" } as const,
-  { to: "/subscription", label: "Subscribe" } as const,
-];
+  { to: "/about", label: "About" },
+  { to: "/learn", label: "Learn" },
+  { to: "/learn/training", label: "Training & coaching" },
+  { to: "/subscription", label: "Subscribe" },
+] as const;
 
 const paintingCategories = categories.filter((c) => c.value !== "all");
 
@@ -41,6 +49,13 @@ export function Nav() {
   const [open, setOpen] = useState(false);
   const [paintingMenuOpen, setPaintingMenuOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // Learn earns its place in the bar once there is something to read.
+  const root = useLoaderData({ from: "__root__", structuralSharing: false }) as
+    | { hasLessons?: boolean }
+    | undefined;
+  const barLinks = root?.hasLessons
+    ? [...primaryLinks.slice(0, 3), { to: "/learn", label: "Learn" } as const, ...primaryLinks.slice(3)]
+    : primaryLinks;
 
   useEffect(() => {
     setOpen(false);
@@ -49,8 +64,11 @@ export function Nav() {
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
@@ -76,7 +94,7 @@ export function Nav() {
           </Link>
 
           <div className="hidden items-center gap-5 text-[10px] font-semibold uppercase tracking-[0.12em] lg:flex xl:gap-7 xl:text-[11px]">
-            {links.map((l) =>
+            {barLinks.map((l) =>
               l.to === "/paintings" ? (
                 <div
                   key={l.to}
@@ -87,7 +105,7 @@ export function Nav() {
                   <Link
                     to={l.to}
                     className="flex items-center gap-1 text-band-foreground/80 transition-colors hover:text-gold"
-                    activeProps={{ className: "!text-gold" }}
+                    activeProps={{ className: "!text-gold", "aria-current": "page" }}
                   >
                     {t(l.label)}
                     <ChevronDown
@@ -123,7 +141,7 @@ export function Nav() {
                   key={l.to}
                   to={l.to}
                   className="text-band-foreground/80 transition-colors hover:text-gold"
-                  activeProps={{ className: "!text-gold" }}
+                  activeProps={{ className: "!text-gold", "aria-current": "page" }}
                   activeOptions={{ exact: l.to === "/" }}
                 >
                   {t(l.label)}
@@ -146,6 +164,7 @@ export function Nav() {
               className="text-band-foreground lg:hidden"
               onClick={() => setOpen((v) => !v)}
               aria-label={t("Toggle menu")}
+              aria-expanded={open}
             >
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -154,50 +173,79 @@ export function Nav() {
       </div>
 
       {open && (
-        <div className="animate-fade absolute inset-x-3 top-full max-h-[calc(100svh-6rem)] overflow-y-auto rounded-3xl border border-white/10 bg-band p-6 shadow-2xl lg:hidden">
-          <div className="flex flex-col">
-            {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                onClick={() => setOpen(false)}
-                className="border-b border-band-foreground/10 py-3.5 text-sm font-semibold uppercase tracking-[0.15em] text-band-foreground"
-                activeProps={{ className: "!text-gold" }}
-                activeOptions={{ exact: l.to === "/" }}
-              >
-                {t(l.label)}
-              </Link>
-            ))}
-
-            <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.25em] text-band-foreground/40">
-              {t("More")}
-            </p>
-            <div className="mt-2 flex flex-col">
-              {minorLinks.map((l) => (
+        <>
+          {/* Tapping the page behind closes the menu. */}
+          <div
+            className="fixed inset-0 z-40 bg-band/60 lg:hidden"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Fixed, not absolute: an absolute child of a sticky header is
+              placed against the header's position at the top of the document,
+              so from the foot of a long page the menu opened thousands of
+              pixels above the screen. */}
+          <div className="animate-fade fixed inset-x-3 top-[4.5rem] z-50 max-h-[calc(100svh-6rem)] overflow-y-auto rounded-3xl border border-white/10 bg-band p-6 shadow-2xl md:top-[5.5rem] lg:hidden">
+            <div className="flex flex-col">
+              {primaryLinks.map((l) => (
                 <Link
                   key={l.to}
                   to={l.to}
                   onClick={() => setOpen(false)}
-                  className="py-2.5 text-xs font-medium uppercase tracking-[0.15em] text-band-foreground/60"
-                  activeProps={{ className: "!text-gold" }}
+                  className="border-b border-band-foreground/10 py-3.5 text-sm font-semibold uppercase tracking-[0.15em] text-band-foreground"
+                  activeProps={{ className: "!text-gold", "aria-current": "page" }}
+                  activeOptions={{ exact: l.to === "/" }}
                 >
                   {t(l.label)}
                 </Link>
               ))}
+
+              <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.25em] text-band-foreground/40">
+                {t("Departments")}
+              </p>
+              <div className="mt-2 flex flex-col">
+                {departmentLinks.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    onClick={() => setOpen(false)}
+                    className="py-2.5 text-xs font-medium uppercase tracking-[0.15em] text-band-foreground/60"
+                    activeProps={{ className: "!text-gold", "aria-current": "page" }}
+                  >
+                    {t(l.label)}
+                  </Link>
+                ))}
+              </div>
+
+              <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.25em] text-band-foreground/40">
+                {t("More")}
+              </p>
+              <div className="mt-2 flex flex-col">
+                {minorLinks.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    onClick={() => setOpen(false)}
+                    className="py-2.5 text-xs font-medium uppercase tracking-[0.15em] text-band-foreground/60"
+                    activeProps={{ className: "!text-gold", "aria-current": "page" }}
+                  >
+                    {t(l.label)}
+                  </Link>
+                ))}
+              </div>
+
+              <Link
+                to="/contact"
+                search={{ type: "commission" }}
+                onClick={() => setOpen(false)}
+                className="mt-6 inline-flex items-center justify-center rounded-full bg-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-band"
+              >
+                {t("Start a Commission")}
+              </Link>
+
+              <LanguageSwitch className="mt-6 justify-center text-sm text-band-foreground" />
             </div>
-
-            <Link
-              to="/contact"
-              search={{ type: "commission" }}
-              onClick={() => setOpen(false)}
-              className="mt-6 inline-flex items-center justify-center rounded-full bg-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-band"
-            >
-              {t("Start a Commission")}
-            </Link>
-
-            <LanguageSwitch className="mt-6 justify-center text-sm text-band-foreground" />
           </div>
-        </div>
+        </>
       )}
     </header>
   );
