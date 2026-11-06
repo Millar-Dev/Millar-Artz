@@ -65,6 +65,50 @@ export interface Database {
         created_at?: string;
         updated_at?: string;
       }>;
+      /** Studio-written content (added 2026-11-06): department media, the
+       *  dance and acrobatics classes, and the About page's record. */
+      media_items: TableConfig<{
+        id?: string;
+        collection: string;
+        image_path: string | null;
+        youtube_url: string | null;
+        title: string;
+        caption: string;
+        sort_order: number;
+        published: boolean;
+        created_at?: string;
+        updated_at?: string;
+      }>;
+      training_offers: TableConfig<{
+        id?: string;
+        discipline: string;
+        name: string;
+        level: string;
+        schedule: string;
+        location: string;
+        price: string;
+        notes: string;
+        sort_order: number;
+        published: boolean;
+        created_at?: string;
+        updated_at?: string;
+      }>;
+      about_entries: TableConfig<{
+        id?: string;
+        kind: string;
+        title: string;
+        subtitle: string;
+        date_text: string;
+        url: string | null;
+        quote: string;
+        name: string;
+        place: string;
+        artwork_id: string | null;
+        sort_order: number;
+        published: boolean;
+        created_at?: string;
+        updated_at?: string;
+      }>;
       /** Lessons and articles for /learn (added 2026-09-23). */
       learn_posts: TableConfig<{
         id: string;

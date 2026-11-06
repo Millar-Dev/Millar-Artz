@@ -9,14 +9,16 @@ import { canonical, seoMeta } from "@/lib/seo";
 import { StudioMap } from "@/components/site/StudioMap";
 import { MapPin, Clock, Palette, Mail } from "lucide-react";
 import { translator, useT, langOf } from "@/lib/i18n";
-import { filled } from "@/lib/about-record";
+import { listAboutEntries, type AboutEntryRow } from "@/lib/data/content";
 
 export const Route = createFileRoute("/about")({
   loader: async () => {
-    const [portrait, studio, settings] = await Promise.all([
+    const [portrait, studio, settings, record] = await Promise.all([
       getSiteImage({ data: "about_portrait" }),
       getSiteImage({ data: "studio_photo" }),
       getSiteSettings(),
+      // Exhibitions, press, collectors and testimonials, written in the Studio.
+      listAboutEntries(),
     ]);
     return {
       portrait: portrait ?? {
@@ -28,6 +30,7 @@ export const Route = createFileRoute("/about")({
       // an image rather than showing a stock placeholder.
       studio,
       settings,
+      record,
     };
   },
   head: ({ matches }) => {
@@ -80,7 +83,13 @@ const disciplinesWorked = [
 
 function About() {
   const t = useT();
-  const { portrait, studio, settings } = Route.useLoaderData();
+  const { portrait, studio, settings, record } = Route.useLoaderData();
+  // Each kind shows only when it has real entries; nothing is invented.
+  const of = (kind: AboutEntryRow["kind"]) => record.filter((r: AboutEntryRow) => r.kind === kind);
+  const exhibitions = of("exhibition");
+  const press = of("press");
+  const collectors = of("collector");
+  const testimonials = of("testimonial");
 
   return (
     <Layout>
@@ -361,25 +370,25 @@ function About() {
             </p>
             {/* Exhibitions and press from src/lib/about-record.ts — shown
                 only once there are real entries. */}
-            {filled.exhibitions.length + filled.press.length > 0 ? (
+            {exhibitions.length + press.length > 0 ? (
               <div className="mt-10 space-y-8 border-t border-band-foreground/10 pt-6">
-                {filled.exhibitions.length > 0 && (
+                {exhibitions.length > 0 && (
                   <RecordList
                     heading={t("Exhibitions")}
-                    items={filled.exhibitions.map((e) => ({
+                    items={exhibitions.map((e: AboutEntryRow) => ({
                       title: e.title,
-                      detail: [e.venue, e.date].filter(Boolean).join(" · "),
-                      url: e.url,
+                      detail: [e.subtitle, e.date_text].filter(Boolean).join(" · "),
+                      url: e.url ?? undefined,
                     }))}
                   />
                 )}
-                {filled.press.length > 0 && (
+                {press.length > 0 && (
                   <RecordList
                     heading={t("Press")}
-                    items={filled.press.map((p) => ({
+                    items={press.map((p: AboutEntryRow) => ({
                       title: p.title,
-                      detail: [p.outlet, p.date].filter(Boolean).join(" · "),
-                      url: p.url,
+                      detail: [p.subtitle, p.date_text].filter(Boolean).join(" · "),
+                      url: p.url ?? undefined,
                     }))}
                   />
                 )}
@@ -395,10 +404,10 @@ function About() {
 
       {/* What clients say, and where the work lives — from about-record.ts,
           and absent entirely until there's something true to show. */}
-      {(filled.testimonials.length > 0 || filled.collectors.length > 0) && (
+      {(testimonials.length > 0 || collectors.length > 0) && (
         <section className="py-14 md:py-24">
           <div className="mx-auto max-w-7xl px-6">
-            {filled.testimonials.length > 0 && (
+            {testimonials.length > 0 && (
               <>
                 <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
                   {t("Testimonials")}
@@ -407,18 +416,18 @@ function About() {
                   {t("In their words.")}
                 </h2>
                 <div className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-                  {filled.testimonials.map((q) => (
-                    <figure key={q.name + q.quote.slice(0, 20)} className="border-t border-ink/10 pt-6">
+                  {testimonials.map((q: AboutEntryRow) => (
+                    <figure key={q.id} className="border-t border-ink/10 pt-6">
                       <blockquote className="font-display text-xl italic leading-snug text-ink">
                         “{q.quote.trim()}”
                       </blockquote>
                       <figcaption className="mt-4 text-sm text-ink/60">
                         {q.name}
                         {q.place ? `, ${q.place}` : ""}
-                        {q.artworkId && (
+                        {q.artwork_id && (
                           <>
                             {" · "}
-                            <Link to="/gallery/$id" params={{ id: q.artworkId }} className="text-gold hover:underline">
+                            <Link to="/gallery/$id" params={{ id: q.artwork_id }} className="text-gold hover:underline">
                               {t("the piece")}
                             </Link>
                           </>
@@ -429,14 +438,14 @@ function About() {
                 </div>
               </>
             )}
-            {filled.collectors.length > 0 && (
-              <div className={filled.testimonials.length > 0 ? "mt-16" : ""}>
+            {collectors.length > 0 && (
+              <div className={testimonials.length > 0 ? "mt-16" : ""}>
                 <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
                   {t("In collections")}
                 </span>
                 <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-ink/75">
-                  {filled.collectors.map((c) => (
-                    <li key={c.name}>
+                  {collectors.map((c: AboutEntryRow) => (
+                    <li key={c.id}>
                       {c.name}
                       {c.place && <span className="text-ink/45"> · {c.place}</span>}
                     </li>

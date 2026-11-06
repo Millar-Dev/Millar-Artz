@@ -6,6 +6,19 @@ import { AnalyticsPanel } from "@/components/studio/AnalyticsPanel";
 import { SOCIAL_PROFILES } from "@/lib/social";
 import { PricingPanel } from "@/components/studio/PricingPanel";
 import { LearnPanel } from "@/components/studio/LearnPanel";
+import {
+  AboutRecordPanel,
+  DepartmentMediaPanel,
+  TrainingPanel,
+} from "@/components/studio/ContentPanels";
+import {
+  listAllAboutEntries,
+  listAllMediaItems,
+  listAllTrainingOffers,
+  type AboutEntryRow,
+  type MediaItemRow,
+  type TrainingOfferRow,
+} from "@/lib/data/content";
 import { listAllLearnPosts, type LearnPostRow } from "@/lib/data/learn";
 import { CURRENCIES } from "@/lib/currency";
 import {
@@ -71,8 +84,15 @@ export const Route = createFileRoute("/studio")({
         listSubscribers(),
         getSiteSettings(),
       ]);
-    // Lessons, drafts included — the panel writes them.
-    const learnPosts = await listAllLearnPosts().catch(() => []);
+    // Lessons and the Studio-written content, drafts included. Each falls
+    // back to an empty list so a table that hasn't been created yet shows an
+    // empty panel rather than breaking the whole dashboard.
+    const [learnPosts, mediaItems, trainingOffers, aboutEntries] = await Promise.all([
+      listAllLearnPosts().catch(() => []),
+      listAllMediaItems().catch(() => []),
+      listAllTrainingOffers().catch(() => []),
+      listAllAboutEntries().catch(() => []),
+    ]);
     // Private settings (the alert inbox) never travel with the public page
     // data, so the Studio asks for them separately.
     const settingsWithPrivate = { ...settings, ...(await getPrivateSettings()) };
@@ -84,6 +104,9 @@ export const Route = createFileRoute("/studio")({
       inquiries,
       subscribers,
       learnPosts,
+      mediaItems,
+      trainingOffers,
+      aboutEntries,
       settings: settingsWithPrivate,
     };
   },
@@ -112,6 +135,9 @@ function Studio() {
         initialInquiries={data.inquiries}
         initialSubscribers={data.subscribers}
         initialLearnPosts={data.learnPosts}
+        initialMediaItems={data.mediaItems}
+        initialTrainingOffers={data.trainingOffers}
+        initialAboutEntries={data.aboutEntries}
         initialSettings={data.settings}
         onSignedOut={() => router.invalidate()}
       />
@@ -194,6 +220,9 @@ function Dashboard({
   initialInquiries,
   initialSubscribers,
   initialLearnPosts,
+  initialMediaItems,
+  initialTrainingOffers,
+  initialAboutEntries,
   initialSettings,
   onSignedOut,
 }: {
@@ -203,6 +232,9 @@ function Dashboard({
   initialInquiries: InquiryRow[];
   initialSubscribers: SubscriberRow[];
   initialLearnPosts: LearnPostRow[];
+  initialMediaItems: MediaItemRow[];
+  initialTrainingOffers: TrainingOfferRow[];
+  initialAboutEntries: AboutEntryRow[];
   initialSettings: SiteSettings;
   onSignedOut: () => void;
 }) {
@@ -395,6 +427,9 @@ function Dashboard({
       <InquiriesPanel initial={initialInquiries} />
       <SubscribersPanel initial={initialSubscribers} />
       <LearnPanel initial={initialLearnPosts} />
+      <DepartmentMediaPanel initial={initialMediaItems} />
+      <TrainingPanel initial={initialTrainingOffers} />
+      <AboutRecordPanel initial={initialAboutEntries} />
       <PricingPanel initial={initialSettings} />
       <SettingsPanel initial={initialSettings} />
 

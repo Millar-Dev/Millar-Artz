@@ -52,11 +52,20 @@ export function Nav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   // Learn earns its place in the bar once there is something to read.
   const root = useLoaderData({ from: "__root__", structuralSharing: false }) as
-    | { hasLessons?: boolean }
+    | { hasLessons?: boolean; liveDepartments?: string[] }
     | undefined;
-  const barLinks = root?.hasLessons
-    ? [...primaryLinks.slice(0, 3), { to: "/learn", label: "Learn" } as const, ...primaryLinks.slice(3)]
-    : primaryLinks;
+  // A department earns its place in the bar once it has work to show, and
+  // Learn once a lesson is published — so the bar never leads to an empty
+  // room, and nothing has to be edited in code when one fills up.
+  const liveDepartments = disciplines.filter(
+    (d) => d.id !== "painting" && (root?.liveDepartments ?? []).includes(d.id),
+  );
+  const barLinks = [
+    ...primaryLinks.slice(0, 3),
+    ...liveDepartments.map((d) => ({ to: d.slug, label: d.label })),
+    ...(root?.hasLessons ? [{ to: "/learn", label: "Learn" } as const] : []),
+    ...primaryLinks.slice(3),
+  ];
 
   useEffect(() => {
     setOpen(false);

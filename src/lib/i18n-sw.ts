@@ -567,4 +567,8 @@ export const sw: Record<string, string> = {
   "This one isn't for sale — these are, and they come from the same hand.": "Hii haiuzwi — hizi zinauzwa, na zimetoka kwa mkono ule ule.",
   "Past commission": "Kazi iliyoagizwa awali",
   "Quoted per wall": "Bei hukadiriwa kwa kila ukuta",
+  "From the department": "Kutoka idarani",
+  "Play {title}": "Cheza {title}",
+  "video": "video",
+  "Video": "Video",
 };

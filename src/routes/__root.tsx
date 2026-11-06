@@ -13,6 +13,7 @@ import type { ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { getSiteSettings } from "@/lib/data/site-settings";
 import { hasPublishedLessons } from "@/lib/data/learn";
+import { departmentsWithMedia } from "@/lib/data/content";
 import { absoluteUrl, jsonLd, siteGraph } from "@/lib/seo";
 import { langFromPath, localizePath, useLang, useT } from "@/lib/i18n";
 import { VisitTracker } from "@/components/site/VisitTracker";
@@ -148,12 +149,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     // The language of the address travels with the settings every page
     // already loads, so each route's head() can read it (see langOf).
     loader: async ({ location }) => {
-      const [settings, hasLessons] = await Promise.all([
+      const [settings, hasLessons, liveDepartments] = await Promise.all([
         getSiteSettings(),
-        // The navigation shows Learn only when there is something to read.
+        // The navigation shows Learn only when there is something to read,
+        // and a department only once it has work to show.
         hasPublishedLessons().catch(() => false),
+        departmentsWithMedia().catch(() => [] as string[]),
       ]);
-      return { ...settings, hasLessons, lang: langFromPath(location.publicHref) };
+      return {
+        ...settings,
+        hasLessons,
+        liveDepartments,
+        lang: langFromPath(location.publicHref),
+      };
     },
     shellComponent: RootShell,
     component: RootComponent,

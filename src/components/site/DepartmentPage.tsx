@@ -3,6 +3,8 @@ import { Layout } from "./Layout";
 import { DisciplineMark } from "./BrandLogo";
 import { disciplineIcons } from "./discipline-icons";
 import { disciplines, type Discipline } from "@/lib/gallery-data";
+import { DepartmentMedia } from "./DepartmentMedia";
+import type { MediaItemRow } from "@/lib/data/content";
 import { ArrowRight, Check } from "lucide-react";
 import { useT } from "@/lib/i18n";
 
@@ -21,9 +23,12 @@ import { useT } from "@/lib/i18n";
  */
 export function DepartmentPage({
   discipline,
+  media = [],
   children,
 }: {
   discipline: Discipline;
+  /** Photographs and video the artist added in the Studio. */
+  media?: MediaItemRow[];
   children?: React.ReactNode;
 }) {
   const t = useT();
@@ -128,9 +133,14 @@ export function DepartmentPage({
           </div>
         </section>
 
-        {/* Painting's archive, or an honest note for the departments that
-            don't have one on the site yet. */}
-        {children ?? <NotYetArchived discipline={discipline} />}
+        {/* Painting's archive; the other four show whatever has been added
+            in the Studio, and say so honestly while that is nothing. */}
+        {children ?? (
+          <>
+            <DepartmentMedia items={media} accent={discipline.accent} />
+            {media.length === 0 && <NotYetArchived discipline={discipline} />}
+          </>
+        )}
 
         {/* ── The other four ──────────────────────────────────────────── */}
         <section className="py-12 md:py-20">

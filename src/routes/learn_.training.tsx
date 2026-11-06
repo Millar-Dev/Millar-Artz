@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/site/Layout";
 import { disciplines } from "@/lib/gallery-data";
-import { filledTraining } from "@/lib/training-record";
+import { listTrainingOffers, type TrainingOfferRow } from "@/lib/data/content";
 import { canonical, jsonLd, seoMeta, SITE_URL } from "@/lib/seo";
 import { translator, useT, langOf } from "@/lib/i18n";
 
@@ -12,6 +12,7 @@ import { translator, useT, langOf } from "@/lib/i18n";
  * class that doesn't exist yet.
  */
 export const Route = createFileRoute("/learn_/training")({
+  loader: async () => ({ offers: await listTrainingOffers() }),
   head: ({ matches }) => {
     const lang = langOf(matches);
     const t = translator(lang);
@@ -43,6 +44,7 @@ export const Route = createFileRoute("/learn_/training")({
 
 function Training() {
   const t = useT();
+  const { offers } = Route.useLoaderData();
   const taught = disciplines.filter((d) => d.id === "dance" || d.id === "acrobatics");
 
   return (
@@ -66,12 +68,12 @@ function Training() {
 
       <section className="bg-gallery py-10 md:py-16">
         <div className="mx-auto max-w-5xl px-6">
-          {filledTraining.length > 0 ? (
+          {offers.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2">
-              {filledTraining.map((o) => {
+              {offers.map((o: TrainingOfferRow) => {
                 const d = disciplines.find((x) => x.id === (o.discipline === "dance" ? "dance" : "acrobatics"));
                 return (
-                  <div key={o.discipline + o.name} className="border border-ink/10 bg-paper/60 p-6">
+                  <div key={o.id} className="border border-ink/10 bg-paper/60 p-6">
                     {d && (
                       <p
                         className="text-[10px] font-bold uppercase tracking-[0.25em]"
