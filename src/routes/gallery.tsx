@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { sized, srcSetFor } from "@/lib/images";
 import { useMemo, useState } from "react";
 import { z } from "zod";
@@ -42,9 +42,15 @@ const gallerySearchSchema = z.object({
 
 export const Route = createFileRoute("/gallery")({
   validateSearch: gallerySearchSchema,
+  // Murals moved to a page of their own; an old link to the mural filter
+  // should land there rather than on an empty grid.
+  beforeLoad: ({ search }) => {
+    if (search.category === "mural") throw redirect({ to: "/murals" });
+  },
   loader: async () => {
     const rows = await listArtworks();
-    return { artworks: rows.map(fromArtworkRow) };
+    // Walls aren't browsed beside 30 × 45 cm portraits — see /murals.
+    return { artworks: rows.map(fromArtworkRow).filter((a) => a.category !== "mural") };
   },
   head: ({ loaderData, matches }) => ({
     meta: seoMeta(
@@ -61,6 +67,9 @@ export const Route = createFileRoute("/gallery")({
   }),
   component: Gallery,
 });
+
+/** Everything except murals, which have their own page. */
+const galleryCategories = categories.filter((c) => c.value !== "mural");
 
 function Gallery() {
   const t = useT();
@@ -119,7 +128,7 @@ function Gallery() {
       <section className="sticky top-[4.75rem] z-30 border-y border-ink/5 bg-canvas py-4 md:top-[5.75rem]">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 md:flex-row md:items-center md:justify-between">
           <div className="no-scrollbar flex gap-x-6 gap-y-2 overflow-x-auto text-[11px] font-bold uppercase tracking-[0.2em]">
-            {categories.map((c) => (
+            {galleryCategories.map((c) => (
               <button
                 key={c.value}
                 onClick={() => setCategory(c.value)}
@@ -213,14 +222,21 @@ function Gallery() {
                     params={{ id: a.id }}
                     className="gradient-stroke mb-4 block rounded-sm p-px shadow-lg shadow-black/25"
                   >
-                    <div className="relative overflow-hidden rounded-[1px] bg-paper">
+                    <div
+                      className="relative overflow-hidden rounded-[1px] bg-paper"
+                      // The piece's own proportions, so a tall portrait and a
+                      // wide canvas don't get cropped to the same box — and
+                      // the space is reserved before the photo arrives, which
+                      // keeps the grid from jumping as you scroll.
+                      style={{ aspectRatio: a.widthCm && a.heightCm ? a.widthCm / a.heightCm : 3 / 4 }}
+                    >
                       <img
                         src={sized(a.image, 640)}
                         srcSet={srcSetFor(a.image)}
                         sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
                         alt={a.title}
                         loading="lazy"
-                        className="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       {/* Quick view stays available without leaving the grid.
                           Always shown on touch screens, which have no hover. */}
@@ -265,6 +281,27 @@ function Gallery() {
       </section>
 
       {/* Beyond the Canvas */}
+      {/* Murals are a different proposition — scale, a client's wall, a
+          quotation — so they get a door of their own rather than a tile. */}
+      <section className="border-t border-ink/5 bg-paper py-10">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+              {t("Looking for a wall?")}
+            </p>
+            <p className="mt-2 font-display text-2xl italic text-ink">
+              {t("Murals have a page of their own — with the wall before and after.")}
+            </p>
+          </div>
+          <Link
+            to="/murals"
+            className="shrink-0 rounded-sm bg-gold px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
+          >
+            {t("See the murals")}
+          </Link>
+        </div>
+      </section>
+
       <section className="grain relative border-t border-white/5 bg-band py-14 md:py-24 text-band-foreground">
         <div className="relative mx-auto max-w-7xl px-6">
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">

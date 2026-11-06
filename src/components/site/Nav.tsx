@@ -25,6 +25,7 @@ const primaryLinks = [
   { to: "/", label: "Home" },
   { to: "/paintings", label: "Paintings" },
   { to: "/gallery", label: "Full archive" },
+  { to: "/murals", label: "Murals" },
   { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -128,8 +129,14 @@ export function Nav() {
                         ))}
                       </div>
                       <Link
+                        to="/murals"
+                        className="mt-4 block border-t border-band-foreground/10 pt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-band-foreground/80 hover:text-gold"
+                      >
+                        {t("Murals")}
+                      </Link>
+                      <Link
                         to="/gallery"
-                        className="mt-4 block border-t border-band-foreground/10 pt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gold"
+                        className="mt-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-gold"
                       >
                         {t("View full archive →")}
                       </Link>

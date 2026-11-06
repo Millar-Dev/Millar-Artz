@@ -81,6 +81,9 @@ export function Footer() {
               <Link to="/gallery" className="block hover:text-gold">
                 {t("Full archive")}
               </Link>
+              <Link to="/murals" className="block hover:text-gold">
+                {t("Murals")}
+              </Link>
               <Link to="/about" className="block hover:text-gold">
                 {t("About Us")}
               </Link>

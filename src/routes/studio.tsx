@@ -924,9 +924,11 @@ function ArtworkEditor({
 }) {
   const [form, setForm] = useState(draft);
   const [imagePreview, setImagePreview] = useState(draft.image ?? "");
+  const [beforePreview, setBeforePreview] = useState(draft.beforeImage ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const beforeRef = useRef<HTMLInputElement>(null);
 
   function update<K extends keyof Artwork>(key: K, value: Artwork[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -941,6 +943,23 @@ function ArtworkEditor({
       const { imagePath } = await uploadArtworkImage({ data: formData });
       update("image", imagePath);
       setImagePreview(imagePath);
+    } catch {
+      setError("Upload failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** The wall as it was. Murals show it beside the finished photo. */
+  async function onBeforeFile(file: File) {
+    setBusy(true);
+    setError("");
+    try {
+      const formData = new FormData();
+      formData.set("file", file);
+      const { imagePath } = await uploadArtworkImage({ data: formData });
+      update("beforeImage", imagePath);
+      setBeforePreview(imagePath);
     } catch {
       setError("Upload failed.");
     } finally {
@@ -974,6 +993,7 @@ function ArtworkEditor({
           widthCm: form.widthCm ?? null,
           heightCm: form.heightCm ?? null,
           featured: form.featured ?? false,
+          beforeImagePath: form.beforeImage ?? null,
           price: form.price ?? null,
           currency: form.currency || "TZS",
           status: form.status,
@@ -1037,6 +1057,46 @@ function ArtworkEditor({
                 </span>
               )}
             </button>
+
+            {/* Murals are judged by what they replaced, so a mural can carry
+                the wall as it was; the page then shows both. */}
+            <input
+              ref={beforeRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) onBeforeFile(f);
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => beforeRef.current?.click()}
+              className="mt-2 block h-24 w-full overflow-hidden rounded-sm border border-dashed border-ink/20 bg-ink/5"
+            >
+              {beforePreview ? (
+                <img src={beforePreview} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <span className="flex h-full items-center justify-center px-2 text-center text-[11px] leading-tight text-ink/50">
+                  Before photo
+                  <br />
+                  (the bare wall)
+                </span>
+              )}
+            </button>
+            {beforePreview && (
+              <button
+                type="button"
+                onClick={() => {
+                  update("beforeImage", null);
+                  setBeforePreview("");
+                }}
+                className="mt-1 w-full text-[11px] text-ink/50 hover:text-red-500"
+              >
+                Remove before photo
+              </button>
+            )}
           </div>
 
           <div className="space-y-4">

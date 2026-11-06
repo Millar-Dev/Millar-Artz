@@ -37,6 +37,9 @@ export interface Artwork {
   /** Shown first where the site picks a handful of pieces. */
   featured: boolean;
   image: string;
+  /** The surface before the work was made — murals show it beside the finished
+   *  wall. Null when there is no such photo. */
+  beforeImage: string | null;
   description: string;
   year: number;
   sortOrder: number;
@@ -57,6 +60,7 @@ export interface ArtworkDbRow {
   width_cm?: number | string | null;
   height_cm?: number | string | null;
   featured?: boolean | null;
+  before_image_path?: string | null;
   status: string;
   description: string;
   year: number;
@@ -98,6 +102,7 @@ export function fromArtworkRow(row: ArtworkDbRow): Artwork {
     status: normalizeStatus(row),
     featured: row.featured ?? row.status === "featured",
     image: row.image_path,
+    beforeImage: row.before_image_path ?? null,
     description: row.description.trim(),
     year: row.year,
     sortOrder: row.sort_order,

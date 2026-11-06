@@ -52,6 +52,8 @@ export interface ArtworkInput {
   heightCm?: number | null;
   status: ArtworkStatus;
   featured?: boolean;
+  /** Photo of the surface before the work — murals show a before/after. */
+  beforeImagePath?: string | null;
   description: string;
   year: number;
   imagePath: string;
@@ -155,6 +157,7 @@ export const upsertArtwork = createServerFn({ method: "POST" })
       height_cm: positive(input.heightCm),
       status: input.status,
       featured: Boolean(input.featured),
+      before_image_path: clean(input.beforeImagePath) || null,
       description: clean(input.description),
       year: input.year,
       image_path: input.imagePath,
@@ -168,7 +171,7 @@ export const upsertArtwork = createServerFn({ method: "POST" })
       // run, say what to do rather than showing Postgres's wording.
       if (/schema cache|column .* does not exist/i.test(error.message)) {
         throw new Error(
-          "The database hasn't been updated yet. Run the 19 Sep migration in the Supabase SQL editor, then save again.",
+          "The database is missing a column this form saves. Run the newest file in supabase/migrations in the Supabase SQL editor, then save again.",
         );
       }
       throw new Error(error.message);

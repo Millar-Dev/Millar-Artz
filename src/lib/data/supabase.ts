@@ -60,6 +60,8 @@ export interface Database {
         width_cm?: number | null;
         height_cm?: number | null;
         featured?: boolean;
+        /** Added 2026-11-05: the wall before a mural was painted. */
+        before_image_path?: string | null;
         created_at?: string;
         updated_at?: string;
       }>;

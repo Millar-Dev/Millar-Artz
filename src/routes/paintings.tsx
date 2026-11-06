@@ -50,7 +50,7 @@ const rows: { title: string; categories: ArtworkCategory[] }[] = [
   { title: "Traditional & Cultural", categories: ["traditional"] },
   {
     title: "Beyond the Expected",
-    categories: ["abstract", "illusional", "mural", "modern", "cartoons"],
+    categories: ["abstract", "illusional", "modern", "cartoons"],
   },
 ];
 

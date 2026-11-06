@@ -10,6 +10,7 @@ import { findArtworkRedirect, listArtworks } from "@/lib/data/artworks";
 import { artworkGraph, artworkPath, absoluteUrl, canonical, jsonLd, seoMeta } from "@/lib/seo";
 import { shareImage, sized, srcSetFor } from "@/lib/images";
 import { BuyButton, PaymentNote } from "@/components/site/BuyPanel";
+import { BeforeAfter } from "@/components/site/BeforeAfter";
 import { localizePath, translator, useLang, useT, langOf } from "@/lib/i18n";
 
 /**
@@ -38,13 +39,20 @@ export const Route = createFileRoute("/gallery_/$id")({
     const artwork = all[index];
     // Same category first, then anything else, so there are always a few to
     // browse on to.
-    const related = [
-      ...all.filter((a) => a.id !== artwork.id && a.category === artwork.category),
-      ...all.filter((a) => a.id !== artwork.id && a.category !== artwork.category),
-    ].slice(0, 4);
+    const others = all.filter((a) => a.id !== artwork.id);
+    const sameFirst = [
+      ...others.filter((a) => a.category === artwork.category),
+      ...others.filter((a) => a.category !== artwork.category),
+    ];
+    const related = sameFirst.slice(0, 4);
+    // A sold or not-for-sale piece is a dead end: whoever is looking at it
+    // liked something about it, so offer what they could actually take home.
+    const availableNow =
+      artwork.status === "available" ? [] : sameFirst.filter((a) => a.status === "available").slice(0, 3);
     return {
       artwork,
       related,
+      availableNow,
       previous: all[index - 1] ?? null,
       next: all[index + 1] ?? null,
     };
@@ -87,7 +95,7 @@ export const Route = createFileRoute("/gallery_/$id")({
 });
 
 function ArtworkPage() {
-  const { artwork: a, related, previous, next } = Route.useLoaderData();
+  const { artwork: a, related, availableNow, previous, next } = Route.useLoaderData();
   const t = useT();
   const { price } = useCurrency();
   // Only a piece that can be bought shows a price.
@@ -110,15 +118,32 @@ function ArtworkPage() {
           {/* The painting. The original file is the src — it's the one search
               engines should index — and phones pick a smaller copy from srcset. */}
           <div className="lg:col-span-7">
-            <div className="gradient-stroke rounded-sm p-px shadow-2xl shadow-black/25">
-              <img
-                src={a.image}
-                srcSet={srcSetFor(a.image, [480, 720, 960, 1280], 82)}
-                sizes="(min-width: 1024px) 58vw, 100vw"
+            {a.beforeImage ? (
+              <BeforeAfter
+                before={a.beforeImage}
+                after={a.image}
                 alt={t("{title} — {medium} by Miller S.K.", { title: a.title, medium: t(a.medium).trim() })}
-                className="block w-full rounded-[1px] bg-paper object-contain"
+                aspectRatio={a.widthCm && a.heightCm ? a.widthCm / a.heightCm : undefined}
               />
-            </div>
+            ) : (
+              <div className="gradient-stroke rounded-sm p-px shadow-2xl shadow-black/25">
+                <img
+                  src={a.image}
+                  srcSet={srcSetFor(a.image, [480, 720, 960, 1280], 82)}
+                  sizes="(min-width: 1024px) 58vw, 100vw"
+                  alt={t("{title} — {medium} by Miller S.K.", { title: a.title, medium: t(a.medium).trim() })}
+                  className="block w-full rounded-[1px] bg-paper object-contain"
+                />
+              </div>
+            )}
+            {a.category === "mural" && (
+              <Link
+                to="/murals"
+                className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-gold hover:underline"
+              >
+                {t("See all the murals")} →
+              </Link>
+            )}
           </div>
 
           <div className="lg:col-span-5">
@@ -239,6 +264,44 @@ function ArtworkPage() {
         )}
       </section>
 
+      {availableNow.length > 0 && (
+        <section className="border-t border-ink/5 bg-gallery py-12 md:py-16">
+          <div className="mx-auto max-w-7xl px-6">
+            <h2 className="font-display text-2xl font-bold text-ink md:text-3xl">
+              {t("Available now")}
+            </h2>
+            <p className="mt-2 text-sm font-light text-ink/60">
+              {t("This one isn't for sale — these are, and they come from the same hand.")}
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-3">
+              {availableNow.map((r: Artwork) => (
+                <Link key={r.id} to="/gallery/$id" params={{ id: r.id }} className="group block">
+                  <div
+                    className="overflow-hidden rounded-sm ring-1 ring-ink/10"
+                    style={{ aspectRatio: r.widthCm && r.heightCm ? r.widthCm / r.heightCm : 3 / 4 }}
+                  >
+                    <img
+                      src={sized(r.image, 480)}
+                      srcSet={srcSetFor(r.image, [320, 480, 640])}
+                      sizes="(min-width: 1024px) 30vw, 45vw"
+                      alt={r.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <p className="mt-3 truncate font-display text-base font-bold text-ink">{r.title}</p>
+                  {r.price != null && (
+                    <p className="truncate text-xs font-bold text-gold">
+                      {price(r.price, r.currency).display}
+                    </p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {related.length > 0 && (
         <section className="border-t border-ink/5 bg-paper py-12 md:py-16">
           <div className="mx-auto max-w-7xl px-6">
@@ -246,14 +309,17 @@ function ArtworkPage() {
             <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
               {related.map((r: Artwork) => (
                 <Link key={r.id} to="/gallery/$id" params={{ id: r.id }} className="group block">
-                  <div className="overflow-hidden rounded-sm ring-1 ring-ink/10">
+                  <div
+                    className="overflow-hidden rounded-sm ring-1 ring-ink/10"
+                    style={{ aspectRatio: r.widthCm && r.heightCm ? r.widthCm / r.heightCm : 3 / 4 }}
+                  >
                     <img
                       src={sized(r.image, 480)}
                       srcSet={srcSetFor(r.image, [320, 480, 640])}
                       sizes="(min-width: 1024px) 22vw, 45vw"
                       alt={r.title}
                       loading="lazy"
-                      className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   <p className="mt-3 truncate font-display text-base font-bold text-ink">{r.title}</p>

@@ -136,3 +136,6 @@ create table if not exists artwork_redirects (
   created_at timestamptz not null default now()
 );
 alter table artwork_redirects enable row level security;
+
+-- 2026-11-05: the wall as it was, for mural before/after.
+alter table artworks add column if not exists before_image_path text;

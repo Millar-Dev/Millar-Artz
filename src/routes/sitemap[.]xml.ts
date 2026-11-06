@@ -43,6 +43,15 @@ export const Route = createFileRoute("/sitemap.xml")({
             priority: d.status === "live" ? "0.9" : "0.8",
           })),
           { path: "/gallery", changefreq: "weekly", priority: "0.8", images: artworkImages },
+          {
+            path: "/murals",
+            changefreq: "monthly",
+            priority: "0.8",
+            images: artworks
+              .filter((a) => a.category === "mural")
+              .flatMap((a) => [a.image_path, a.before_image_path])
+              .filter((u): u is string => Boolean(u)),
+          },
           { path: "/about", changefreq: "monthly", priority: "0.7" },
           { path: "/contact", changefreq: "monthly", priority: "0.7" },
           { path: "/faq", changefreq: "monthly", priority: "0.6" },

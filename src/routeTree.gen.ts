@@ -17,6 +17,7 @@ import { Route as DanceRouteImport } from './routes/dance'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as LearnRouteImport } from './routes/learn'
+import { Route as MuralsRouteImport } from './routes/murals'
 import { Route as MusicRouteImport } from './routes/music'
 import { Route as PaintingsRouteImport } from './routes/paintings'
 import { Route as SculptingRouteImport } from './routes/sculpting'
@@ -65,6 +66,11 @@ const GalleryRoute = GalleryRouteImport.update({
 const LearnRoute = LearnRouteImport.update({
   id: '/learn',
   path: '/learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MuralsRoute = MuralsRouteImport.update({
+  id: '/murals',
+  path: '/murals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MusicRoute = MusicRouteImport.update({
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/learn': typeof LearnRoute
+  '/murals': typeof MuralsRoute
   '/music': typeof MusicRoute
   '/paintings': typeof PaintingsRoute
   '/sculpting': typeof SculptingRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/learn': typeof LearnRoute
+  '/murals': typeof MuralsRoute
   '/music': typeof MusicRoute
   '/paintings': typeof PaintingsRoute
   '/sculpting': typeof SculptingRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/learn': typeof LearnRoute
+  '/murals': typeof MuralsRoute
   '/music': typeof MusicRoute
   '/paintings': typeof PaintingsRoute
   '/sculpting': typeof SculptingRoute
@@ -182,6 +191,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gallery'
     | '/learn'
+    | '/murals'
     | '/music'
     | '/paintings'
     | '/sculpting'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gallery'
     | '/learn'
+    | '/murals'
     | '/music'
     | '/paintings'
     | '/sculpting'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gallery'
     | '/learn'
+    | '/murals'
     | '/music'
     | '/paintings'
     | '/sculpting'
@@ -240,6 +252,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
   LearnRoute: typeof LearnRoute
+  MuralsRoute: typeof MuralsRoute
   MusicRoute: typeof MusicRoute
   PaintingsRoute: typeof PaintingsRoute
   SculptingRoute: typeof SculptingRoute
@@ -307,6 +320,13 @@ declare module '@tanstack/react-router' {
       path: '/learn'
       fullPath: '/learn'
       preLoaderRoute: typeof LearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/murals': {
+      id: '/murals'
+      path: '/murals'
+      fullPath: '/murals'
+      preLoaderRoute: typeof MuralsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/music': {
@@ -384,6 +404,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
   LearnRoute: LearnRoute,
+  MuralsRoute: MuralsRoute,
   MusicRoute: MusicRoute,
   PaintingsRoute: PaintingsRoute,
   SculptingRoute: SculptingRoute,

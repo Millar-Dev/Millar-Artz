@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { sized, srcSetFor } from "@/lib/images";
 import { Layout } from "@/components/site/Layout";
+import { useCurrency } from "@/components/site/CurrencyProvider";
 import { BrandMark, DisciplineMark } from "@/components/site/BrandLogo";
 import { disciplineIcons } from "@/components/site/discipline-icons";
-import { disciplines, fromArtworkRow } from "@/lib/gallery-data";
+import { disciplines, fromArtworkRow, STATUS_LABEL } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { canonical, seoMeta } from "@/lib/seo";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
@@ -57,13 +58,21 @@ const promises = [
 
 function Home() {
   const t = useT();
+  const { price } = useCurrency();
   const heroWords = t(HERO_LINE).split(" ");
   const { artworks } = Route.useLoaderData();
   // Real pieces, so the directory opens onto actual work rather than stock.
-  // Featured pieces first, then the gallery order (the sort is stable).
-  const featured = [...artworks]
-    .sort((a, b) => Number(b.featured) - Number(a.featured))
-    .slice(0, 6);
+  // What leads: a featured piece, then anything for sale, then the rest. A
+  // visitor's first glance should land on work they could take home, not on
+  // whatever happens to sit first in the archive. Murals are excluded — they
+  // have their own page, where the scale and the wall make sense.
+  const rank = (a: Artwork) => Number(a.featured) * 2 + Number(a.status === "available");
+  const shown = [...artworks]
+    .filter((a) => a.category !== "mural")
+    .sort((a, b) => rank(b) - rank(a))
+    .slice(0, 7);
+  const [lead, ...rest] = shown;
+  const murals = artworks.filter((a) => a.category === "mural");
 
   return (
     <Layout>
@@ -260,7 +269,7 @@ function Home() {
       </section>
 
       {/* ── A look at the work ──────────────────────────────────────── */}
-      {featured.length > 0 && (
+      {shown.length > 0 && (
         <section className="py-14 md:py-24">
           <div className="mx-auto max-w-7xl px-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
@@ -276,18 +285,43 @@ function Home() {
               </Link>
             </div>
 
-            <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-              {featured.map((a: Artwork) => (
+            {/* Hung like a wall rather than laid out like a contact sheet:
+                one piece given room, the rest gathered beside it. */}
+            <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+              {lead && (
+                <Link
+                  to="/gallery/$id"
+                  params={{ id: lead.id }}
+                  className="group relative col-span-2 row-span-2 overflow-hidden rounded-sm ring-1 ring-ink/10"
+                >
+                  <img
+                    src={sized(lead.image, 960)}
+                    srcSet={srcSetFor(lead.image, [480, 720, 960])}
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    alt={lead.title}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-5 pt-12">
+                    <span className="block font-display text-xl italic text-white">{lead.title}</span>
+                    <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">
+                      {lead.status === "available" && lead.price != null
+                        ? price(lead.price, lead.currency).display
+                        : t(STATUS_LABEL[lead.status])}
+                    </span>
+                  </span>
+                </Link>
+              )}
+              {rest.map((a: Artwork) => (
                 <Link
                   key={a.id}
                   to="/gallery/$id"
                   params={{ id: a.id }}
-                  className="group relative aspect-[3/4] overflow-hidden rounded-sm ring-1 ring-ink/10"
+                  className="group relative aspect-square overflow-hidden rounded-sm ring-1 ring-ink/10"
                 >
                   <img
                     src={sized(a.image, 480)}
                     srcSet={srcSetFor(a.image, [320, 480, 640])}
-                    sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 50vw"
+                    sizes="(min-width: 768px) 25vw, 50vw"
                     alt={a.title}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -300,6 +334,26 @@ function Home() {
                 </Link>
               ))}
             </div>
+
+            {murals.length > 0 && (
+              <Link
+                to="/murals"
+                className="group mt-4 flex flex-wrap items-center justify-between gap-4 rounded-sm border border-ink/10 bg-paper/60 px-6 py-5 transition-colors hover:border-gold/50"
+              >
+                <span>
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+                    {t("Murals")}
+                  </span>
+                  <span className="mt-1 block font-display text-xl italic text-ink">
+                    {t("Work at the scale of a wall — see them before and after.")}
+                  </span>
+                </span>
+                <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-ink/70 group-hover:text-gold">
+                  {t("See the murals")}
+                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            )}
           </div>
         </section>
       )}
