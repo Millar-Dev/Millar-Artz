@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MapPin, Ruler } from "lucide-react";
 import { Layout } from "@/components/site/Layout";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
-import { StatusPill } from "@/components/site/StatusPill";
 import { disciplines, fromArtworkRow, type Artwork } from "@/lib/gallery-data";
 import { listArtworks } from "@/lib/data/artworks";
 import { formatSize } from "@/lib/artwork-size";
@@ -177,7 +176,9 @@ function Murals() {
                         <span>{m.year}</span>
                       </p>
                     </div>
-                    <StatusPill status={m.status} />
+                    <span className="shrink-0 rounded-full border border-ink/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-ink/60">
+                      {t("Past commission")}
+                    </span>
                   </div>
 
                   {m.description && (

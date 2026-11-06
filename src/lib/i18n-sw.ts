@@ -565,4 +565,6 @@ export const sw: Record<string, string> = {
   "Tell us about your wall": "Tueleze kuhusu ukuta wako",
   "Available now": "Zinazopatikana sasa",
   "This one isn't for sale — these are, and they come from the same hand.": "Hii haiuzwi — hizi zinauzwa, na zimetoka kwa mkono ule ule.",
+  "Past commission": "Kazi iliyoagizwa awali",
+  "Quoted per wall": "Bei hukadiriwa kwa kila ukuta",
 };

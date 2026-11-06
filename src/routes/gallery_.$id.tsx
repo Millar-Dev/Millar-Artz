@@ -182,7 +182,8 @@ function ArtworkPage() {
                   <dd className="text-right">
                     {!view ? (
                       <span className="font-display text-xl font-bold text-gold">
-                        {t(STATUS_LABEL[a.status])}
+                        {/* A wall is quoted, not priced off a shelf. */}
+                        {t(a.category === "mural" ? "Quoted per wall" : STATUS_LABEL[a.status])}
                       </span>
                     ) : (
                       <>
@@ -225,7 +226,7 @@ function ArtworkPage() {
                     search={{ type: a.categoryLabel, piece: a.title }}
                     className="rounded-sm bg-gold px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-band hover:bg-gold-soft"
                   >
-                    {t("Commission something similar")}
+                    {t(a.category === "mural" ? "Commission a wall like this" : "Commission something similar")}
                   </Link>
                 )}
                 <ShareButtons artwork={a} />
