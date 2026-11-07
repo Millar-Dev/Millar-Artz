@@ -16,6 +16,9 @@ import type { MediaItemRow } from "@/lib/data/content";
 export function DepartmentMedia({ items, accent }: { items: MediaItemRow[]; accent: string }) {
   const t = useT();
   const [playing, setPlaying] = useState<string | null>(null);
+  // A tile is a tidy rectangle; the photograph behind it rarely is. Tapping
+  // one opens it whole, so a portrait shot isn't judged by its crop.
+  const [viewing, setViewing] = useState<MediaItemRow | null>(null);
   if (items.length === 0) return null;
 
   return (
@@ -48,7 +51,7 @@ export function DepartmentMedia({ items, accent }: { items: MediaItemRow[]; acce
                     </span>
                   )}
 
-                  {video && (
+                  {video ? (
                     <button
                       type="button"
                       onClick={() => setPlaying(video)}
@@ -57,6 +60,15 @@ export function DepartmentMedia({ items, accent }: { items: MediaItemRow[]; acce
                     >
                       <PlayCircle size={52} />
                     </button>
+                  ) : (
+                    poster && (
+                      <button
+                        type="button"
+                        onClick={() => setViewing(item)}
+                        aria-label={t("See {title} in full", { title: item.title || t("photo") })}
+                        className="absolute inset-0"
+                      />
+                    )
                   )}
                 </div>
                 {(item.title || item.caption) && (
@@ -76,6 +88,37 @@ export function DepartmentMedia({ items, accent }: { items: MediaItemRow[]; acce
           })}
         </div>
       </div>
+
+      {viewing?.image_path && (
+        <div
+          className="animate-fade fixed inset-0 z-[90] flex items-center justify-center bg-band/95 p-4"
+          onClick={() => setViewing(null)}
+        >
+          <button
+            onClick={() => setViewing(null)}
+            aria-label={t("Close")}
+            className="absolute right-5 top-5 text-band-foreground/70 hover:text-band-foreground"
+          >
+            <X size={22} />
+          </button>
+          <figure className="max-h-[90vh] w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={sized(viewing.image_path, 1280)}
+              srcSet={srcSetFor(viewing.image_path, [480, 720, 960, 1280], 82)}
+              sizes="(min-width: 768px) 70vw, 100vw"
+              alt={viewing.title || ""}
+              className="mx-auto max-h-[80vh] w-auto rounded-sm object-contain"
+            />
+            {(viewing.title || viewing.caption) && (
+              <figcaption className="mt-4 text-center text-sm text-band-foreground/75">
+                {viewing.title}
+                {viewing.title && viewing.caption ? " — " : ""}
+                {viewing.caption}
+              </figcaption>
+            )}
+          </figure>
+        </div>
+      )}
 
       {playing && (
         <div

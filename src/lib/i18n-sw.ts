@@ -571,4 +571,6 @@ export const sw: Record<string, string> = {
   "Play {title}": "Cheza {title}",
   "video": "video",
   "Video": "Video",
+  "See {title} in full": "Tazama {title} kwa ukubwa kamili",
+  "photo": "picha",
 };
