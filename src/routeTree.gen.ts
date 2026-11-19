@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AcrobaticsRouteImport } from './routes/acrobatics'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DanceRouteImport } from './routes/dance'
+import { Route as EaselbookRouteImport } from './routes/easelbook'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as LearnRouteImport } from './routes/learn'
@@ -51,6 +52,11 @@ const ContactRoute = ContactRouteImport.update({
 const DanceRoute = DanceRouteImport.update({
   id: '/dance',
   path: '/dance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EaselbookRoute = EaselbookRouteImport.update({
+  id: '/easelbook',
+  path: '/easelbook',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/acrobatics': typeof AcrobaticsRoute
   '/contact': typeof ContactRoute
   '/dance': typeof DanceRoute
+  '/easelbook': typeof EaselbookRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/learn': typeof LearnRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/acrobatics': typeof AcrobaticsRoute
   '/contact': typeof ContactRoute
   '/dance': typeof DanceRoute
+  '/easelbook': typeof EaselbookRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/learn': typeof LearnRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/acrobatics': typeof AcrobaticsRoute
   '/contact': typeof ContactRoute
   '/dance': typeof DanceRoute
+  '/easelbook': typeof EaselbookRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/learn': typeof LearnRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/acrobatics'
     | '/contact'
     | '/dance'
+    | '/easelbook'
     | '/faq'
     | '/gallery'
     | '/learn'
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/acrobatics'
     | '/contact'
     | '/dance'
+    | '/easelbook'
     | '/faq'
     | '/gallery'
     | '/learn'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/acrobatics'
     | '/contact'
     | '/dance'
+    | '/easelbook'
     | '/faq'
     | '/gallery'
     | '/learn'
@@ -249,6 +261,7 @@ export interface RootRouteChildren {
   AcrobaticsRoute: typeof AcrobaticsRoute
   ContactRoute: typeof ContactRoute
   DanceRoute: typeof DanceRoute
+  EaselbookRoute: typeof EaselbookRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
   LearnRoute: typeof LearnRoute
@@ -299,6 +312,13 @@ declare module '@tanstack/react-router' {
       path: '/dance'
       fullPath: '/dance'
       preLoaderRoute: typeof DanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/easelbook': {
+      id: '/easelbook'
+      path: '/easelbook'
+      fullPath: '/easelbook'
+      preLoaderRoute: typeof EaselbookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -401,6 +421,7 @@ const rootRouteChildren: RootRouteChildren = {
   AcrobaticsRoute: AcrobaticsRoute,
   ContactRoute: ContactRoute,
   DanceRoute: DanceRoute,
+  EaselbookRoute: EaselbookRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
   LearnRoute: LearnRoute,

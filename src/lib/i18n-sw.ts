@@ -573,4 +573,184 @@ export const sw: Record<string, string> = {
   "Video": "Video",
   "See {title} in full": "Tazama {title} kwa ukubwa kamili",
   "photo": "picha",
+
+  // ── Easelbook app page ──────────────────────────────────────────────────────
+  App: "Programu",
+  "Easelbook — the studio app for artists | MillerArtz":
+    "Easelbook — programu ya studio kwa wasanii | MillerArtz",
+  "Price commissions, track payments, and build your art portfolio. Download Easelbook free for Android, iPhone, Windows, Mac or any browser.":
+    "Panga bei ya kazi, fuatilia malipo na jenga portfolio ya sanaa yako. Pakua Easelbook bure kwa Android, iPhone, Windows, Mac au kivinjari chochote.",
+  "How to use Easelbook": "Jinsi ya kutumia Easelbook",
+  "Open the app, sign up, upgrade to Pro, price a job, invoice, record payments and use the Community.":
+    "Fungua programu, jisajili, panda daraja hadi Pro, panga bei ya kazi, tuma ankara, rekodi malipo na tumia Jumuiya.",
+  "A MillerArtz app": "Programu ya MillerArtz",
+  "Price commissions, track payments, and build your art portfolio.":
+    "Panga bei ya kazi, fuatilia malipo, na jenga portfolio ya sanaa yako.",
+  "The studio and business app made by an artist, for artists — in English and Kiswahili, priced in shillings, and free to start.":
+    "Programu ya studio na biashara iliyotengenezwa na msanii, kwa ajili ya wasanii — kwa Kiingereza na Kiswahili, bei kwa shilingi, na bure kuanza.",
+  "Other devices": "Vifaa vingine",
+  "Available on Google Play.": "Inapatikana Google Play.",
+  "Coming soon to Google Play and the App Store — install it directly in the meantime.":
+    "Inakuja hivi karibuni Google Play na App Store — kwa sasa isakinishe moja kwa moja hapa.",
+  "Easelbook home screen": "Skrini kuu ya Easelbook",
+  "Pricing a mural in Easelbook": "Kupanga bei ya mural kwenye Easelbook",
+  Watch: "Tazama",
+  "Easelbook in one minute": "Easelbook kwa dakika moja",
+  "How to open the app, sign up, upgrade to Pro, price a job, send an invoice, record payments and use the Community.":
+    "Jinsi ya kufungua programu, kujisajili, kupanda hadi Pro, kupanga bei ya kazi, kutuma ankara, kurekodi malipo na kutumia Jumuiya.",
+  "What it does": "Inachofanya",
+  "Everything between the brush and the bank.":
+    "Kila kitu kati ya brashi na benki.",
+  "Price any job": "Panga bei ya kazi yoyote",
+  "Paintings by size and hours, murals by walls, days, team rates and materials. See your cost, margin and the price to quote.":
+    "Michoro kwa ukubwa na saa, mural kwa kuta, siku, viwango vya timu na vifaa. Ona gharama, faida na bei ya kunukuu.",
+  "Quotes and invoices": "Nukuu na ankara",
+  "Turn a saved quote into an invoice with instalments. Share it as a PDF, on WhatsApp or by email.":
+    "Geuza nukuu iliyohifadhiwa kuwa ankara yenye awamu. Ishiriki kama PDF, kwa WhatsApp au barua pepe.",
+  "Track every payment": "Fuatilia kila malipo",
+  "Record deposits as they come in. Easelbook shows what is still due and keeps withholding tax separate from cash.":
+    "Rekodi malipo ya awali yanapoingia. Easelbook inaonyesha kiasi kinachodaiwa na kutenganisha kodi ya zuio na fedha taslimu.",
+  "Know your numbers": "Jua takwimu zako",
+  "Revenue, cash collected, artist pay and profit for every job — on a card that fits your phone.":
+    "Mapato, fedha zilizopokelewa, malipo ya wasanii na faida kwa kila kazi — kwenye kadi inayotosha simu yako.",
+  "Artist community": "Jumuiya ya wasanii",
+  "Share progress, ask other artists for feedback, and find questions that still need an answer.":
+    "Shiriki maendeleo, omba maoni kwa wasanii wengine, na pata maswali ambayo bado hayajajibiwa.",
+  "Clients and portfolio": "Wateja na portfolio",
+  "Keep every client in one place and build a public portfolio page you can send to anyone.":
+    "Weka wateja wote mahali pamoja na jenga ukurasa wa portfolio unaoweza kumtumia mtu yeyote.",
+  "Works offline for viewing and notes; payments and email need internet.":
+    "Inafanya kazi bila intaneti kwa kuangalia na kuandika; malipo na barua pepe zinahitaji intaneti.",
+  Download: "Pakua",
+  "Get Easelbook on any device": "Pata Easelbook kwenye kifaa chochote",
+  "One account works everywhere — sign in with the same email on your phone, tablet and computer.":
+    "Akaunti moja inafanya kazi kila mahali — ingia kwa barua pepe ileile kwenye simu, tablet na kompyuta.",
+  "Your device": "Kifaa chako",
+  "How to install": "Jinsi ya kusakinisha",
+  Android: "Android",
+  "Phones and tablets · Android 7 or newer":
+    "Simu na tablet · Android 7 au mpya zaidi",
+  "Download for Android": "Pakua kwa Android",
+  "Tap Download for Android.": "Gusa Pakua kwa Android.",
+  "Open Easelbook.apk when it finishes — from your notifications or the Files app.":
+    "Fungua Easelbook.apk ikimaliza kupakuliwa — kutoka kwenye arifa au programu ya Files.",
+  "If Android asks, allow installs from your browser, then tap Install.":
+    "Android ikiuliza, ruhusu usakinishaji kutoka kwenye kivinjari chako, kisha gusa Install.",
+  "Open Easelbook and sign up.": "Fungua Easelbook na ujisajili.",
+  "Get it on Google Play": "Ipate Google Play",
+  "Tap Get it on Google Play, then Install.":
+    "Gusa Ipate Google Play, kisha Install.",
+  "iPhone and iPad": "iPhone na iPad",
+  "Installs from Safari — no App Store needed":
+    "Inasakinishwa kupitia Safari — hakuna haja ya App Store",
+  "Open in Safari": "Fungua kwenye Safari",
+  "Open this page in Safari and tap Open in Safari.":
+    "Fungua ukurasa huu kwenye Safari na gusa Fungua kwenye Safari.",
+  "Tap the Share button, then Add to Home Screen.":
+    "Gusa kitufe cha Share, kisha Add to Home Screen.",
+  "Tap Add. Easelbook appears on your home screen like any app.":
+    "Gusa Add. Easelbook itaonekana kwenye skrini yako kama programu nyingine yoyote.",
+  "Download on the App Store": "Pakua kwenye App Store",
+  "Tap Download on the App Store, then Get.":
+    "Gusa Pakua kwenye App Store, kisha Get.",
+  Windows: "Windows",
+  "Windows 10 and 11": "Windows 10 na 11",
+  "Download for Windows": "Pakua kwa Windows",
+  "Download and open Easelbook-Setup.exe.":
+    "Pakua na fungua Easelbook-Setup.exe.",
+  "If Windows shows “Windows protected your PC”, tap More info → Run anyway.":
+    "Windows ikionyesha “Windows protected your PC”, gusa More info → Run anyway.",
+  "Easelbook installs and opens. Sign in or sign up.":
+    "Easelbook itasakinishwa na kufunguka. Ingia au jisajili.",
+  Mac: "Mac",
+  "macOS 11 or newer": "macOS 11 au mpya zaidi",
+  "Download for Mac": "Pakua kwa Mac",
+  "Download and open Easelbook-mac.dmg.": "Pakua na fungua Easelbook-mac.dmg.",
+  "Drag Easelbook into Applications.": "Buruta Easelbook hadi Applications.",
+  "The first time, right-click Easelbook and choose Open.":
+    "Mara ya kwanza, bofya kulia Easelbook na uchague Open.",
+  "Any browser": "Kivinjari chochote",
+  "Chrome, Edge, Safari, Firefox — nothing to install":
+    "Chrome, Edge, Safari, Firefox — hakuna cha kusakinisha",
+  "Open the web app": "Fungua programu ya wavuti",
+  "Open the web app and sign up.": "Fungua programu ya wavuti na ujisajili.",
+  "In Chrome or Edge you can choose Install app from the menu to keep it on your desktop.":
+    "Kwenye Chrome au Edge unaweza kuchagua Install app kwenye menyu ili ibaki kwenye kompyuta yako.",
+  "How to use it": "Jinsi ya kuitumia",
+  "From first tap to first payment":
+    "Kutoka mguso wa kwanza hadi malipo ya kwanza",
+  "Open Easelbook": "Fungua Easelbook",
+  "Install it from the download section below, then tap the Easelbook icon. On a computer you can also open it in your browser.":
+    "Isakinishe kutoka sehemu ya kupakua hapa chini, kisha gusa alama ya Easelbook. Kwenye kompyuta unaweza pia kuifungua kwenye kivinjari.",
+  "Create your studio": "Fungua studio yako",
+  "Tap Sign up, enter your name, email and a password, then type the confirmation code sent to your email.":
+    "Gusa Jisajili, weka jina, barua pepe na nenosiri, kisha andika msimbo wa uthibitisho uliotumwa kwenye barua pepe yako.",
+  "Find your way around": "Jifunze kuzunguka",
+  "The bottom bar takes you Home, to today's Spark prompt, Projects and Invoices. The gold + button adds anything new.":
+    "Upau wa chini unakupeleka Nyumbani, kwenye wazo la leo la Spark, Miradi na Ankara. Kitufe cha dhahabu + kinaongeza chochote kipya.",
+  "Price a job": "Panga bei ya kazi",
+  "Tap Price a Piece. Choose Artwork or Mural, fill in the job, and save the price as a quote for your client.":
+    "Gusa Panga Bei. Chagua Kazi ya sanaa au Mural, jaza taarifa za kazi, na hifadhi bei kama nukuu kwa mteja wako.",
+  "Invoice the client": "Mtumie mteja ankara",
+  "Open the quote and convert it to an invoice. Set the deposit and instalments, then share it.":
+    "Fungua nukuu na igeuze kuwa ankara. Weka malipo ya awali na awamu, kisha ishiriki.",
+  "Record payments": "Rekodi malipo",
+  "When money arrives, tap Record payment. The balance updates everywhere, and the invoice is marked paid when it is settled.":
+    "Fedha zikiingia, gusa Rekodi malipo. Salio linasasishwa kila mahali, na ankara inawekwa kama imelipwa ikikamilika.",
+  "Join the Community": "Jiunge na Jumuiya",
+  "Tap Ask for feedback to post a question with a photo, or share progress and finished work.":
+    "Gusa Omba maoni ili kuuliza swali na picha, au shiriki maendeleo na kazi zilizokamilika.",
+  Plans: "Mipango",
+  "Free to start. Pro when you're ready.": "Bure kuanza. Pro ukiwa tayari.",
+  "For every artist": "Kwa kila msanii",
+  "per month · or TZS 200,000 per year": "kwa mwezi · au TZS 200,000 kwa mwaka",
+  "Pricing calculator for paintings and murals":
+    "Kikokotoo cha bei kwa michoro na mural",
+  "Clients, income and expenses": "Wateja, mapato na matumizi",
+  "Up to 10 projects": "Hadi miradi 10",
+  "Up to 10 community posts and comments":
+    "Hadi machapisho na maoni 10 kwenye jumuiya",
+  "Everything in Free": "Kila kitu kilicho kwenye Bure",
+  "Invoices and mural quotes": "Ankara na nukuu za mural",
+  "Email invoices and reminders": "Tuma ankara na vikumbusho kwa barua pepe",
+  "Public portfolio page": "Ukurasa wa portfolio wa umma",
+  "Unlimited projects": "Miradi bila kikomo",
+  "Unlimited community": "Jumuiya bila kikomo",
+  "How to upgrade to Pro": "Jinsi ya kupanda hadi Pro",
+  "Open the menu and tap Pro.": "Fungua menyu na gusa Pro.",
+  "Choose Monthly (TZS 20,000) or Yearly (TZS 200,000 — two months free).":
+    "Chagua Kila mwezi (TZS 20,000) au Kila mwaka (TZS 200,000 — miezi miwili bure).",
+  "Pay to Equity Lipa Namba 80025069 (MILLER S. K.) from M-Pesa, Mixx by Yas, Airtel Money, HaloPesa or your bank app.":
+    "Lipa kwa Equity Lipa Namba 80025069 (MILLER S. K.) kupitia M-Pesa, Mixx by Yas, Airtel Money, HaloPesa au programu ya benki yako.",
+  "Type the transaction reference from your payment SMS and tap I've paid. Pro turns on once the payment is checked — usually within a few hours.":
+    "Andika namba ya muamala kutoka kwenye SMS ya malipo na gusa Nimelipa. Pro inawashwa malipo yakishathibitishwa — kwa kawaida ndani ya saa chache.",
+  "Paying for Easelbook Pro": "Kulipia Easelbook Pro",
+  "Good to know": "Ni vizuri kujua",
+  "Is Easelbook free?": "Je, Easelbook ni bure?",
+  "Yes. The free plan covers pricing, clients, income and expenses, up to 10 projects and up to 10 community posts and comments. Pro adds invoices, mural quotes, email, a portfolio page and unlimited projects and community.":
+    "Ndiyo. Mpango wa bure unajumuisha upangaji bei, wateja, mapato na matumizi, hadi miradi 10 na hadi machapisho na maoni 10 kwenye jumuiya. Pro inaongeza ankara, nukuu za mural, barua pepe, ukurasa wa portfolio na miradi na jumuiya bila kikomo.",
+  "Does it work without internet?": "Je, inafanya kazi bila intaneti?",
+  "You can open the app and look at your work offline, and new entries are saved and sent when you are back online. Recording payments, confirming costs and sending email need a connection.":
+    "Unaweza kufungua programu na kuangalia kazi zako bila intaneti, na taarifa mpya huhifadhiwa na kutumwa ukirudi mtandaoni. Kurekodi malipo, kuthibitisha gharama na kutuma barua pepe kunahitaji intaneti.",
+  "When will it be on Google Play and the App Store?":
+    "Itakuwa Google Play na App Store lini?",
+  "Easelbook is on its way to Google Play. Until then, Android users can install it directly from this page, and iPhone users can add it to their home screen from Safari. This page will link to the stores as soon as they are live.":
+    "Easelbook iko njiani kwenda Google Play. Hadi hapo, watumiaji wa Android wanaweza kuisakinisha moja kwa moja kutoka ukurasa huu, na watumiaji wa iPhone wanaweza kuiweka kwenye skrini kupitia Safari. Ukurasa huu utaunganishwa na maduka mara tu yatakapopatikana.",
+  "Is it safe to install the Android file?":
+    "Je, ni salama kusakinisha faili la Android?",
+  "The file comes straight from MillerArtz's public release page. Android asks you to allow installs from your browser the first time — that is normal for apps installed outside the Play Store.":
+    "Faili linatoka moja kwa moja kwenye ukurasa rasmi wa matoleo wa MillerArtz. Android itakuomba uruhusu usakinishaji kutoka kwenye kivinjari mara ya kwanza — hilo ni kawaida kwa programu zinazosakinishwa nje ya Play Store.",
+  "Is it in Kiswahili?": "Je, ipo kwa Kiswahili?",
+  "Yes. Easelbook works in English and Kiswahili, and prices are in Tanzanian shillings by default.":
+    "Ndiyo. Easelbook inafanya kazi kwa Kiingereza na Kiswahili, na bei ziko kwa shilingi za Kitanzania.",
+  "Can I use my account on more than one device?":
+    "Je, naweza kutumia akaunti yangu kwenye vifaa zaidi ya kimoja?",
+  "Yes. Sign in with the same email on your phone, tablet and computer — your studio is the same everywhere.":
+    "Ndiyo. Ingia kwa barua pepe ileile kwenye simu, tablet na kompyuta — studio yako ni ileile kila mahali.",
+  "How do I delete my account?": "Ninawezaje kufuta akaunti yangu?",
+  "In the app, go to Profile → Account → Delete my account. Your data and uploaded files are removed.":
+    "Ndani ya programu, nenda Wasifu → Akaunti → Futa akaunti yangu. Taarifa na faili zako zitaondolewa.",
+  "Run your studio like a business.": "Endesha studio yako kama biashara.",
+  "Free for every artist. Install it in a minute.":
+    "Bure kwa kila msanii. Isakinishe kwa dakika moja.",
 };

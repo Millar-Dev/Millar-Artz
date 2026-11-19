@@ -27,6 +27,7 @@ const primaryLinks = [
   { to: "/gallery", label: "Full archive" },
   { to: "/murals", label: "Murals" },
   { to: "/faq", label: "FAQ" },
+  { to: "/easelbook", label: "App" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
