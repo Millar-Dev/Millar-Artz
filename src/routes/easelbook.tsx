@@ -43,7 +43,7 @@ const STORES: { play: string | null; appStore: string | null } = {
 const RELEASES =
   "https://github.com/Millar-Dev/Easelbook-releases/releases/download";
 const FILES = {
-  android: `${RELEASES}/android/Easelbook.apk`,
+  android: `${RELEASES}/android-app/Easelbook.apk`,
   windows: `${RELEASES}/desktop/Easelbook-Setup.exe`,
   mac: `${RELEASES}/desktop/Easelbook-mac.dmg`,
 };
