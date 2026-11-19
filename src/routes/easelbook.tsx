@@ -47,7 +47,7 @@ const FILES = {
   windows: `${RELEASES}/desktop/Easelbook-Setup.exe`,
   mac: `${RELEASES}/desktop/Easelbook-mac.dmg`,
 };
-const WEB_APP = "https://easelbook.vercel.app";
+const WEB_APP = "https://www.easelbookapp.com";
 const A = "/easelbook";
 
 type Device = "android" | "ios" | "windows" | "mac" | "other";
