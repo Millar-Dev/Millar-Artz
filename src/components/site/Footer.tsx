@@ -103,6 +103,9 @@ export function Footer() {
               <Link to="/faq" className="block hover:text-gold">
                 {t("FAQ")}
               </Link>
+              <Link to="/easelbook" className="block hover:text-gold">
+                {t("Easelbook app")}
+              </Link>
               <Link to="/subscription" className="block hover:text-gold">
                 {t("Subscription")}
               </Link>

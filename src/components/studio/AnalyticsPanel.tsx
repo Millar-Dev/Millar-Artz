@@ -74,6 +74,7 @@ const PAGE_LABELS: Record<string, string> = {
   "/gallery": "Full archive",
   "/about": "About",
   "/faq": "FAQ",
+  "/easelbook": "Easelbook app",
   "/contact": "Contact",
   "/subscription": "Subscribe",
 };

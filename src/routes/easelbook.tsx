@@ -73,18 +73,26 @@ export const Route = createFileRoute("/easelbook")({
       "Price commissions, track payments, and build your art portfolio. Download Easelbook free for Android, iPhone, Windows, Mac or any browser.",
     );
     return {
-      meta: seoMeta(
-        title,
-        description,
-        "/easelbook",
+      meta: [
         {
-          url: absoluteUrl(`${A}/walkthrough-poster.jpg`),
-          alt: "Easelbook",
-          width: 1280,
-          height: 720,
+          name: "keywords",
+          content: t(
+            "Easelbook, MillerArtz app, artist app, art business app, commission pricing, mural pricing calculator, invoices for artists, art portfolio, Tanzania artists, Arusha, download Easelbook",
+          ),
         },
-        lang,
-      ),
+        ...seoMeta(
+          title,
+          description,
+          "/easelbook",
+          {
+            url: absoluteUrl(`${A}/walkthrough-poster.jpg`),
+            alt: "Easelbook",
+            width: 1280,
+            height: 720,
+          },
+          lang,
+        ),
+      ],
       links: [canonical("/easelbook", lang)],
       scripts: [
         jsonLd({

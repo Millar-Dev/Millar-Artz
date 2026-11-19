@@ -575,7 +575,9 @@ export const sw: Record<string, string> = {
   "photo": "picha",
 
   // ── Easelbook app page ──────────────────────────────────────────────────────
-  App: "Programu",
+  "Easelbook app": "Programu ya Easelbook",
+  "Easelbook, MillerArtz app, artist app, art business app, commission pricing, mural pricing calculator, invoices for artists, art portfolio, Tanzania artists, Arusha, download Easelbook":
+    "Easelbook, programu ya MillerArtz, programu ya wasanii, biashara ya sanaa, bei ya kazi za sanaa, kikokotoo cha bei ya mural, ankara za wasanii, portfolio ya sanaa, wasanii Tanzania, Arusha, pakua Easelbook",
   "Easelbook — the studio app for artists | MillerArtz":
     "Easelbook — programu ya studio kwa wasanii | MillerArtz",
   "Price commissions, track payments, and build your art portfolio. Download Easelbook free for Android, iPhone, Windows, Mac or any browser.":
